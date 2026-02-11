@@ -1,8 +1,9 @@
 """
 Firestore database service.
 """
+import hashlib
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List, Dict, Any
 
 from google.cloud import firestore
@@ -12,7 +13,7 @@ from app.config import get_settings
 from app.models.user import UserInDB
 from app.models.form import FormInDB, FieldMapping
 from app.models.batch import BatchInDB, SyntheticDocument
-from app.models.test_run import TestRunInDB, TestStatus
+from app.models.test_run import TestRunInDB, TestStatus, BatchJobInDB
 from app.models.result import ResultInDB, ExtractedField
 
 settings = get_settings()
@@ -230,6 +231,7 @@ class FirestoreService:
         started_by: str,
         total_documents: int,
         started_by_name: str = "",
+        batch_job_id: Optional[str] = None,
     ) -> TestRunInDB:
         """Create a new test run."""
         run_id = str(uuid.uuid4())
@@ -246,6 +248,7 @@ class FirestoreService:
             "error_message": None,
             "total_documents": total_documents,
             "processed_documents": 0,
+            "batch_job_id": batch_job_id,
         }
 
         self.db.collection("test_runs").document(run_id).set(run_data)
@@ -259,6 +262,8 @@ class FirestoreService:
             data = doc.to_dict()
             data["status"] = TestStatus(data["status"])
             data.setdefault("started_by_name", "")
+            data.setdefault("batch_job_id", None)
+            data.setdefault("last_heartbeat", None)
             return TestRunInDB(**data)
         return None
 
@@ -275,7 +280,10 @@ class FirestoreService:
         if not doc.exists:
             return False
 
-        update_data: Dict[str, Any] = {"status": status.value}
+        update_data: Dict[str, Any] = {
+            "status": status.value,
+            "last_heartbeat": datetime.utcnow(),
+        }
 
         if processed_documents is not None:
             update_data["processed_documents"] = processed_documents
@@ -289,14 +297,40 @@ class FirestoreService:
         doc_ref.update(update_data)
         return True
 
+    # Stale threshold: if a running task hasn't sent a heartbeat in this long, mark it failed
+    STALE_THRESHOLD = timedelta(minutes=30)
+
     async def list_test_runs(self) -> List[TestRunInDB]:
-        """List all test runs."""
+        """List all test runs. Auto-marks stale running tasks as failed."""
         docs = self.db.collection("test_runs").order_by("started_at", direction=firestore.Query.DESCENDING).stream()
         runs = []
+        now = datetime.now(timezone.utc)
         for doc in docs:
             data = doc.to_dict()
             data["status"] = TestStatus(data["status"])
             data.setdefault("started_by_name", "")
+            data.setdefault("batch_job_id", None)
+            data.setdefault("last_heartbeat", None)
+
+            # Auto-detect stale running tasks
+            if data["status"] in [TestStatus.RUNNING, TestStatus.PENDING]:
+                heartbeat = data.get("last_heartbeat")
+                started = data.get("started_at")
+                last_alive = heartbeat or started
+                if last_alive:
+                    # Ensure timezone-aware for comparison
+                    if last_alive.tzinfo is None:
+                        last_alive = last_alive.replace(tzinfo=timezone.utc)
+                    if (now - last_alive) > self.STALE_THRESHOLD:
+                        self.db.collection("test_runs").document(data["id"]).update({
+                            "status": TestStatus.FAILED.value,
+                            "error_message": "Timed out — Cloud Run instance was recycled",
+                            "completed_at": now,
+                        })
+                        data["status"] = TestStatus.FAILED
+                        data["error_message"] = "Timed out — Cloud Run instance was recycled"
+                        data["completed_at"] = now
+
             runs.append(TestRunInDB(**data))
         return runs
 
@@ -418,3 +452,146 @@ class FirestoreService:
             ]
             return ResultInDB(**data)
         return None
+
+    # ==================== Layout Cache Operations ====================
+
+    @staticmethod
+    def _layout_cache_key(storage_path: str, layout_library: str) -> str:
+        """Generate a cache key from storage path and layout library."""
+        raw = f"{storage_path}::{layout_library}"
+        return hashlib.sha256(raw.encode()).hexdigest()
+
+    async def get_cached_layout(
+        self, storage_path: str, layout_library: str
+    ) -> Optional[Dict[str, Any]]:
+        """Get cached layout detection results."""
+        cache_key = self._layout_cache_key(storage_path, layout_library)
+        doc = self.db.collection("layout_cache").document(cache_key).get()
+        if doc.exists:
+            return doc.to_dict().get("layout_data")
+        return None
+
+    async def set_cached_layout(
+        self, storage_path: str, layout_library: str, layout_data: Dict[str, Any]
+    ) -> None:
+        """Cache layout detection results."""
+        cache_key = self._layout_cache_key(storage_path, layout_library)
+        self.db.collection("layout_cache").document(cache_key).set({
+            "storage_path": storage_path,
+            "layout_library": layout_library,
+            "layout_data": layout_data,
+            "cached_at": datetime.utcnow(),
+        })
+
+    # ==================== Batch Job Operations ====================
+
+    async def create_batch_job(
+        self,
+        batch_ids: List[str],
+        layout_libraries: List[str],
+        ocr_libraries: List[str],
+        started_by: str,
+        total_combinations: int,
+        started_by_name: str = "",
+    ) -> BatchJobInDB:
+        """Create a new batch combination job."""
+        job_id = str(uuid.uuid4())
+        job_data = {
+            "id": job_id,
+            "batch_ids": batch_ids,
+            "layout_libraries": layout_libraries,
+            "ocr_libraries": ocr_libraries,
+            "started_by": started_by,
+            "started_by_name": started_by_name,
+            "started_at": datetime.utcnow(),
+            "completed_at": None,
+            "status": TestStatus.PENDING.value,
+            "test_run_ids": [],
+            "total_combinations": total_combinations,
+            "completed_combinations": 0,
+            "error_message": None,
+        }
+
+        self.db.collection("batch_jobs").document(job_id).set(job_data)
+
+        return BatchJobInDB(**job_data)
+
+    async def get_batch_job_by_id(self, job_id: str) -> Optional[BatchJobInDB]:
+        """Get batch job by ID."""
+        doc = self.db.collection("batch_jobs").document(job_id).get()
+        if doc.exists:
+            data = doc.to_dict()
+            data["status"] = TestStatus(data["status"])
+            data.setdefault("started_by_name", "")
+            data.setdefault("last_heartbeat", None)
+            return BatchJobInDB(**data)
+        return None
+
+    async def update_batch_job(
+        self,
+        job_id: str,
+        status: Optional[TestStatus] = None,
+        completed_combinations: Optional[int] = None,
+        test_run_ids: Optional[List[str]] = None,
+        error_message: Optional[str] = None,
+    ) -> bool:
+        """Update batch job."""
+        doc_ref = self.db.collection("batch_jobs").document(job_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        update_data: Dict[str, Any] = {
+            "last_heartbeat": datetime.utcnow(),
+        }
+
+        if status is not None:
+            update_data["status"] = status.value
+            if status in [TestStatus.COMPLETED, TestStatus.FAILED]:
+                update_data["completed_at"] = datetime.utcnow()
+
+        if completed_combinations is not None:
+            update_data["completed_combinations"] = completed_combinations
+
+        if test_run_ids is not None:
+            update_data["test_run_ids"] = test_run_ids
+
+        if error_message is not None:
+            update_data["error_message"] = error_message
+
+        doc_ref.update(update_data)
+        return True
+
+    async def list_batch_jobs(self) -> List[BatchJobInDB]:
+        """List all batch jobs. Auto-marks stale running jobs as failed."""
+        docs = self.db.collection("batch_jobs").order_by(
+            "started_at", direction=firestore.Query.DESCENDING
+        ).stream()
+        jobs = []
+        now = datetime.now(timezone.utc)
+        for doc in docs:
+            data = doc.to_dict()
+            data["status"] = TestStatus(data["status"])
+            data.setdefault("started_by_name", "")
+            data.setdefault("last_heartbeat", None)
+
+            # Auto-detect stale running batch jobs
+            if data["status"] in [TestStatus.RUNNING, TestStatus.PENDING]:
+                heartbeat = data.get("last_heartbeat")
+                started = data.get("started_at")
+                last_alive = heartbeat or started
+                if last_alive:
+                    if last_alive.tzinfo is None:
+                        last_alive = last_alive.replace(tzinfo=timezone.utc)
+                    if (now - last_alive) > self.STALE_THRESHOLD:
+                        self.db.collection("batch_jobs").document(data["id"]).update({
+                            "status": TestStatus.FAILED.value,
+                            "error_message": "Timed out — Cloud Run instance was recycled",
+                            "completed_at": now,
+                        })
+                        data["status"] = TestStatus.FAILED
+                        data["error_message"] = "Timed out — Cloud Run instance was recycled"
+                        data["completed_at"] = now
+
+            jobs.append(BatchJobInDB(**data))
+        return jobs

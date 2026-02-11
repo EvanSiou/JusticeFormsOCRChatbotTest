@@ -3,6 +3,20 @@ import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, resultsAPI } from '../services/api'
 
+function formatDuration(startedAt, completedAt) {
+  if (!startedAt || !completedAt) return null
+  const start = new Date(startedAt)
+  const end = new Date(completedAt)
+  const seconds = Math.round((end - start) / 1000)
+  if (seconds < 60) return `${seconds}s`
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  if (minutes < 60) return `${minutes}m ${remainingSeconds}s`
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  return `${hours}h ${remainingMinutes}m`
+}
+
 function ResultsPage() {
   const { testRunId } = useParams()
   const navigate = useNavigate()
@@ -166,7 +180,7 @@ function ResultsPage() {
       {testRunId && summaryData?.data && (
         <div className="bg-white rounded-lg shadow p-6 mb-4">
           <h3 className="font-semibold mb-4">Summary</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div>
               <p className="text-sm text-gray-500">Documents</p>
               <p className="text-xl font-bold">{summaryData.data.total_documents}</p>
@@ -185,6 +199,16 @@ function ResultsPage() {
               <p className="text-sm text-gray-500">OCR</p>
               <p className="text-sm font-medium">{summaryData.data.ocr_library}</p>
             </div>
+            {(() => {
+              const currentRun = allCompletedRuns.find(r => r.id === testRunId)
+              const duration = currentRun ? formatDuration(currentRun.started_at, currentRun.completed_at) : null
+              return duration ? (
+                <div>
+                  <p className="text-sm text-gray-500">Duration</p>
+                  <p className="text-xl font-bold text-gray-700">{duration}</p>
+                </div>
+              ) : null
+            })()}
           </div>
 
           {/* Field Accuracies */}

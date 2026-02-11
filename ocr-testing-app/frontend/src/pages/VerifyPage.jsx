@@ -205,6 +205,24 @@ function VerifyPage() {
     ocrByRegionId[r.region_id] = r
   })
 
+  // Collect all unique OCR text values for the dropdown
+  const allOcrTexts = (() => {
+    if (!doc?.ocr_results) return []
+    const texts = new Set()
+    // From regions' full_text
+    for (const r of (doc.ocr_results.regions || [])) {
+      if (r.full_text?.trim()) texts.add(r.full_text.trim())
+      for (const line of (r.lines || [])) {
+        if (line.text?.trim()) texts.add(line.text.trim())
+      }
+    }
+    // From text_regions
+    for (const r of (doc.ocr_results.text_regions || [])) {
+      if (r.text?.trim()) texts.add(r.text.trim())
+    }
+    return [...texts].sort((a, b) => a.localeCompare(b))
+  })()
+
   // Filter text regions (exclude user_added ones for display)
   const textRegions = (doc?.ocr_results?.text_regions || []).filter(r => !r.user_added)
 
@@ -466,6 +484,28 @@ function VerifyPage() {
                             </p>
                           </div>
                         </div>
+
+                        {/* OCR values dropdown */}
+                        {allOcrTexts.length > 0 && (
+                          <div className="mb-2">
+                            <select
+                              value=""
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  handleCorrectedValue(field.field_name, e.target.value)
+                                }
+                              }}
+                              className="w-full px-2 py-1 border rounded text-sm text-gray-600"
+                            >
+                              <option value="">Select from OCR values...</option>
+                              {allOcrTexts.map((text, i) => (
+                                <option key={i} value={text}>
+                                  {text.length > 80 ? text.slice(0, 80) + '...' : text}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
 
                         <div className="flex items-center gap-3">
                           <label className="flex items-center gap-1 text-sm cursor-pointer">

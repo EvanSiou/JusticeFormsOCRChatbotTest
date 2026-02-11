@@ -106,6 +106,18 @@ export const testsAPI = {
       layout_library: layoutLibrary,
       ocr_library: ocrLibrary,
     }),
+  runBatchJob: (batchIds, layoutLibraries, ocrLibraries) =>
+    api.post('/tests/batch-job', {
+      batch_ids: batchIds,
+      layout_libraries: layoutLibraries,
+      ocr_libraries: ocrLibraries,
+    }),
+  listBatchJobs: () =>
+    api.get('/tests/batch-jobs'),
+  getBatchJob: (id) =>
+    api.get(`/tests/batch-jobs/${id}`),
+  cancelBatchJob: (id) =>
+    api.post(`/tests/batch-jobs/${id}/cancel`),
   list: () =>
     api.get('/tests'),
   get: (id) =>
@@ -165,6 +177,8 @@ export const verificationAPI = {
 
 // Metrics API
 export const metricsAPI = {
+  getMatrix: () =>
+    api.get('/metrics/matrix'),
   getAggregate: () =>
     api.get('/metrics/aggregate'),
   getByField: () =>

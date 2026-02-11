@@ -102,6 +102,75 @@ class OCREngineBase(ABC):
         """
         pass
 
+    @staticmethod
+    def _map_detections_to_regions(
+        detections: List[Dict],
+        regions: List[Region]
+    ) -> Dict[int, List[Dict]]:
+        """
+        Map OCR detections to layout regions by bbox center point.
+
+        Args:
+            detections: List of dicts with keys 'text', 'confidence', 'bbox'
+                        where bbox is {"x1", "y1", "x2", "y2"} in full-image coords
+            regions: Layout regions to map into
+
+        Returns:
+            Dict mapping region.id -> list of detection dicts
+        """
+        region_map = {r.id: [] for r in regions}
+
+        for det in detections:
+            bbox = det["bbox"]
+            cx = (bbox["x1"] + bbox["x2"]) / 2
+            cy = (bbox["y1"] + bbox["y2"]) / 2
+
+            # Find the region whose bbox contains the center point
+            best_region = None
+            for r in regions:
+                rb = r.bbox
+                if rb["x1"] <= cx <= rb["x2"] and rb["y1"] <= cy <= rb["y2"]:
+                    best_region = r.id
+                    break
+
+            if best_region is not None:
+                region_map[best_region].append(det)
+
+        return region_map
+
+    @staticmethod
+    def _build_results_from_map(
+        region_map: Dict[int, List[Dict]],
+        regions: List[Region]
+    ) -> List[OCRResult]:
+        """Build OCRResult list from a region -> detections map."""
+        results = []
+        for region in regions:
+            dets = region_map.get(region.id, [])
+            rb = region.bbox
+            lines = []
+            full_text_parts = []
+            for det in dets:
+                # Convert bbox from full-image coords to region-relative coords
+                db = det["bbox"]
+                lines.append(TextLine(
+                    text=det["text"],
+                    confidence=det["confidence"],
+                    bbox_in_region={
+                        "x1": int(db["x1"] - rb["x1"]),
+                        "y1": int(db["y1"] - rb["y1"]),
+                        "x2": int(db["x2"] - rb["x1"]),
+                        "y2": int(db["y2"] - rb["y1"]),
+                    }
+                ))
+                full_text_parts.append(det["text"])
+            results.append(OCRResult(
+                region_id=region.id,
+                full_text=" ".join(full_text_parts),
+                lines=lines,
+            ))
+        return results
+
     def to_dict(self, results: List[OCRResult]) -> Dict[str, Any]:
         """Convert OCR results to dictionary format."""
         return {

@@ -45,9 +45,10 @@ app.include_router(metrics_router, prefix="/api/metrics", tags=["Metrics"])
 app.include_router(verification_router, prefix="/api/verify", tags=["Verification"])
 
 
+@app.get("/")
 @app.get("/api/health")
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint (also serves root for Cloud Run health probes)."""
     return {"status": "healthy", "app": settings.app_name}
 
 

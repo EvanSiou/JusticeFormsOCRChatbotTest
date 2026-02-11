@@ -3,15 +3,32 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { syntheticAPI, testsAPI } from '../services/api'
 
+function formatDuration(startedAt, completedAt) {
+  if (!startedAt || !completedAt) return null
+  const start = new Date(startedAt)
+  const end = new Date(completedAt)
+  const seconds = Math.round((end - start) / 1000)
+  if (seconds < 60) return `${seconds}s`
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  if (minutes < 60) return `${minutes}m ${remainingSeconds}s`
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  return `${hours}h ${remainingMinutes}m`
+}
+
 function RunTestsPage() {
   const [selectedBatches, setSelectedBatches] = useState([])
-  const [layoutLibrary, setLayoutLibrary] = useState('')
-  const [ocrLibrary, setOcrLibrary] = useState('')
-  const [runningTests, setRunningTests] = useState([]) // Track multiple running tests
+  const [selectedLayouts, setSelectedLayouts] = useState([])
+  const [selectedOCRs, setSelectedOCRs] = useState([])
+  const [runningTests, setRunningTests] = useState([])
+  const [runningBatchJobs, setRunningBatchJobs] = useState([])
   const [userFilter, setUserFilter] = useState('')
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
+  const vlmEngines = ['got_ocr', 'mineru']
 
   // Fetch batches
   const { data: batchesData, isLoading: batchesLoading } = useQuery({
@@ -49,7 +66,6 @@ function RunTestsPage() {
     },
     enabled: runningTests.length > 0,
     refetchInterval: (data) => {
-      // Keep polling if any test is still running
       const anyRunning = data?.data?.some(
         (s) => s.status !== 'completed' && s.status !== 'failed'
       )
@@ -57,7 +73,32 @@ function RunTestsPage() {
     },
   })
 
-  // Handle status changes - remove completed/failed tests from running list
+  // Poll for running batch job statuses
+  const { data: batchJobStatusData } = useQuery({
+    queryKey: ['running-batch-jobs', runningBatchJobs],
+    queryFn: async () => {
+      const statuses = await Promise.all(
+        runningBatchJobs.map(async (id) => {
+          try {
+            const res = await testsAPI.getBatchJob(id)
+            return res.data
+          } catch {
+            return { id, status: 'failed', error_message: 'Failed to fetch status' }
+          }
+        })
+      )
+      return statuses
+    },
+    enabled: runningBatchJobs.length > 0,
+    refetchInterval: (data) => {
+      const anyRunning = data?.data?.some(
+        (s) => s.status !== 'completed' && s.status !== 'failed'
+      )
+      return anyRunning ? 3000 : false
+    },
+  })
+
+  // Handle test status changes
   useEffect(() => {
     if (runningStatusData?.data) {
       const finished = runningStatusData.data.filter(
@@ -71,6 +112,21 @@ function RunTestsPage() {
       }
     }
   }, [runningStatusData, queryClient])
+
+  // Handle batch job status changes
+  useEffect(() => {
+    if (batchJobStatusData?.data) {
+      const finished = batchJobStatusData.data.filter(
+        (s) => s.status === 'completed' || s.status === 'failed'
+      )
+      if (finished.length > 0) {
+        setRunningBatchJobs((prev) =>
+          prev.filter((id) => !finished.some((f) => f.id === id))
+        )
+        queryClient.invalidateQueries(['tests'])
+      }
+    }
+  }, [batchJobStatusData, queryClient])
 
   // Auto-detect running tests on page load
   useEffect(() => {
@@ -87,16 +143,16 @@ function RunTestsPage() {
   // Set default libraries when loaded
   useEffect(() => {
     if (librariesData?.data) {
-      if (!layoutLibrary && librariesData.data.layout_libraries?.length > 0) {
-        setLayoutLibrary(librariesData.data.layout_libraries[0])
+      if (selectedLayouts.length === 0 && librariesData.data.layout_libraries?.length > 0) {
+        setSelectedLayouts([librariesData.data.layout_libraries[0]])
       }
-      if (!ocrLibrary && librariesData.data.ocr_libraries?.length > 0) {
-        setOcrLibrary(librariesData.data.ocr_libraries[0])
+      if (selectedOCRs.length === 0 && librariesData.data.ocr_libraries?.length > 0) {
+        setSelectedOCRs([librariesData.data.ocr_libraries[0]])
       }
     }
-  }, [librariesData, layoutLibrary, ocrLibrary])
+  }, [librariesData]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Extract unique users from batches and test runs
+  // Extract unique users
   const allBatches = batchesData?.data?.batches || []
   const allTestRuns = testsData?.data?.test_runs || []
   const uniqueUsers = [...new Set([
@@ -104,7 +160,7 @@ function RunTestsPage() {
     ...allTestRuns.map(r => r.started_by_name).filter(Boolean).map(n => n.split('@')[0]),
   ])].sort()
 
-  // Filter batches and test runs by user
+  // Filter by user
   const filteredBatches = userFilter
     ? allBatches.filter(b => b.created_by_name && b.created_by_name.split('@')[0] === userFilter)
     : allBatches
@@ -112,20 +168,49 @@ function RunTestsPage() {
     ? allTestRuns.filter(r => r.started_by_name && r.started_by_name.split('@')[0] === userFilter)
     : allTestRuns
 
-  // Determine if selected batches are all handwritten
-  const selectedBatchObjects = filteredBatches.filter(
-    (b) => selectedBatches.includes(b.id)
-  )
-  const allHandwritten = selectedBatchObjects.length > 0 && selectedBatchObjects.every(
-    (b) => b.batch_type === 'handwritten'
-  )
+  // Calculate combinations
+  const allVlm = selectedOCRs.length > 0 && selectedOCRs.every(lib => vlmEngines.includes(lib))
+  const comboCount = (() => {
+    let count = 0
+    for (const ocr of selectedOCRs) {
+      if (vlmEngines.includes(ocr)) {
+        count += 1
+      } else {
+        count += selectedLayouts.length
+      }
+    }
+    return count
+  })()
 
-  // Run tests mutation
+  // Toggle helpers
+  const toggleLayout = (lib) => {
+    setSelectedLayouts((prev) =>
+      prev.includes(lib) ? prev.filter((l) => l !== lib) : [...prev, lib]
+    )
+  }
+  const toggleOCR = (lib) => {
+    setSelectedOCRs((prev) =>
+      prev.includes(lib) ? prev.filter((l) => l !== lib) : [...prev, lib]
+    )
+  }
+
+  // Run mutation: single combo uses existing API, multi-combo uses batch job API
   const runMutation = useMutation({
-    mutationFn: () =>
-      testsAPI.run(selectedBatches, allHandwritten ? '' : layoutLibrary, ocrLibrary),
+    mutationFn: () => {
+      if (comboCount === 1) {
+        const ocrLib = selectedOCRs[0]
+        const layoutLib = vlmEngines.includes(ocrLib) ? '' : selectedLayouts[0]
+        return testsAPI.run(selectedBatches, layoutLib, ocrLib)
+      } else {
+        return testsAPI.runBatchJob(selectedBatches, selectedLayouts, selectedOCRs)
+      }
+    },
     onSuccess: (response) => {
-      setRunningTests((prev) => [...prev, response.data.id])
+      if (comboCount === 1) {
+        setRunningTests((prev) => [...prev, response.data.id])
+      } else {
+        setRunningBatchJobs((prev) => [...prev, response.data.id])
+      }
       queryClient.invalidateQueries(['tests'])
     },
   })
@@ -139,7 +224,8 @@ function RunTestsPage() {
   }
 
   const handleRun = () => {
-    if (selectedBatches.length > 0 && layoutLibrary && ocrLibrary) {
+    const hasLayout = allVlm || selectedLayouts.length > 0
+    if (selectedBatches.length > 0 && hasLayout && selectedOCRs.length > 0) {
       runMutation.mutate()
     }
   }
@@ -151,6 +237,16 @@ function RunTestsPage() {
       queryClient.invalidateQueries(['tests'])
     } catch (e) {
       console.error('Cancel failed', e)
+    }
+  }
+
+  const handleCancelBatchJob = async (jobId) => {
+    try {
+      await testsAPI.cancelBatchJob(jobId)
+      setRunningBatchJobs((prev) => prev.filter((id) => id !== jobId))
+      queryClient.invalidateQueries(['tests'])
+    } catch (e) {
+      console.error('Cancel batch job failed', e)
     }
   }
 
@@ -223,6 +319,46 @@ function RunTestsPage() {
         </div>
       )}
 
+      {/* Running Batch Jobs Progress */}
+      {batchJobStatusData?.data?.length > 0 && (
+        <div className="space-y-3 mb-6">
+          {batchJobStatusData.data.map((job) => (
+            <div
+              key={job.id}
+              className="bg-purple-50 border border-purple-200 rounded-lg p-4"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-medium">
+                  Batch Job Running...{' '}
+                  <span className="text-xs text-gray-500 font-normal">
+                    {job.id?.slice(0, 8)}
+                  </span>
+                </span>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-purple-600">
+                    {job.completed_combinations} / {job.total_combinations} combinations
+                  </span>
+                  <button
+                    onClick={() => handleCancelBatchJob(job.id)}
+                    className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+              <div className="w-full bg-purple-200 rounded-full h-2">
+                <div
+                  className="bg-purple-600 h-2 rounded-full transition-all"
+                  style={{
+                    width: `${job.total_combinations > 0 ? (job.completed_combinations / job.total_combinations * 100) : 0}%`,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Test Configuration */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h3 className="text-lg font-semibold mb-4">Step 1: Select Batches</h3>
@@ -279,50 +415,63 @@ function RunTestsPage() {
         )}
       </div>
 
-      {/* Library Selection */}
+      {/* Library Selection - Multi-select checkboxes */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h3 className="text-lg font-semibold mb-4">Step 2: Select Libraries</h3>
-        {allHandwritten && (
-          <p className="text-sm text-purple-600 mb-4">
-            Handwritten batches use full-text OCR only (no layout detection needed).
-          </p>
-        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {!allHandwritten && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Layout Detection Library
-            </label>
-            <select
-              value={layoutLibrary}
-              onChange={(e) => setLayoutLibrary(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
-            >
-              {librariesData?.data?.layout_libraries?.map((lib) => (
-                <option key={lib} value={lib}>
-                  {lib}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Layout Libraries */}
+          {!allVlm && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Layout Detection Libraries
+              </label>
+              <div className="space-y-2 border rounded-md p-3">
+                {librariesData?.data?.layout_libraries?.map((lib) => (
+                  <label key={lib} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedLayouts.includes(lib)}
+                      onChange={() => toggleLayout(lib)}
+                    />
+                    <span className="text-sm">{lib}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           )}
+
+          {/* OCR Libraries */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              OCR Library
+              OCR Libraries
             </label>
-            <select
-              value={ocrLibrary}
-              onChange={(e) => setOcrLibrary(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
-            >
+            <div className="space-y-2 border rounded-md p-3">
               {librariesData?.data?.ocr_libraries?.map((lib) => (
-                <option key={lib} value={lib}>
-                  {lib}
-                </option>
+                <label key={lib} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedOCRs.includes(lib)}
+                    onChange={() => toggleOCR(lib)}
+                  />
+                  <span className="text-sm">
+                    {lib}
+                    {vlmEngines.includes(lib) && (
+                      <span className="ml-1 text-xs text-purple-600 font-medium">(VLM)</span>
+                    )}
+                  </span>
+                </label>
               ))}
-            </select>
+            </div>
           </div>
         </div>
+
+        {/* Combination count */}
+        {comboCount > 0 && (
+          <p className="text-sm text-gray-600 mt-3">
+            This will run <span className="font-semibold text-purple-700">{comboCount}</span> combination{comboCount !== 1 ? 's' : ''}
+            {comboCount > 1 && ' sequentially as a batch job'}
+          </p>
+        )}
       </div>
 
       {/* Run Button */}
@@ -331,10 +480,15 @@ function RunTestsPage() {
           <div>
             <h3 className="text-lg font-semibold">Step 3: Run Tests</h3>
             <p className="text-sm text-gray-600">
-              {selectedBatches.length} batch(es) selected
+              {selectedBatches.length} batch(es) selected, {comboCount} combination(s)
               {runningTests.length > 0 && (
                 <span className="ml-2 text-blue-600">
-                  • {runningTests.length} test(s) currently running
+                  • {runningTests.length} test(s) running
+                </span>
+              )}
+              {runningBatchJobs.length > 0 && (
+                <span className="ml-2 text-purple-600">
+                  • {runningBatchJobs.length} batch job(s) running
                 </span>
               )}
             </p>
@@ -343,13 +497,17 @@ function RunTestsPage() {
             onClick={handleRun}
             disabled={
               selectedBatches.length === 0 ||
-              !layoutLibrary ||
-              !ocrLibrary ||
+              (!allVlm && selectedLayouts.length === 0) ||
+              selectedOCRs.length === 0 ||
               runMutation.isPending
             }
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {runMutation.isPending ? 'Starting...' : 'Run Tests'}
+            {runMutation.isPending
+              ? 'Starting...'
+              : comboCount > 1
+              ? `Run ${comboCount} Combinations`
+              : 'Run Tests'}
           </button>
         </div>
 
@@ -377,10 +535,20 @@ function RunTestsPage() {
                     {run.layout_library || 'N/A'} + {run.ocr_library}
                     {run.started_by_name && ` - ${run.started_by_name.split('@')[0]}`}
                     {' - '}{new Date(run.started_at).toLocaleDateString()}
+                    {run.batch_job_id && (
+                      <span className="ml-2 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                        batch
+                      </span>
+                    )}
                   </p>
                   <p className="text-sm text-gray-600">
                     {run.total_documents} documents •{' '}
                     {new Date(run.started_at).toLocaleString()}
+                    {formatDuration(run.started_at, run.completed_at) && (
+                      <span className="ml-2 text-gray-500">
+                        ({formatDuration(run.started_at, run.completed_at)})
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">

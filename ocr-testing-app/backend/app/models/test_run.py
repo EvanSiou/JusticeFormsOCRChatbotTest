@@ -38,6 +38,8 @@ class TestRunInDB(TestRunBase):
     error_message: Optional[str] = None
     total_documents: int = 0
     processed_documents: int = 0
+    batch_job_id: Optional[str] = None
+    last_heartbeat: Optional[datetime] = None
 
 
 class TestRunResponse(TestRunInDB):
@@ -56,3 +58,39 @@ class RunTestsRequest(BaseModel):
     batch_ids: List[str]
     layout_library: str = ""
     ocr_library: str
+
+
+class RunBatchJobRequest(BaseModel):
+    """Request to run a batch combination job."""
+    batch_ids: List[str]
+    layout_libraries: List[str]
+    ocr_libraries: List[str]
+
+
+class BatchJobInDB(BaseModel):
+    """Batch job model as stored in database."""
+    id: str
+    batch_ids: List[str]
+    layout_libraries: List[str]
+    ocr_libraries: List[str]
+    started_by: str
+    started_by_name: str = ""
+    started_at: datetime
+    completed_at: Optional[datetime] = None
+    status: TestStatus = TestStatus.PENDING
+    test_run_ids: List[str] = []
+    total_combinations: int = 0
+    completed_combinations: int = 0
+    error_message: Optional[str] = None
+    last_heartbeat: Optional[datetime] = None
+
+
+class BatchJobResponse(BatchJobInDB):
+    """Batch job model for API responses."""
+    pass
+
+
+class BatchJobListResponse(BaseModel):
+    """Response for listing batch jobs."""
+    batch_jobs: List[BatchJobResponse]
+    total: int

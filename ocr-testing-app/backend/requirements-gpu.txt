@@ -1,0 +1,45 @@
+# FastAPI and server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# Settings
+pydantic[email]>=2.5.0
+pydantic-settings>=2.1.0
+
+# PyTorch with CUDA 12.2 support (for GPU inference)
+--extra-index-url https://download.pytorch.org/whl/cu122
+torch
+torchvision
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt==4.0.1
+
+# GCP
+google-cloud-firestore>=2.13.0
+google-cloud-storage>=2.13.0
+google-auth>=2.23.0
+
+# Image processing
+Pillow>=10.0.0
+numpy>=1.24.0
+PyMuPDF>=1.23.0  # PDF template support
+
+# OCR/Layout libraries
+easyocr>=1.7.0
+surya-ocr>=0.5.0
+paddlepaddle==3.2.2
+paddleocr>=2.7.0
+doclayout-yolo>=0.0.2
+python-doctr>=0.7.0
+pytesseract>=0.3.10
+transformers>=4.46.0
+sentencepiece>=0.2.0
+accelerate>=0.28.0
+mineru-vl-utils[transformers]
+qwen-vl-utils>=0.0.8
+
+# Utilities
+python-dateutil>=2.8.0

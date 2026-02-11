@@ -37,12 +37,16 @@ class DocLayoutYOLODetector(LayoutDetectorBase):
         # Convert PIL to numpy array
         image_array = np.array(image)
 
+        # Detect GPU availability
+        import torch
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
         # Run detection
         results = model.predict(
             image_array,
             imgsz=1024,
             conf=0.2,
-            device="cpu"
+            device=device
         )
 
         regions = []
@@ -70,8 +74,8 @@ class DocLayoutYOLODetector(LayoutDetectorBase):
                     }
                 ))
 
-        # Sort by confidence (descending)
-        regions.sort(key=lambda r: r.confidence, reverse=True)
+        # Sort by y-coordinate (top to bottom), then x-coordinate (left to right)
+        regions.sort(key=lambda r: (r.bbox["y1"], r.bbox["x1"]))
 
         # Re-assign IDs after sorting
         for i, region in enumerate(regions):

@@ -13,6 +13,118 @@ from app.services.firestore import FirestoreService
 router = APIRouter()
 
 
+@router.get("/matrix")
+async def get_matrix_data(
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """
+    Return denormalized data for building Layout x OCR matrices.
+    Each row represents one document result with its test run metadata.
+    The frontend handles filtering and aggregation.
+    """
+    firestore = FirestoreService()
+
+    # Get all completed test runs
+    test_runs = await firestore.list_test_runs()
+    completed_runs = [tr for tr in test_runs if tr.status.value == "completed"]
+
+    if not completed_runs:
+        return {"rows": [], "filters": {
+            "users": [], "dates": [], "batches": [],
+            "batch_types": [], "fields": [], "test_runs": [], "documents": [],
+        }}
+
+    # Get all batches for type info
+    batches = await firestore.list_batches()
+    batch_map = {b.id: b for b in batches}
+
+    rows = []
+    users_set = set()
+    dates_set = set()
+    batches_set = set()
+    batch_types_set = set()
+    fields_set = set()
+    test_runs_list = []
+    documents_set = set()
+
+    vlm_engines = {"got_ocr", "mineru"}
+
+    for tr in completed_runs:
+        # Skip VLM engines — they don't use layout detection
+        if tr.ocr_library in vlm_engines:
+            continue
+
+        # Duration in seconds
+        duration_s = None
+        if tr.started_at and tr.completed_at:
+            duration_s = round((tr.completed_at - tr.started_at).total_seconds(), 1)
+
+        results = await firestore.get_results_by_test_run(tr.id)
+
+        # Collect batch type info
+        batch_type = "synthetic"
+        for bid in tr.batch_ids:
+            b = batch_map.get(bid)
+            if b:
+                batch_type = b.batch_type
+
+        user_label = tr.started_by_name.split("@")[0] if tr.started_by_name else tr.started_by[:8]
+        date_label = tr.started_at.strftime("%Y-%m-%d")
+        tr_label = f"{tr.layout_library} + {tr.ocr_library} ({date_label})"
+
+        users_set.add(user_label)
+        dates_set.add(date_label)
+        batch_types_set.add(batch_type)
+        for bid in tr.batch_ids:
+            b = batch_map.get(bid)
+            if b:
+                batches_set.add((bid, f"{b.form_name} #{b.batch_number}"))
+        test_runs_list.append({"id": tr.id, "label": tr_label})
+
+        for result in results:
+            documents_set.add(result.document_id)
+
+            # Per-field data
+            field_accuracies = {}
+            for field in result.extracted_fields:
+                fields_set.add(field.field_name)
+                acc = field.match_score
+                # Prefer verified/corrected accuracy
+                if field.verification_status.value == "corrected" and field.corrected_value is not None:
+                    acc = 1.0 if field.corrected_value.lower() == field.expected_value.lower() else field.match_score
+                elif field.verification_status.value == "verified":
+                    acc = field.match_score
+                field_accuracies[field.field_name] = round(acc, 4)
+
+            rows.append({
+                "test_run_id": tr.id,
+                "document_id": result.document_id,
+                "batch_id": result.batch_id,
+                "batch_type": batch_type,
+                "layout_library": tr.layout_library,
+                "ocr_library": tr.ocr_library,
+                "user": user_label,
+                "date": date_label,
+                "overall_accuracy": round(result.overall_accuracy, 4),
+                "verified_accuracy": round(result.verified_accuracy, 4) if result.verified_accuracy is not None else None,
+                "duration_s": duration_s,
+                "total_documents": tr.total_documents,
+                "field_accuracies": field_accuracies,
+            })
+
+    filters = {
+        "users": sorted(users_set),
+        "dates": sorted(dates_set, reverse=True),
+        "batches": [{"id": bid, "label": label} for bid, label in sorted(batches_set, key=lambda x: x[1])],
+        "batch_types": sorted(batch_types_set),
+        "fields": sorted(fields_set),
+        "test_runs": test_runs_list,
+        "documents": sorted(documents_set),
+    }
+
+    return {"rows": rows, "filters": filters}
+
+
 @router.get("/aggregate")
 async def get_aggregate_metrics(
     current_user_id: str = Depends(get_current_user_id)
@@ -191,7 +303,8 @@ async def get_comparison_metrics(
             "document_count": len(results),
             "average_accuracy": round(avg_accuracy, 4),
             "field_accuracies": field_accuracies,
-            "started_at": test_run.started_at.isoformat()
+            "started_at": test_run.started_at.isoformat(),
+            "completed_at": test_run.completed_at.isoformat() if test_run.completed_at else None,
         })
 
     return {"comparisons": comparisons}
@@ -199,7 +312,7 @@ async def get_comparison_metrics(
 
 @router.get("/export")
 async def export_metrics(
-    format: str = Query("csv", regex="^(csv|json)$"),
+    format: str = Query("csv", pattern="^(csv|json)$"),
     test_run_id: Optional[str] = Query(None),
     current_user_id: str = Depends(get_current_user_id)
 ):

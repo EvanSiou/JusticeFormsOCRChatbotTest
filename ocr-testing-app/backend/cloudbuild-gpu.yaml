@@ -1,0 +1,14 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/ecourtdateocr/ocr-app-backend-gpu'
+      - '-f'
+      - 'Dockerfile.gpu'
+      - '.'
+images:
+  - 'gcr.io/ecourtdateocr/ocr-app-backend-gpu'
+timeout: '3600s'  # 1 hour timeout for large model downloads
+options:
+  machineType: 'E2_HIGHCPU_8'

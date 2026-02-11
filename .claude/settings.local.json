@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(move \"04_layout_detection_dit.ipynb\" \"04_layout_detection_surya.ipynb\")",
+      "Bash(c:/Users/leolw/OneDrive/Documents/MSAIB/Capstone/eCourtDateOCR/venv/Scripts/python.exe -c \"import surya; print\\(dir\\(surya\\)\\)\")",
+      "Bash(c:/Users/leolw/OneDrive/Documents/MSAIB/Capstone/eCourtDateOCR/venv/Scripts/python.exe:*)",
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(grep:*)",
+      "Bash(gcloud builds submit:*)",
+      "Bash(gcloud run deploy:*)",
+      "Bash(gcloud run services update:*)",
+      "Bash(gcloud logging read:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:mindee.github.io)",
+      "Bash(npm run build:*)",
+      "Bash(gcloud run services logs read:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:opendatalab.github.io)",
+      "Bash(gcloud run revisions list:*)",
+      "Bash(findstr:*)",
+      "Bash(gcloud builds log:*)",
+      "Bash(timeout:*)",
+      "Bash(gcloud run services describe:*)",
+      "Bash(gcloud run revisions describe:*)",
+      "Bash(gcloud run services update-traffic:*)",
+      "Bash($tempFile = \"$env:TEMP\\\\firestore_result.json\")",
+      "WebFetch(domain:pypi.org)",
+      "Bash(gcloud builds list:*)",
+      "Bash(gcloud container images list-tags:*)"
+    ]
+  }
+}

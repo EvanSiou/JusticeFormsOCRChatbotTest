@@ -19,6 +19,7 @@ class TrOCREngine(OCREngineBase):
 
     _processor = None
     _model = None
+    _device = None
 
     @property
     def name(self) -> str:
@@ -32,8 +33,12 @@ class TrOCREngine(OCREngineBase):
 
             model_name = "microsoft/trocr-base-handwritten"
 
+            # Use GPU if available
+            TrOCREngine._device = "cuda" if torch.cuda.is_available() else "cpu"
+
             TrOCREngine._processor = TrOCRProcessor.from_pretrained(model_name)
             TrOCREngine._model = VisionEncoderDecoderModel.from_pretrained(model_name)
+            TrOCREngine._model.to(TrOCREngine._device)
             TrOCREngine._model.eval()
 
         return TrOCREngine._processor, TrOCREngine._model
@@ -122,7 +127,7 @@ class TrOCREngine(OCREngineBase):
             pixel_values = processor(
                 images=line_img,
                 return_tensors="pt"
-            ).pixel_values
+            ).pixel_values.to(TrOCREngine._device)
 
             with torch.no_grad():
                 generated_ids = model.generate(pixel_values, max_new_tokens=128)
