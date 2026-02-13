@@ -41,5 +41,8 @@ accelerate>=0.28.0
 mineru-vl-utils[transformers]
 qwen-vl-utils>=0.0.8
 
+# Claude API
+anthropic>=0.40.0
+
 # Utilities
 python-dateutil>=2.8.0

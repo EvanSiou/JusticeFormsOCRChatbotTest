@@ -2,7 +2,7 @@
 from .base import LayoutDetectorBase, Region
 
 # Lazy registry - only import implementations when requested
-_LAYOUT_DETECTOR_NAMES = ["doclayout_yolo", "doctr", "surya"]
+_LAYOUT_DETECTOR_NAMES = ["doclayout_yolo", "doctr", "paddleocr", "surya"]
 
 def get_layout_detector(name: str) -> LayoutDetectorBase:
     """Get a layout detector by name (lazy import)."""
@@ -12,6 +12,9 @@ def get_layout_detector(name: str) -> LayoutDetectorBase:
     elif name == "doctr":
         from .doctr_layout import DocTRLayoutDetector
         return DocTRLayoutDetector()
+    elif name == "paddleocr":
+        from .paddleocr_layout import PaddleOCRLayoutDetector
+        return PaddleOCRLayoutDetector()
     elif name == "surya":
         from .surya_layout import SuryaLayoutDetector
         return SuryaLayoutDetector()

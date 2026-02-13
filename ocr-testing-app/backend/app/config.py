@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
+    # Claude API
+    anthropic_api_key: str = ""
+
     # CORS settings - stored as a plain string, parsed by get_cors_origins()
     cors_origins: str = "http://localhost:3000,http://localhost:5173,https://ocr-app-frontend-206256614025.us-central1.run.app"
 

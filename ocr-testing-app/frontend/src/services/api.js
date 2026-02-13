@@ -74,6 +74,10 @@ export const formsAPI = {
     api.get(`/forms/${id}/config`),
   importConfig: (id, fields) =>
     api.put(`/forms/${id}/config`, { fields }),
+  getTemplateWords: (id) =>
+    api.get(`/forms/${id}/template-words`),
+  updateTemplateWords: (id, words) =>
+    api.put(`/forms/${id}/template-words`, { template_words: words }),
 }
 
 // Synthetic Data API
@@ -96,6 +100,14 @@ export const syntheticAPI = {
       const url = URL.createObjectURL(response.data)
       return url
     }),
+  mergeBatches: (sourceBatchIds) =>
+    api.post('/synthetic/batches/merge', { source_batch_ids: sourceBatchIds }),
+  removeDocuments: (batchId, documentIds) =>
+    api.post(`/synthetic/batches/${batchId}/remove-documents`, { document_ids: documentIds }),
+  appendDocuments: (targetBatchId, sourceBatchId, documentIds) =>
+    api.post(`/synthetic/batches/${targetBatchId}/append`, { source_batch_id: sourceBatchId, document_ids: documentIds }),
+  deleteBatch: (batchId) =>
+    api.delete(`/synthetic/batches/${batchId}`),
 }
 
 // Tests API
@@ -190,6 +202,35 @@ export const metricsAPI = {
     if (testRunId) url += `&test_run_id=${testRunId}`
     return api.get(url, { responseType: format === 'csv' ? 'blob' : 'json' })
   },
+}
+
+// Cleaning API
+export const cleaningAPI = {
+  preview: (data) =>
+    api.post('/clean/preview', data),
+  save: (testRunId, data) =>
+    api.put(`/clean/${testRunId}/save`, data),
+  status: (testRunId) =>
+    api.get(`/clean/${testRunId}/status`),
+}
+
+// Classification API
+export const classifyAPI = {
+  getDocuments: (testRunId) =>
+    api.get(`/classify/${testRunId}/documents`),
+  getDocument: (testRunId, documentId) =>
+    api.get(`/classify/${testRunId}/document/${documentId}`),
+  getDocumentImage: (testRunId, documentId) =>
+    api.get(`/classify/${testRunId}/document/${documentId}/image`, {
+      responseType: 'blob',
+    }).then((response) => {
+      const url = URL.createObjectURL(response.data)
+      return url
+    }),
+  run: (testRunId, documentId, data) =>
+    api.post(`/classify/${testRunId}/document/${documentId}/run`, data),
+  save: (testRunId, documentId, data) =>
+    api.put(`/classify/${testRunId}/document/${documentId}/save`, data),
 }
 
 // Health check

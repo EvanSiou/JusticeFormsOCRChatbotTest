@@ -1,7 +1,6 @@
 """
 Test execution routes.
 """
-import asyncio
 from typing import Optional, Dict
 from fastapi import APIRouter, HTTPException, status, Depends, BackgroundTasks
 
@@ -18,7 +17,7 @@ from app.models.test_run import (
 from app.services.firestore import FirestoreService
 from app.services.ocr_pipeline import OCRPipelineService
 from app.processing.layout import list_layout_detectors
-from app.processing.ocr import list_ocr_engines
+from app.processing.ocr import list_ocr_engines, VLM_ENGINES
 
 router = APIRouter()
 
@@ -98,7 +97,7 @@ async def run_batch_job_background(
         # Shared image cache across all combinations
         image_cache: Dict[str, bytes] = {}
 
-        vlm_engines = ['got_ocr', 'mineru']
+        vlm_engines = VLM_ENGINES
         completed = 0
         test_run_ids = []
 
@@ -183,7 +182,7 @@ async def run_tests(
         total_documents += len(batch.documents)
 
     # VLM engines do full-page processing and don't need layout detection
-    vlm_engines = ['got_ocr', 'mineru']
+    vlm_engines = VLM_ENGINES
     is_vlm_engine = request.ocr_library in vlm_engines
 
     # Validate layout library unless using a VLM engine
@@ -234,7 +233,7 @@ async def run_tests(
         test_run.id,
         request.batch_ids,
         layout_library,
-        request.ocr_library
+        request.ocr_library,
     )
 
     return TestRunResponse(**test_run.model_dump())
@@ -269,7 +268,7 @@ async def run_batch_job(
     # Validate libraries
     available_layouts = list_layout_detectors()
     available_ocrs = list_ocr_engines()
-    vlm_engines = ['got_ocr', 'mineru']
+    vlm_engines = VLM_ENGINES
 
     for lib in request.layout_libraries:
         if lib not in available_layouts:

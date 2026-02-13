@@ -28,7 +28,7 @@ function RunTestsPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const vlmEngines = ['got_ocr', 'mineru']
+  const vlmEngines = ['got_ocr', 'mineru', 'claude']
 
   // Fetch batches
   const { data: batchesData, isLoading: batchesLoading } = useQuery({
@@ -366,47 +366,54 @@ function RunTestsPage() {
         {batchesLoading ? (
           <p>Loading batches...</p>
         ) : filteredBatches.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredBatches.map((batch) => (
-              <div
-                key={batch.id}
-                onClick={() => toggleBatch(batch.id)}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                  selectedBatches.includes(batch.id)
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedBatches.includes(batch.id)}
-                    onChange={() => {}}
-                    className="pointer-events-none"
-                  />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium">
-                        {batch.batch_number} - {batch.form_name} - {new Date(batch.created_at).toLocaleDateString()}
-                        {batch.created_by_name && ` - ${batch.created_by_name.split('@')[0]}`}
-                      </h4>
-                      <span
-                        className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          batch.batch_type === 'handwritten'
-                            ? 'bg-purple-100 text-purple-700'
-                            : 'bg-blue-100 text-blue-700'
-                        }`}
-                      >
-                        {batch.batch_type === 'handwritten' ? 'Handwritten' : 'Synthetic'}
+          <div className="max-h-[300px] overflow-y-auto border rounded">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 sticky top-0">
+                <tr>
+                  <th className="w-8 p-1.5"></th>
+                  <th className="text-left p-1.5">Batch</th>
+                  <th className="text-left p-1.5">Form</th>
+                  <th className="text-left p-1.5">Type</th>
+                  <th className="text-right p-1.5">Docs</th>
+                  <th className="text-left p-1.5">Date</th>
+                  <th className="text-left p-1.5">User</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBatches.map((batch) => (
+                  <tr
+                    key={batch.id}
+                    onClick={() => toggleBatch(batch.id)}
+                    className={`cursor-pointer border-t hover:bg-gray-50 ${
+                      selectedBatches.includes(batch.id) ? 'bg-blue-50' : ''
+                    }`}
+                  >
+                    <td className="p-1.5 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedBatches.includes(batch.id)}
+                        onChange={() => toggleBatch(batch.id)}
+                        className="rounded"
+                      />
+                    </td>
+                    <td className="p-1.5 font-medium">{batch.batch_number}</td>
+                    <td className="p-1.5 text-gray-600 max-w-[160px] truncate">{batch.form_name}</td>
+                    <td className="p-1.5">
+                      <span className={`px-1.5 py-0.5 rounded text-xs ${
+                        batch.batch_type === 'handwritten'
+                          ? 'bg-purple-100 text-purple-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {batch.batch_type}
                       </span>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                      {batch.count} docs
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+                    </td>
+                    <td className="p-1.5 text-right">{batch.count}</td>
+                    <td className="p-1.5 text-gray-500">{new Date(batch.created_at).toLocaleDateString()}</td>
+                    <td className="p-1.5 text-gray-500">{batch.created_by_name ? batch.created_by_name.split('@')[0] : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <p className="text-gray-600">

@@ -30,13 +30,17 @@ async def get_matrix_data(
 
     if not completed_runs:
         return {"rows": [], "filters": {
-            "users": [], "dates": [], "batches": [],
+            "users": [], "dates": [], "batches": [], "batch_jobs": [],
             "batch_types": [], "fields": [], "test_runs": [], "documents": [],
         }}
 
     # Get all batches for type info
     batches = await firestore.list_batches()
     batch_map = {b.id: b for b in batches}
+
+    # Build batch job lookup for grouping runs by job
+    batch_jobs = await firestore.list_batch_jobs()
+    batch_job_map = {bj.id: bj for bj in batch_jobs}
 
     rows = []
     users_set = set()
@@ -46,6 +50,7 @@ async def get_matrix_data(
     fields_set = set()
     test_runs_list = []
     documents_set = set()
+    batch_jobs_set = set()
 
     vlm_engines = {"got_ocr", "mineru"}
 
@@ -70,7 +75,19 @@ async def get_matrix_data(
 
         user_label = tr.started_by_name.split("@")[0] if tr.started_by_name else tr.started_by[:8]
         date_label = tr.started_at.strftime("%Y-%m-%d")
-        tr_label = f"{tr.layout_library} + {tr.ocr_library} ({date_label})"
+        time_label = tr.started_at.strftime("%H:%M")
+        tr_label = f"{tr.layout_library} + {tr.ocr_library} ({date_label} {time_label})"
+
+        # Batch job grouping
+        batch_job_id = tr.batch_job_id or ""
+        if batch_job_id:
+            bj = batch_job_map.get(batch_job_id)
+            if bj:
+                bj_time = bj.started_at.strftime("%Y-%m-%d %H:%M")
+                bj_label = f"Job {bj_time} ({bj.total_combinations} combos)"
+            else:
+                bj_label = f"Job {batch_job_id[:8]}"
+            batch_jobs_set.add((batch_job_id, bj_label))
 
         users_set.add(user_label)
         dates_set.add(date_label)
@@ -100,6 +117,7 @@ async def get_matrix_data(
                 "test_run_id": tr.id,
                 "document_id": result.document_id,
                 "batch_id": result.batch_id,
+                "batch_job_id": batch_job_id,
                 "batch_type": batch_type,
                 "layout_library": tr.layout_library,
                 "ocr_library": tr.ocr_library,
@@ -116,6 +134,7 @@ async def get_matrix_data(
         "users": sorted(users_set),
         "dates": sorted(dates_set, reverse=True),
         "batches": [{"id": bid, "label": label} for bid, label in sorted(batches_set, key=lambda x: x[1])],
+        "batch_jobs": [{"id": bjid, "label": label} for bjid, label in sorted(batch_jobs_set, key=lambda x: x[1], reverse=True)],
         "batch_types": sorted(batch_types_set),
         "fields": sorted(fields_set),
         "test_runs": test_runs_list,

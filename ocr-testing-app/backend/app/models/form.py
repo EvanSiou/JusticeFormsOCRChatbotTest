@@ -55,6 +55,7 @@ class FormInDB(FormBase):
     uploaded_by_name: str = ""
     uploaded_at: datetime
     field_mappings: List[FieldMapping] = []
+    template_words: Optional[List[str]] = None
     thumbnail_path: Optional[str] = None
 
 
@@ -77,3 +78,8 @@ class UpdateFieldMappingsRequest(BaseModel):
 class UpdateFieldMappingsWithConfigRequest(BaseModel):
     """Request to import field config from notebook format."""
     fields: List[dict]  # Accepts notebook-style [{name, x, y, ...}]
+
+
+class UpdateTemplateWordsRequest(BaseModel):
+    """Request to update template words for text cleanup."""
+    template_words: List[str]

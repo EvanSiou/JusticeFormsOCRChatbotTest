@@ -7,8 +7,10 @@ const navItems = [
   { path: '/synthetic', label: 'Generate Data', icon: '🔄' },
   { path: '/data', label: 'View Data', icon: '👁️' },
   { path: '/tests', label: 'Run Tests', icon: '▶️' },
+  { path: '/clean', label: 'Clean Document', icon: '🧹' },
   { path: '/verify', label: 'Verify Results', icon: '✅' },
   { path: '/results', label: 'View Results', icon: '📊' },
+  { path: '/classify', label: 'Classify', icon: '🏷️' },
   { path: '/metrics', label: 'Metrics', icon: '📈' },
 ]
 

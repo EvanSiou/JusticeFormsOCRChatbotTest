@@ -12,7 +12,7 @@ from app.models.result import ExtractedField
 from app.services.storage import StorageService
 from app.services.firestore import FirestoreService
 from app.processing.layout import get_layout_detector, list_layout_detectors
-from app.processing.ocr import get_ocr_engine, list_ocr_engines
+from app.processing.ocr import get_ocr_engine, list_ocr_engines, VLM_ENGINES
 
 
 class OCRPipelineService:
@@ -28,6 +28,7 @@ class OCRPipelineService:
         layout_library: str,
         ocr_library: str,
         image_cache: Optional[Dict[str, bytes]] = None,
+        template_words: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Process a single document through the pipeline.
@@ -94,10 +95,21 @@ class OCRPipelineService:
                 })
         ocr_results["text_regions"] = text_regions
 
+        # Text cleanup: remove template words before field matching
+        match_results_list = ocr_results_list
+        if template_words:
+            from app.processing.text_cleanup import TemplateTextCleaner
+            cleaner = TemplateTextCleaner(template_words)
+            match_results_list = TemplateTextCleaner.clean_ocr_results(
+                ocr_results_list, template_words
+            )
+            cleaned_text = cleaner.clean(full_text)
+            ocr_results["cleaned_text"] = cleaned_text
+
         # Extract and match fields
         extracted_fields = self._match_fields(
             document.field_values,
-            ocr_results_list
+            match_results_list
         )
 
         # Calculate overall accuracy
@@ -107,7 +119,7 @@ class OCRPipelineService:
             "layout_results": layout_results,
             "ocr_results": ocr_results,
             "extracted_fields": extracted_fields,
-            "overall_accuracy": overall_accuracy
+            "overall_accuracy": overall_accuracy,
         }
 
     def _match_fields(
@@ -188,6 +200,7 @@ class OCRPipelineService:
         ocr_library: str,
         match_fields: bool = False,
         image_cache: Optional[Dict[str, bytes]] = None,
+        template_words: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Process a document with full-text OCR (no layout detection).
@@ -241,13 +254,24 @@ class OCRPipelineService:
                 })
         ocr_results["text_regions"] = regions
 
+        # Text cleanup: remove template words before field matching
+        match_results_list = ocr_results_list
+        if template_words:
+            from app.processing.text_cleanup import TemplateTextCleaner
+            cleaner = TemplateTextCleaner(template_words)
+            match_results_list = TemplateTextCleaner.clean_ocr_results(
+                ocr_results_list, template_words
+            )
+            cleaned_text = cleaner.clean(full_text)
+            ocr_results["cleaned_text"] = cleaned_text
+
         # Match fields if requested and document has expected values
         extracted_fields = []
         overall_accuracy = 0.0
         if match_fields and document.field_values:
             extracted_fields = self._match_fields(
                 document.field_values,
-                ocr_results_list
+                match_results_list
             )
             overall_accuracy = self._calculate_accuracy(extracted_fields)
 
@@ -283,8 +307,15 @@ class OCRPipelineService:
         """
         results = []
 
+        # Look up form template words for text cleanup
+        template_words = None
+        if batch.form_id:
+            form = await self.firestore.get_form_by_id(batch.form_id)
+            if form and form.template_words:
+                template_words = form.template_words
+
         # VLM engines do full-page processing (no layout detection needed)
-        vlm_engines = ['got_ocr', 'mineru']
+        vlm_engines = VLM_ENGINES
         is_vlm_engine = ocr_library in vlm_engines
         use_full_text_ocr = is_vlm_engine or layout_library in ("none", "")
 
@@ -298,6 +329,7 @@ class OCRPipelineService:
                     ocr_library=ocr_library,
                     match_fields=should_match_fields,
                     image_cache=image_cache,
+                    template_words=template_words,
                 )
             else:
                 doc_results = await self.process_document(
@@ -305,6 +337,7 @@ class OCRPipelineService:
                     layout_library=layout_library,
                     ocr_library=ocr_library,
                     image_cache=image_cache,
+                    template_words=template_words,
                 )
 
             # Store result in Firestore
@@ -315,7 +348,7 @@ class OCRPipelineService:
                 layout_results=doc_results["layout_results"],
                 ocr_results=doc_results["ocr_results"],
                 extracted_fields=doc_results["extracted_fields"],
-                overall_accuracy=doc_results["overall_accuracy"]
+                overall_accuracy=doc_results["overall_accuracy"],
             )
 
             results.append({

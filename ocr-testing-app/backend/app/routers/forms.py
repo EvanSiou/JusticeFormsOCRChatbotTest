@@ -13,6 +13,7 @@ from app.models.form import (
     FormListResponse,
     UpdateFieldMappingsRequest,
     UpdateFieldMappingsWithConfigRequest,
+    UpdateTemplateWordsRequest,
     FieldMapping,
 )
 from app.services.firestore import FirestoreService
@@ -249,6 +250,54 @@ async def update_field_mappings(
     # Return updated form
     updated_form = await firestore.get_form_by_id(form_id)
     return FormResponse(**updated_form.model_dump())
+
+
+@router.get("/{form_id}/template-words")
+async def get_template_words(
+    form_id: str,
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """Get template words for a form (used for text cleanup)."""
+    firestore = FirestoreService()
+    form = await firestore.get_form_by_id(form_id)
+
+    if not form:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Form not found"
+        )
+
+    return {"template_words": form.template_words or []}
+
+
+@router.put("/{form_id}/template-words")
+async def update_template_words(
+    form_id: str,
+    request: UpdateTemplateWordsRequest,
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """Update template words for a form (used for text cleanup)."""
+    firestore = FirestoreService()
+    form = await firestore.get_form_by_id(form_id)
+
+    if not form:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Form not found"
+        )
+
+    success = await firestore.update_form_template_words(
+        form_id=form_id,
+        template_words=request.template_words
+    )
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update template words"
+        )
+
+    return {"template_words": request.template_words}
 
 
 @router.delete("/{form_id}")

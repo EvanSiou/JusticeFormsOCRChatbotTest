@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, resultsAPI } from '../services/api'
+import MagnifyImage from '../components/MagnifyImage'
 
 function formatDuration(startedAt, completedAt) {
   if (!startedAt || !completedAt) return null
@@ -98,6 +99,34 @@ function ResultsPage() {
   ocrRegions.forEach((r) => {
     ocrByRegionId[r.region_id] = r
   })
+
+  // Sort extracted fields by layout region position
+  const sortedFields = useMemo(() => {
+    const fields = documentData?.data?.extracted_fields || []
+    if (fields.length === 0 || layoutRegions.length === 0) return fields
+
+    return [...fields].sort((a, b) => {
+      const findRegionPos = (field) => {
+        for (const region of layoutRegions) {
+          const ocrForRegion = ocrByRegionId[region.id]
+          if (!ocrForRegion) continue
+          if (ocrForRegion.full_text && ocrForRegion.full_text.includes(field.extracted_value)) {
+            return { y: region.bbox?.y1 || 0, x: region.bbox?.x1 || 0 }
+          }
+          for (const line of (ocrForRegion.lines || [])) {
+            if (line.text === field.extracted_value) {
+              return { y: region.bbox?.y1 || 0, x: region.bbox?.x1 || 0 }
+            }
+          }
+        }
+        return { y: 99999, x: 99999 }
+      }
+      const posA = findRegionPos(a)
+      const posB = findRegionPos(b)
+      if (posA.y !== posB.y) return posA.y - posB.y
+      return posA.x - posB.x
+    })
+  }, [documentData?.data?.extracted_fields, layoutRegions, ocrByRegionId])
 
   return (
     <div>
@@ -211,34 +240,6 @@ function ResultsPage() {
             })()}
           </div>
 
-          {/* Field Accuracies */}
-          {Object.keys(summaryData.data.field_accuracies || {}).length > 0 && (
-            <div className="mt-4 pt-4 border-t">
-              <h4 className="text-sm font-medium mb-2">Per-Field Accuracy</h4>
-              <div className="space-y-2">
-                {Object.entries(summaryData.data.field_accuracies).map(
-                  ([field, accuracy]) => (
-                    <div key={field} className="flex items-center gap-2">
-                      <span className="text-sm w-32 truncate">{field}</span>
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full ${
-                            accuracy >= 0.8 ? 'bg-green-500'
-                              : accuracy >= 0.5 ? 'bg-yellow-500'
-                              : 'bg-red-500'
-                          }`}
-                          style={{ width: `${accuracy * 100}%` }}
-                        />
-                      </div>
-                      <span className="text-sm w-12 text-right">
-                        {(accuracy * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -264,7 +265,7 @@ function ResultsPage() {
               {imageLoading ? (
                 <p className="text-sm text-gray-500 p-4">Loading image...</p>
               ) : documentImageUrl ? (
-                <img src={documentImageUrl} alt="Document" className="w-full" />
+                <MagnifyImage src={documentImageUrl} alt="Document" />
               ) : (
                 <p className="text-sm text-gray-400 p-4">Image unavailable</p>
               )}
@@ -274,11 +275,11 @@ function ResultsPage() {
           {/* Right: Extracted Fields + Layout + OCR */}
           <div className="space-y-4">
             {/* Extracted Fields */}
-            {documentData.data.extracted_fields?.length > 0 && (
+            {sortedFields.length > 0 && (
               <div className="bg-white rounded-lg shadow p-4">
                 <h3 className="font-semibold mb-3">Extracted Fields</h3>
                 <div className="space-y-2">
-                  {documentData.data.extracted_fields.map((field, idx) => (
+                  {sortedFields.map((field, idx) => (
                     <div key={idx} className="p-2 bg-gray-50 rounded text-sm">
                       <div className="flex justify-between">
                         <span className="font-medium">{field.field_name}</span>
@@ -303,6 +304,47 @@ function ResultsPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Classification Results */}
+            {documentData?.data?.classification_results && (
+              <div className="bg-white rounded-lg shadow p-4">
+                <h3 className="font-semibold mb-3">
+                  Classification
+                  {documentData.data.classification_results.form_type && (
+                    <span className="ml-2 text-sm font-normal text-purple-600">
+                      — {documentData.data.classification_results.form_type}
+                    </span>
+                  )}
+                </h3>
+                {documentData.data.classification_results.classified_fields?.length > 0 ? (
+                  <div className="space-y-1">
+                    {documentData.data.classification_results.classified_fields.map((cf, idx) => (
+                      <div key={idx} className="flex items-center gap-2 p-2 bg-gray-50 rounded text-sm">
+                        <span className="px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 whitespace-nowrap">
+                          {cf.field_type}
+                        </span>
+                        <span className="flex-1 font-mono text-xs">{cf.value}</span>
+                        {cf.context && (
+                          <span className="text-xs text-gray-400 truncate max-w-[120px]" title={cf.context}>
+                            {cf.context}
+                          </span>
+                        )}
+                        <span className="text-xs text-gray-500">
+                          {Math.round((cf.confidence || 0) * 100)}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">No fields classified.</p>
+                )}
+                {documentData.data.classification_results.error && (
+                  <p className="text-sm text-red-500 mt-2">
+                    Error: {documentData.data.classification_results.error}
+                  </p>
+                )}
               </div>
             )}
 

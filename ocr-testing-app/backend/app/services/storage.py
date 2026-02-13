@@ -150,6 +150,20 @@ class StorageService:
 
         return url
 
+    async def copy_file(self, source_path: str, dest_blob_name: str) -> str:
+        """
+        Copy a file within the same bucket (server-side, no download).
+        Returns the gs:// path of the new file.
+        """
+        if source_path.startswith("gs://"):
+            source_blob_name = source_path.replace(f"gs://{self.bucket_name}/", "")
+        else:
+            source_blob_name = source_path
+
+        source_blob = self.bucket.blob(source_blob_name)
+        self.bucket.copy_blob(source_blob, self.bucket, dest_blob_name)
+        return self._get_gs_path(dest_blob_name)
+
     async def delete_file(self, storage_path: str) -> bool:
         """
         Delete a file from storage.

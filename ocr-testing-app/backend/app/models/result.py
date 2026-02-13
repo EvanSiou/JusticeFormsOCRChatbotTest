@@ -40,6 +40,7 @@ class ResultInDB(ResultBase):
     ocr_results: Dict[str, Any]  # Raw OCR output
     extracted_fields: List[ExtractedField]
     overall_accuracy: float
+    classification_results: Optional[Dict[str, Any]] = None
     verified_accuracy: Optional[float] = None
     verified_by: Optional[str] = None
     verified_by_name: Optional[str] = None

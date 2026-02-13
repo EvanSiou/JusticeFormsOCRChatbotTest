@@ -9,6 +9,8 @@ import ResultsPage from './pages/ResultsPage'
 import VerifyPage from './pages/VerifyPage'
 import ViewDataPage from './pages/ViewDataPage'
 import MetricsPage from './pages/MetricsPage'
+import CleanDocumentPage from './pages/CleanDocumentPage'
+import ClassifyPage from './pages/ClassifyPage'
 import Layout from './components/Layout/Layout'
 
 // Protected route wrapper
@@ -48,10 +50,12 @@ function App() {
         <Route path="synthetic" element={<SyntheticDataPage />} />
         <Route path="data" element={<ViewDataPage />} />
         <Route path="tests" element={<RunTestsPage />} />
+        <Route path="clean" element={<CleanDocumentPage />} />
         <Route path="verify" element={<VerifyPage />} />
         <Route path="verify/:testRunId" element={<VerifyPage />} />
         <Route path="results" element={<ResultsPage />} />
         <Route path="results/:testRunId" element={<ResultsPage />} />
+        <Route path="classify" element={<ClassifyPage />} />
         <Route path="metrics" element={<MetricsPage />} />
       </Route>
 

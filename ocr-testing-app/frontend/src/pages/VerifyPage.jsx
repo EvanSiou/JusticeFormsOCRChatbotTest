@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, verificationAPI } from '../services/api'
+import MagnifyImage from '../components/MagnifyImage'
 
 function VerifyPage() {
   const { testRunId: paramTestRunId } = useParams()
@@ -223,6 +224,39 @@ function VerifyPage() {
     return [...texts].sort((a, b) => a.localeCompare(b))
   })()
 
+  // Sort extracted fields by layout region position (top-to-bottom, left-to-right)
+  const sortedFields = useMemo(() => {
+    const fields = doc?.extracted_fields || []
+    if (fields.length === 0 || layoutRegions.length === 0) return fields
+
+    // For each field, find which layout region contains its best-matched OCR text
+    return [...fields].sort((a, b) => {
+      const findRegionY = (field) => {
+        // Search layout regions for the one whose OCR text matches this field's extracted_value
+        for (const region of layoutRegions) {
+          const regionId = region.id
+          const ocrForRegion = ocrByRegionId[regionId]
+          if (!ocrForRegion) continue
+          // Check full_text match
+          if (ocrForRegion.full_text && ocrForRegion.full_text.includes(field.extracted_value)) {
+            return { y: region.bbox?.y1 || 0, x: region.bbox?.x1 || 0 }
+          }
+          // Check individual lines
+          for (const line of (ocrForRegion.lines || [])) {
+            if (line.text === field.extracted_value) {
+              return { y: region.bbox?.y1 || 0, x: region.bbox?.x1 || 0 }
+            }
+          }
+        }
+        return { y: 99999, x: 99999 }
+      }
+      const posA = findRegionY(a)
+      const posB = findRegionY(b)
+      if (posA.y !== posB.y) return posA.y - posB.y
+      return posA.x - posB.x
+    })
+  }, [doc?.extracted_fields, layoutRegions, ocrByRegionId])
+
   // Filter text regions (exclude user_added ones for display)
   const textRegions = (doc?.ocr_results?.text_regions || []).filter(r => !r.user_added)
 
@@ -338,11 +372,7 @@ function VerifyPage() {
             <div className="bg-white rounded-lg shadow p-4">
               <h3 className="font-semibold mb-3">Document Image</h3>
               {documentImageUrl ? (
-                <img
-                  src={documentImageUrl}
-                  alt="Document"
-                  className="max-w-full border rounded"
-                />
+                <MagnifyImage src={documentImageUrl} alt="Document" />
               ) : (
                 <div className="h-48 bg-gray-100 rounded flex items-center justify-center">
                   <p className="text-gray-500">Loading image...</p>
@@ -448,9 +478,9 @@ function VerifyPage() {
               </h3>
 
               {/* Synthetic batch: field-by-field verification */}
-              {!isHandwritten && doc?.extracted_fields?.length > 0 && (
+              {!isHandwritten && sortedFields.length > 0 && (
                 <div className="space-y-3">
-                  {doc.extracted_fields.map((field) => {
+                  {sortedFields.map((field) => {
                     const verification = fieldVerifications[field.field_name] || {}
                     return (
                       <div key={field.field_name} className="border rounded-lg p-3">

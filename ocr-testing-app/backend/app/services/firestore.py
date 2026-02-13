@@ -113,6 +113,7 @@ class FirestoreService:
             ]
             data.setdefault("form_type", "empty")
             data.setdefault("uploaded_by_name", "")
+            data.setdefault("template_words", None)
             return FormInDB(**data)
         return None
 
@@ -127,6 +128,7 @@ class FirestoreService:
             ]
             data.setdefault("form_type", "empty")
             data.setdefault("uploaded_by_name", "")
+            data.setdefault("template_words", None)
             forms.append(FormInDB(**data))
         return forms
 
@@ -141,6 +143,20 @@ class FirestoreService:
 
         doc_ref.update({
             "field_mappings": [fm.model_dump() for fm in field_mappings]
+        })
+        return True
+
+    async def update_form_template_words(
+        self, form_id: str, template_words: List[str]
+    ) -> bool:
+        """Update form template words for text cleanup."""
+        doc_ref = self.db.collection("forms").document(form_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        doc_ref.update({
+            "template_words": template_words
         })
         return True
 
@@ -166,6 +182,7 @@ class FirestoreService:
         batch_type: str = "synthetic",
         created_by_name: str = "",
         skew_preset: Optional[str] = None,
+        source_batch_ids: Optional[List[str]] = None,
     ) -> BatchInDB:
         """Create a new batch."""
         batch_id = str(uuid.uuid4())
@@ -186,6 +203,7 @@ class FirestoreService:
             "count": count,
             "skew_preset": skew_preset,
             "documents": [doc.model_dump() for doc in documents],
+            "source_batch_ids": source_batch_ids,
         }
 
         self.db.collection("batches").document(batch_id).set(batch_data)
@@ -203,6 +221,7 @@ class FirestoreService:
             data.setdefault("batch_type", "synthetic")
             data.setdefault("created_by_name", "")
             data.setdefault("skew_preset", None)
+            data.setdefault("source_batch_ids", None)
             return BatchInDB(**data)
         return None
 
@@ -218,8 +237,51 @@ class FirestoreService:
             data.setdefault("batch_type", "synthetic")
             data.setdefault("created_by_name", "")
             data.setdefault("skew_preset", None)
+            data.setdefault("source_batch_ids", None)
             batches.append(BatchInDB(**data))
         return batches
+
+    async def delete_batch(self, batch_id: str) -> bool:
+        """Delete a batch document."""
+        doc_ref = self.db.collection("batches").document(batch_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+        doc_ref.delete()
+        return True
+
+    async def append_documents_to_batch(
+        self, batch_id: str, new_documents: List[SyntheticDocument]
+    ) -> Optional[BatchInDB]:
+        """Append documents to an existing batch."""
+        doc_ref = self.db.collection("batches").document(batch_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return None
+        data = doc.to_dict()
+        existing_docs = data.get("documents", [])
+        existing_docs.extend([d.model_dump() for d in new_documents])
+        doc_ref.update({
+            "documents": existing_docs,
+            "count": len(existing_docs),
+        })
+        return await self.get_batch_by_id(batch_id)
+
+    async def remove_documents_from_batch(
+        self, batch_id: str, document_ids: List[str]
+    ) -> Optional[BatchInDB]:
+        """Remove specific documents from a batch."""
+        doc_ref = self.db.collection("batches").document(batch_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return None
+        data = doc.to_dict()
+        remaining = [d for d in data.get("documents", []) if d["id"] not in document_ids]
+        doc_ref.update({
+            "documents": remaining,
+            "count": len(remaining),
+        })
+        return await self.get_batch_by_id(batch_id)
 
     # ==================== Test Run Operations ====================
 
@@ -344,7 +406,8 @@ class FirestoreService:
         layout_results: Dict[str, Any],
         ocr_results: Dict[str, Any],
         extracted_fields: List[ExtractedField],
-        overall_accuracy: float
+        overall_accuracy: float,
+        classification_results: Optional[Dict[str, Any]] = None,
     ) -> ResultInDB:
         """Create a new result."""
         result_id = str(uuid.uuid4())
@@ -359,6 +422,8 @@ class FirestoreService:
             "overall_accuracy": overall_accuracy,
             "created_at": datetime.utcnow(),
         }
+        if classification_results is not None:
+            result_data["classification_results"] = classification_results
 
         self.db.collection("results").document(result_id).set(result_data)
 
@@ -374,6 +439,7 @@ class FirestoreService:
             data["extracted_fields"] = [
                 ExtractedField(**ef) for ef in data.get("extracted_fields", [])
             ]
+            data.setdefault("classification_results", None)
             results.append(ResultInDB(**data))
         return results
 
@@ -393,6 +459,7 @@ class FirestoreService:
             data["extracted_fields"] = [
                 ExtractedField(**ef) for ef in data.get("extracted_fields", [])
             ]
+            data.setdefault("classification_results", None)
             return ResultInDB(**data)
         return None
 
@@ -450,8 +517,36 @@ class FirestoreService:
             data["extracted_fields"] = [
                 ExtractedField(**ef) for ef in data.get("extracted_fields", [])
             ]
+            data.setdefault("classification_results", None)
             return ResultInDB(**data)
         return None
+
+    async def update_result_cleaned_text(
+        self, result_id: str, cleaned_text: str
+    ) -> bool:
+        """Update a result's ocr_results with cleaned text."""
+        doc_ref = self.db.collection("results").document(result_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        data = doc.to_dict()
+        ocr_results = data.get("ocr_results", {})
+        ocr_results["cleaned_text"] = cleaned_text
+        doc_ref.update({"ocr_results": ocr_results})
+        return True
+
+    async def update_result_classification(
+        self, result_id: str, classification_results: Dict[str, Any]
+    ) -> bool:
+        """Update a result with classification data."""
+        doc_ref = self.db.collection("results").document(result_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        doc_ref.update({"classification_results": classification_results})
+        return True
 
     # ==================== Layout Cache Operations ====================
 

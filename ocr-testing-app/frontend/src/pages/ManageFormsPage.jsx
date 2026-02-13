@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { formsAPI } from '../services/api'
 
 function ManageFormsPage() {
   const [showUpload, setShowUpload] = useState(false)
   const [selectedForm, setSelectedForm] = useState(null)
+  const [templateWordsForm, setTemplateWordsForm] = useState(null)
   const [formName, setFormName] = useState('')
   const [formType, setFormType] = useState('empty')
   const [file, setFile] = useState(null)
@@ -264,12 +265,23 @@ function ManageFormsPage() {
                   Delete
                 </button>
               </div>
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex gap-2 flex-wrap">
                 <button
                   onClick={() => setSelectedForm(form)}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Preview
+                </button>
+                <button
+                  onClick={() => setTemplateWordsForm(form)}
+                  className="text-sm text-orange-600 hover:underline"
+                >
+                  Template Words
+                  {form.template_words?.length > 0 && (
+                    <span className="ml-1 text-xs text-orange-500">
+                      ({form.template_words.length})
+                    </span>
+                  )}
                 </button>
                 <a
                   href={`/synthetic?formId=${form.id}`}
@@ -302,6 +314,15 @@ function ManageFormsPage() {
           onClose={() => setSelectedForm(null)}
         />
       )}
+
+      {/* Template Words Modal */}
+      {templateWordsForm && (
+        <TemplateWordsModal
+          form={templateWordsForm}
+          onClose={() => setTemplateWordsForm(null)}
+          onSaved={() => queryClient.invalidateQueries(['forms'])}
+        />
+      )}
     </div>
   )
 }
@@ -332,6 +353,97 @@ function FormPreviewModal({ form, onClose }) {
           />
         ) : (
           <p className="text-gray-500">Loading preview...</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function TemplateWordsModal({ form, onClose, onSaved }) {
+  const [wordsText, setWordsText] = useState('')
+  const [loaded, setLoaded] = useState(false)
+
+  // Load existing template words
+  const { data: templateData } = useQuery({
+    queryKey: ['template-words', form.id],
+    queryFn: () => formsAPI.getTemplateWords(form.id),
+  })
+
+  useEffect(() => {
+    if (templateData?.data?.template_words && !loaded) {
+      setWordsText(templateData.data.template_words.join('\n'))
+      setLoaded(true)
+    }
+  }, [templateData, loaded])
+
+  const saveMutation = useMutation({
+    mutationFn: () => {
+      const words = wordsText
+        .split('\n')
+        .map((w) => w.trim())
+        .filter((w) => w.length > 0)
+      return formsAPI.updateTemplateWords(form.id, words)
+    },
+    onSuccess: () => {
+      onSaved()
+      onClose()
+    },
+  })
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">
+            Template Words - {form.name}
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            Close
+          </button>
+        </div>
+
+        <p className="text-sm text-gray-600 mb-3">
+          Enter known template text (one word or phrase per line). These are
+          static labels printed on the blank form (e.g. "DEFENDANT:",
+          "CASE NO:", "____"). During OCR processing, this text will be
+          removed to isolate human-added content.
+        </p>
+
+        <textarea
+          value={wordsText}
+          onChange={(e) => setWordsText(e.target.value)}
+          rows={15}
+          className="w-full px-3 py-2 border rounded-md font-mono text-sm"
+          placeholder={"DEFENDANT:\nCASE NO:\nCOUNTY OF\n____________\nDate:"}
+        />
+
+        <p className="text-xs text-gray-400 mt-1">
+          {wordsText.split('\n').filter((w) => w.trim()).length} words/phrases
+        </p>
+
+        <div className="flex justify-end gap-3 mt-4">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border rounded-md hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => saveMutation.mutate()}
+            disabled={saveMutation.isPending}
+            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50"
+          >
+            {saveMutation.isPending ? 'Saving...' : 'Save Template Words'}
+          </button>
+        </div>
+
+        {saveMutation.isError && (
+          <p className="text-red-600 text-sm mt-2">
+            {saveMutation.error?.response?.data?.detail || 'Save failed'}
+          </p>
         )}
       </div>
     </div>

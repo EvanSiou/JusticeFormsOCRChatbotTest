@@ -39,6 +39,7 @@ class BatchInDB(BatchBase):
     count: int
     skew_preset: Optional[str] = None
     documents: List[SyntheticDocument] = []
+    source_batch_ids: Optional[List[str]] = None
 
 
 class BatchResponse(BatchInDB):
@@ -58,3 +59,19 @@ class GenerateBatchRequest(BaseModel):
     count: int = 10
     field_value_options: Optional[Dict[str, List[str]]] = None
     skew_preset: Optional[str] = None
+
+
+class MergeBatchesRequest(BaseModel):
+    """Request to merge multiple batches into a new one."""
+    source_batch_ids: List[str]
+
+
+class AppendDocumentsRequest(BaseModel):
+    """Request to copy documents from one batch to a target batch."""
+    source_batch_id: str
+    document_ids: List[str]
+
+
+class RemoveDocumentsRequest(BaseModel):
+    """Request to remove specific documents from a batch."""
+    document_ids: List[str]

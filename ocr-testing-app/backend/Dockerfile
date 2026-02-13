@@ -31,8 +31,9 @@ RUN python -c "import os; os.environ['PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK']='T
 # EasyOCR English models (detector + recognizer)
 RUN python -c "import easyocr; easyocr.Reader(['en'], gpu=False, verbose=False)"
 
-# Surya OCR models (Foundation + Recognition predictors)
-RUN python -c "from surya.recognition import RecognitionPredictor, FoundationPredictor; fp = FoundationPredictor(); RecognitionPredictor(fp)"
+# Surya OCR models (Foundation + Recognition predictors + Layout predictor)
+RUN python -c "from surya.recognition import RecognitionPredictor; from surya.foundation import FoundationPredictor; fp = FoundationPredictor(); RecognitionPredictor(fp)"
+RUN python -c "from surya.foundation import FoundationPredictor; from surya.layout import LayoutPredictor; from surya.settings import settings; LayoutPredictor(FoundationPredictor(checkpoint=settings.LAYOUT_MODEL_CHECKPOINT))"
 
 # TrOCR handwritten model (~330MB)
 RUN python -c "from transformers import TrOCRProcessor, VisionEncoderDecoderModel; TrOCRProcessor.from_pretrained('microsoft/trocr-base-handwritten'); VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-base-handwritten')"
@@ -52,7 +53,7 @@ ENV PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK=True
 ENV PYTHONUNBUFFERED=1
 
 # Cache buster — change to force rebuild of code layer
-ARG CACHE_BUST=20260211v1
+ARG CACHE_BUST=20260212v3
 
 # Copy application code
 COPY . .
