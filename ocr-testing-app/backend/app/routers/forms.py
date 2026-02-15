@@ -3,7 +3,7 @@ Forms management routes.
 Supports both image (PNG/JPEG) and PDF form templates.
 """
 import io
-from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form, Query
 from fastapi.responses import Response
 from typing import List
 
@@ -71,6 +71,15 @@ async def upload_form(
         content_type=file.content_type
     )
 
+    # Detect page count for PDF forms
+    page_count = 1
+    if file.content_type == "application/pdf" and PYMUPDF_AVAILABLE:
+        file.file.seek(0)
+        pdf_bytes = file.file.read()
+        pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        page_count = len(pdf_doc)
+        pdf_doc.close()
+
     # Create form record in Firestore
     firestore = FirestoreService()
     user = await firestore.get_user_by_id(current_user_id)
@@ -82,6 +91,7 @@ async def upload_form(
         uploaded_by=current_user_id,
         form_type=form_type,
         uploaded_by_name=uploaded_by_name,
+        page_count=page_count,
     )
 
     return FormResponse(**form.model_dump())
@@ -108,10 +118,11 @@ async def get_form(
 @router.get("/{form_id}/image")
 async def get_form_image(
     form_id: str,
+    page: int = Query(0, ge=0, description="Page number (0-indexed) for PDF forms"),
     current_user_id: str = Depends(get_current_user_id)
 ):
-    """Get a signed URL to access the form image.
-    For PDF templates, converts page 1 to PNG and returns it directly.
+    """Get a form page as an image.
+    For PDF templates, converts the specified page to PNG and returns it directly.
     """
     firestore = FirestoreService()
     form = await firestore.get_form_by_id(form_id)
@@ -127,9 +138,15 @@ async def get_form_image(
         storage = StorageService()
         pdf_bytes = await storage.download_file(form.storage_path)
         pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-        page = pdf_doc[0]
+        if page >= len(pdf_doc):
+            pdf_doc.close()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Page {page} out of range (0-{len(pdf_doc)-1})"
+            )
+        page_obj = pdf_doc[page]
         mat = fitz.Matrix(2, 2)  # 2x scale
-        pix = page.get_pixmap(matrix=mat)
+        pix = page_obj.get_pixmap(matrix=mat)
         png_bytes = pix.tobytes("png")
         pdf_doc.close()
         return Response(content=png_bytes, media_type="image/png")
@@ -137,6 +154,45 @@ async def get_form_image(
     storage = StorageService()
     signed_url = await storage.get_signed_url(form.storage_path)
     return {"url": signed_url}
+
+
+@router.get("/{form_id}/download")
+async def download_form(
+    form_id: str,
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """Download the original form file."""
+    firestore = FirestoreService()
+    form = await firestore.get_form_by_id(form_id)
+
+    if not form:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Form not found"
+        )
+
+    storage = StorageService()
+    file_bytes = await storage.download_file(form.storage_path)
+
+    # Determine content type and filename from storage path
+    path_lower = form.storage_path.lower()
+    if path_lower.endswith('.pdf'):
+        media_type = "application/pdf"
+        ext = ".pdf"
+    elif path_lower.endswith('.png'):
+        media_type = "image/png"
+        ext = ".png"
+    else:
+        media_type = "image/jpeg"
+        ext = ".jpg"
+
+    filename = f"{form.name}{ext}"
+
+    return Response(
+        content=file_bytes,
+        media_type=media_type,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/{form_id}/config")

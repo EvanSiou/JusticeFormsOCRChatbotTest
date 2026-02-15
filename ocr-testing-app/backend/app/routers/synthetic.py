@@ -2,7 +2,7 @@
 Synthetic data generation routes.
 """
 import uuid
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from fastapi.responses import Response
 
 try:
@@ -62,8 +62,11 @@ async def generate_batch(
         storage = StorageService()
         simulator = ScanSimulatorService()
 
-        # Download original image (convert PDF to PNG if needed)
+        # Download original form
         base_image_bytes = await storage.download_file(form.storage_path)
+
+        # Convert PDF pages to individual PNG images
+        page_images_bytes = []
         if form.storage_path.lower().endswith('.pdf'):
             if not PYMUPDF_AVAILABLE:
                 raise HTTPException(
@@ -71,28 +74,50 @@ async def generate_batch(
                     detail="PyMuPDF is required to process PDF forms"
                 )
             pdf_doc = fitz.open(stream=base_image_bytes, filetype="pdf")
-            page = pdf_doc[0]
-            mat = fitz.Matrix(2, 2)  # 2x scale for quality
-            pix = page.get_pixmap(matrix=mat)
-            base_image_bytes = pix.tobytes("png")
+            for page_idx in range(len(pdf_doc)):
+                page = pdf_doc[page_idx]
+                mat = fitz.Matrix(2, 2)  # 2x scale for quality
+                pix = page.get_pixmap(matrix=mat)
+                page_images_bytes.append(pix.tobytes("png"))
             pdf_doc.close()
+        else:
+            page_images_bytes = [base_image_bytes]
 
         preset = request.skew_preset or "medium"
         batch_uuid = str(uuid.uuid4())
         documents = []
+        is_multipage = len(page_images_bytes) > 1
 
         for i in range(request.count):
             doc_id = str(uuid.uuid4())
 
-            # Generate skewed copy
-            skewed_bytes = simulator.generate_skewed_copy(
-                base_image_bytes, preset=preset
-            )
+            if is_multipage:
+                # Multi-page: skew each page, reassemble into PDF
+                skewed_pages = []
+                for pg_bytes in page_images_bytes:
+                    skewed_pg = simulator.generate_skewed_copy(pg_bytes, preset=preset)
+                    skewed_pages.append(skewed_pg)
+
+                # Reassemble into multi-page PDF
+                pdf_out = fitz.open()
+                for sp_bytes in skewed_pages:
+                    img_pdf = fitz.open(stream=sp_bytes, filetype="png")
+                    pdf_out.insert_pdf(img_pdf)
+                    img_pdf.close()
+                final_bytes = pdf_out.tobytes()
+                pdf_out.close()
+                ext = "pdf"
+            else:
+                # Single page: skew directly
+                final_bytes = simulator.generate_skewed_copy(
+                    page_images_bytes[0], preset=preset
+                )
+                ext = "png"
 
             # Upload to storage
             storage_path = await storage.upload_bytes(
-                data=skewed_bytes,
-                blob_name=f"batches/{batch_uuid}/{doc_id}.png"
+                data=final_bytes,
+                blob_name=f"batches/{batch_uuid}/{doc_id}.{ext}"
             )
 
             documents.append(SyntheticDocument(
@@ -389,9 +414,11 @@ async def get_batch(
 async def get_document_image(
     batch_id: str,
     document_id: str,
+    page: int = Query(0, ge=0, description="Page number (0-indexed) for multi-page documents"),
     current_user_id: str = Depends(get_current_user_id)
 ):
-    """Proxy the document image bytes (avoids signed URL issues on Cloud Run)."""
+    """Proxy the document image bytes (avoids signed URL issues on Cloud Run).
+    For multi-page PDF documents, converts the requested page to PNG."""
     firestore = FirestoreService()
     batch = await firestore.get_batch_by_id(batch_id)
 
@@ -415,5 +442,22 @@ async def get_document_image(
         )
 
     storage = StorageService()
-    image_bytes = await storage.download_file(document.storage_path)
-    return Response(content=image_bytes, media_type="image/png")
+    file_bytes = await storage.download_file(document.storage_path)
+
+    # If it's a PDF, convert the requested page to PNG
+    if document.storage_path.lower().endswith('.pdf') and PYMUPDF_AVAILABLE:
+        pdf_doc = fitz.open(stream=file_bytes, filetype="pdf")
+        if page >= len(pdf_doc):
+            pdf_doc.close()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Page {page} out of range (0-{len(pdf_doc)-1})"
+            )
+        page_obj = pdf_doc[page]
+        mat = fitz.Matrix(2, 2)
+        pix = page_obj.get_pixmap(matrix=mat)
+        png_bytes = pix.tobytes("png")
+        pdf_doc.close()
+        return Response(content=png_bytes, media_type="image/png")
+
+    return Response(content=file_bytes, media_type="image/png")

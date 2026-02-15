@@ -1,10 +1,12 @@
 """
-Claude field classifier implementation (direct Anthropic API).
+Vertex AI field classifier implementation.
 
-Uses Claude's vision and text capabilities to classify fields in OCR text.
-Same interface as BedrockFieldClassifier but calls Anthropic directly.
+Uses Google Cloud Vertex AI for vision model field classification.
+Supports Llama and Gemini models via Vertex AI's OpenAI-compatible API.
+Same interface as BedrockFieldClassifier and OpenAIFieldClassifier.
 """
 import io
+import os
 import json
 import base64
 import logging
@@ -12,6 +14,12 @@ from typing import List, Optional
 from PIL import Image
 
 logger = logging.getLogger(__name__)
+
+# Model registry: engine_name -> Vertex AI model ID
+VERTEX_MODELS = {
+    "llama4_maverick_vertex": "meta/llama-4-maverick-17b-128e-instruct-maas",
+    "llama4_scout_vertex": "meta/llama-4-scout-17b-16e-instruct-maas",
+}
 
 DEFAULT_FIELD_TYPES = [
     "defendant_name",
@@ -24,18 +32,48 @@ DEFAULT_FIELD_TYPES = [
 ]
 
 
-class ClaudeFieldClassifier:
-    """Post-OCR field classification using Claude (direct Anthropic API)."""
+class VertexFieldClassifier:
+    """Post-OCR field classification using Vertex AI models."""
 
-    _client = None
+    _clients = {}
+
+    def __init__(self, model_name: str = "llama4_maverick_vertex"):
+        if model_name not in VERTEX_MODELS:
+            raise ValueError(
+                f"Unknown Vertex AI classifier model: {model_name}. "
+                f"Available: {list(VERTEX_MODELS.keys())}"
+            )
+        self._model_name = model_name
+        self._model_id = VERTEX_MODELS[model_name]
 
     def _get_client(self):
-        """Lazy-init the Anthropic client."""
-        if ClaudeFieldClassifier._client is None:
-            import anthropic
+        """Lazy-init the Vertex AI client via OpenAI-compatible endpoint."""
+        project = os.environ.get("GCP_PROJECT_ID", "")
+        region = os.environ.get("VERTEX_AI_REGION", "us-central1")
+        key = f"{project}:{region}"
 
-            ClaudeFieldClassifier._client = anthropic.Anthropic()
-        return ClaudeFieldClassifier._client
+        if key not in VertexFieldClassifier._clients:
+            from openai import OpenAI
+
+            base_url = f"https://{region}-aiplatform.googleapis.com/v1/projects/{project}/locations/{region}/endpoints/openapi"
+
+            import google.auth
+            import google.auth.transport.requests
+
+            credentials, _ = google.auth.default()
+            credentials.refresh(google.auth.transport.requests.Request())
+            token = credentials.token
+
+            logger.info(
+                f"Initializing Vertex AI classifier client in {region} "
+                f"for project {project} (model: {self._model_id})"
+            )
+
+            VertexFieldClassifier._clients[key] = OpenAI(
+                base_url=base_url,
+                api_key=token,
+            )
+        return VertexFieldClassifier._clients[key]
 
     def _resize_for_api(self, image: Image.Image) -> Image.Image:
         """Resize image to stay within API limits."""
@@ -46,7 +84,10 @@ class ClaudeFieldClassifier:
             new_w = int(w * scale)
             new_h = int(h * scale)
             image = image.resize((new_w, new_h), Image.LANCZOS)
-            logger.info(f"Resized image from {w}x{h} to {new_w}x{new_h} for Claude classification")
+            logger.info(
+                f"Resized image from {w}x{h} to {new_w}x{new_h} "
+                f"for classification ({self._model_name})"
+            )
         return image
 
     def classify_fields(
@@ -57,7 +98,7 @@ class ClaudeFieldClassifier:
         prompt_template: Optional[str] = None,
     ) -> dict:
         """
-        Classify fields in OCR text using Claude (Anthropic API).
+        Classify fields in OCR text using a Vertex AI vision model.
 
         Same interface as BedrockFieldClassifier.classify_fields().
         """
@@ -66,12 +107,12 @@ class ClaudeFieldClassifier:
         try:
             client = self._get_client()
         except Exception as e:
-            logger.error(f"Failed to initialize Anthropic client: {e}")
+            logger.error(f"Failed to initialize Vertex AI client: {e}")
             return {
                 "form_type": "error",
                 "classified_fields": [],
                 "field_types_used": types,
-                "error": f"Failed to initialize Anthropic client: {e}",
+                "error": f"Failed to initialize Vertex AI client: {e}",
             }
 
         content = []
@@ -83,31 +124,23 @@ class ClaudeFieldClassifier:
             image = self._resize_for_api(image)
 
             buffer = io.BytesIO()
-            image.save(buffer, format="PNG")
+            image.save(buffer, format="JPEG", quality=85)
             image_bytes = buffer.getvalue()
 
-            # Fall back to JPEG if too large
-            if len(image_bytes) > 3_500_000:
+            if len(image_bytes) > 5_000_000:
                 buffer = io.BytesIO()
-                image.save(buffer, format="JPEG", quality=85)
+                image.save(buffer, format="JPEG", quality=60)
                 image_bytes = buffer.getvalue()
-                media_type = "image/jpeg"
-            else:
-                media_type = "image/png"
 
-            base64_image = base64.b64encode(image_bytes).decode("utf-8")
+            b64_image = base64.b64encode(image_bytes).decode("utf-8")
             logger.info(
-                f"Classification image (claude_anthropic): "
+                f"Classification image ({self._model_name}): "
                 f"{image.width}x{image.height}, {len(image_bytes)} bytes"
             )
             content.append(
                 {
-                    "type": "image",
-                    "source": {
-                        "type": "base64",
-                        "media_type": media_type,
-                        "data": base64_image,
-                    },
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"},
                 }
             )
 
@@ -152,35 +185,35 @@ class ClaudeFieldClassifier:
         content.append({"type": "text", "text": prompt})
 
         logger.info(
-            f"Claude (Anthropic) classification request: "
+            f"Vertex AI classification request ({self._model_name}): "
             f"{len(ocr_text)} chars of text, "
             f"image={'yes' if image is not None else 'no'}, field_types={types}"
         )
 
         try:
-            message = client.messages.create(
-                model="claude-sonnet-4-5-20250929",
-                max_tokens=2048,
+            response = client.chat.completions.create(
+                model=self._model_id,
                 messages=[{"role": "user", "content": content}],
+                max_completion_tokens=2048,
             )
 
-            response_text = message.content[0].text.strip()
+            response_text = response.choices[0].message.content.strip()
 
         except Exception as e:
             logger.error(
-                f"Claude (Anthropic) classification error: "
+                f"Vertex AI classification error ({self._model_name}): "
                 f"{type(e).__name__}: {e}"
             )
             return {
                 "form_type": "error",
                 "classified_fields": [],
                 "field_types_used": types,
-                "error": f"Claude (Anthropic) API error: {type(e).__name__}: {e}",
+                "error": f"Vertex AI API error ({self._model_name}): {type(e).__name__}: {e}",
             }
 
         logger.info(
-            f"Claude (Anthropic) classification response "
-            f"({len(response_text)} chars): {response_text[:200]}"
+            f"Vertex AI classification response ({self._model_name}, "
+            f"{len(response_text)} chars): {response_text[:200]}"
         )
 
         if not response_text:
@@ -188,7 +221,7 @@ class ClaudeFieldClassifier:
                 "form_type": "error",
                 "classified_fields": [],
                 "field_types_used": types,
-                "error": "Claude (Anthropic) returned an empty response",
+                "error": f"Vertex AI ({self._model_name}) returned an empty response",
             }
 
         # Strip markdown code fences if present
@@ -209,7 +242,9 @@ class ClaudeFieldClassifier:
             return result
 
         except json.JSONDecodeError as e:
-            logger.error(f"Claude (Anthropic) classification returned invalid JSON: {e}")
+            logger.error(
+                f"Vertex AI classification returned invalid JSON ({self._model_name}): {e}"
+            )
             logger.error(f"Raw response was: {response_text[:500]}")
             return {
                 "form_type": "unknown",

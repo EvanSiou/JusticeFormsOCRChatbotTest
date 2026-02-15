@@ -272,54 +272,43 @@ function ViewDataPage() {
             <h3 className="font-semibold">Select Batches to Merge</h3>
             <span className="text-xs text-gray-500">Only batches with the same form are shown</span>
           </div>
-          <div className="max-h-[300px] overflow-y-auto border rounded">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="w-8 p-2"></th>
-                  <th className="text-left p-2">Batch</th>
-                  <th className="text-left p-2">Form</th>
-                  <th className="text-left p-2">Type</th>
-                  <th className="text-right p-2">Docs</th>
-                  <th className="text-left p-2">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {batches
-                  .filter(b => b.form_id === currentFormId)
-                  .map(batch => (
-                    <tr
-                      key={batch.id}
-                      onClick={() => toggleBatchSelection(batch.id)}
-                      className={`cursor-pointer border-t hover:bg-gray-50 ${
-                        selectedBatchIds.includes(batch.id) ? 'bg-blue-50' : ''
-                      }`}
-                    >
-                      <td className="p-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={selectedBatchIds.includes(batch.id)}
-                          onChange={() => toggleBatchSelection(batch.id)}
-                          className="rounded"
-                        />
-                      </td>
-                      <td className="p-2 font-medium">{batch.batch_number}</td>
-                      <td className="p-2 text-gray-600">{batch.form_name}</td>
-                      <td className="p-2">
-                        <span className={`px-1.5 py-0.5 rounded text-xs ${
-                          batch.batch_type === 'handwritten'
-                            ? 'bg-purple-100 text-purple-700'
-                            : 'bg-blue-100 text-blue-700'
-                        }`}>
-                          {batch.batch_type}
-                        </span>
-                      </td>
-                      <td className="p-2 text-right">{batch.count}</td>
-                      <td className="p-2 text-gray-500">{new Date(batch.created_at).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto">
+            {batches
+              .filter(b => b.form_id === currentFormId)
+              .map(batch => (
+                <div
+                  key={batch.id}
+                  onClick={() => toggleBatchSelection(batch.id)}
+                  className={`cursor-pointer rounded-lg border-2 p-3 transition-all hover:shadow-md ${
+                    selectedBatchIds.includes(batch.id)
+                      ? 'border-blue-500 bg-blue-50 shadow-sm'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-sm">{batch.batch_number}</h4>
+                      <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                        batch.batch_type === 'handwritten'
+                          ? 'bg-purple-100 text-purple-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {batch.batch_type === 'handwritten' ? 'Handwritten' : 'Synthetic'}
+                      </span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={selectedBatchIds.includes(batch.id)}
+                      onChange={() => toggleBatchSelection(batch.id)}
+                      className="rounded mt-0.5"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1 truncate">{batch.form_name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {batch.count} docs · {new Date(batch.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
           </div>
           <div className="flex items-center justify-between mt-3">
             <span className="text-sm text-gray-600">

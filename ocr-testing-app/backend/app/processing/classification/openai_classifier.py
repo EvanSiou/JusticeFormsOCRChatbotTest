@@ -1,10 +1,12 @@
 """
-Claude field classifier implementation (direct Anthropic API).
+OpenAI Vision field classifier implementation.
 
-Uses Claude's vision and text capabilities to classify fields in OCR text.
-Same interface as BedrockFieldClassifier but calls Anthropic directly.
+Uses OpenAI's GPT-5/GPT-5-mini for field classification.
+Single parameterized class for multiple model variants.
+Same prompt structure as ClaudeFieldClassifier and LlamaFieldClassifier.
 """
 import io
+import os
 import json
 import base64
 import logging
@@ -12,6 +14,12 @@ from typing import List, Optional
 from PIL import Image
 
 logger = logging.getLogger(__name__)
+
+# Model ID mapping
+OPENAI_MODELS = {
+    "gpt5": "gpt-5",
+    "gpt5_mini": "gpt-5-mini",
+}
 
 DEFAULT_FIELD_TYPES = [
     "defendant_name",
@@ -24,18 +32,26 @@ DEFAULT_FIELD_TYPES = [
 ]
 
 
-class ClaudeFieldClassifier:
-    """Post-OCR field classification using Claude (direct Anthropic API)."""
+class OpenAIFieldClassifier:
+    """Post-OCR field classification using OpenAI Vision models."""
 
     _client = None
 
-    def _get_client(self):
-        """Lazy-init the Anthropic client."""
-        if ClaudeFieldClassifier._client is None:
-            import anthropic
+    def __init__(self, model_key: str = "gpt5"):
+        self._model_key = model_key
+        self._model_id = OPENAI_MODELS.get(model_key, "gpt-5")
 
-            ClaudeFieldClassifier._client = anthropic.Anthropic()
-        return ClaudeFieldClassifier._client
+    def _get_client(self):
+        """Lazy-init the OpenAI client."""
+        if OpenAIFieldClassifier._client is None:
+            from openai import OpenAI
+
+            api_key = os.environ.get("OPENAI_API_KEY", "")
+            if not api_key:
+                raise RuntimeError("OPENAI_API_KEY is not set")
+
+            OpenAIFieldClassifier._client = OpenAI(api_key=api_key)
+        return OpenAIFieldClassifier._client
 
     def _resize_for_api(self, image: Image.Image) -> Image.Image:
         """Resize image to stay within API limits."""
@@ -46,7 +62,7 @@ class ClaudeFieldClassifier:
             new_w = int(w * scale)
             new_h = int(h * scale)
             image = image.resize((new_w, new_h), Image.LANCZOS)
-            logger.info(f"Resized image from {w}x{h} to {new_w}x{new_h} for Claude classification")
+            logger.info(f"Resized image from {w}x{h} to {new_w}x{new_h} for classification")
         return image
 
     def classify_fields(
@@ -57,66 +73,51 @@ class ClaudeFieldClassifier:
         prompt_template: Optional[str] = None,
     ) -> dict:
         """
-        Classify fields in OCR text using Claude (Anthropic API).
+        Classify fields in OCR text using OpenAI Vision.
 
-        Same interface as BedrockFieldClassifier.classify_fields().
+        Same interface as ClaudeFieldClassifier.classify_fields().
         """
         types = field_types if field_types else DEFAULT_FIELD_TYPES
 
         try:
             client = self._get_client()
         except Exception as e:
-            logger.error(f"Failed to initialize Anthropic client: {e}")
+            logger.error(f"Failed to initialize OpenAI client: {e}")
             return {
                 "form_type": "error",
                 "classified_fields": [],
                 "field_types_used": types,
-                "error": f"Failed to initialize Anthropic client: {e}",
+                "error": f"Failed to initialize OpenAI client: {e}",
             }
 
         content = []
 
         # Include image if provided for visual context
         if image is not None:
-            if image.mode != "RGB":
-                image = image.convert("RGB")
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
             image = self._resize_for_api(image)
 
             buffer = io.BytesIO()
-            image.save(buffer, format="PNG")
+            image.save(buffer, format='JPEG', quality=85)
             image_bytes = buffer.getvalue()
 
-            # Fall back to JPEG if too large
-            if len(image_bytes) > 3_500_000:
+            if len(image_bytes) > 5_000_000:
                 buffer = io.BytesIO()
-                image.save(buffer, format="JPEG", quality=85)
+                image.save(buffer, format='JPEG', quality=60)
                 image_bytes = buffer.getvalue()
-                media_type = "image/jpeg"
-            else:
-                media_type = "image/png"
 
-            base64_image = base64.b64encode(image_bytes).decode("utf-8")
-            logger.info(
-                f"Classification image (claude_anthropic): "
-                f"{image.width}x{image.height}, {len(image_bytes)} bytes"
-            )
-            content.append(
-                {
-                    "type": "image",
-                    "source": {
-                        "type": "base64",
-                        "media_type": media_type,
-                        "data": base64_image,
-                    },
-                }
-            )
+            b64_image = base64.b64encode(image_bytes).decode('utf-8')
+            logger.info(f"Classification image: {image.width}x{image.height}, {len(image_bytes)} bytes")
+            content.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"},
+            })
 
         types_list = "\n".join(f"- {t}" for t in types)
 
         if prompt_template:
-            prompt = prompt_template.replace("{field_types}", types_list).replace(
-                "{ocr_text}", ocr_text
-            )
+            prompt = prompt_template.replace("{field_types}", types_list).replace("{ocr_text}", ocr_text)
         else:
             prompt = (
                 "You are analyzing a court form document. "
@@ -152,43 +153,37 @@ class ClaudeFieldClassifier:
         content.append({"type": "text", "text": prompt})
 
         logger.info(
-            f"Claude (Anthropic) classification request: "
-            f"{len(ocr_text)} chars of text, "
-            f"image={'yes' if image is not None else 'no'}, field_types={types}"
+            f"OpenAI classification request ({self._model_id}): "
+            f"{len(ocr_text)} chars of text, image={'yes' if image is not None else 'no'}, "
+            f"field_types={types}"
         )
 
         try:
-            message = client.messages.create(
-                model="claude-sonnet-4-5-20250929",
-                max_tokens=2048,
+            response = client.chat.completions.create(
+                model=self._model_id,
                 messages=[{"role": "user", "content": content}],
+                max_completion_tokens=2048,
             )
-
-            response_text = message.content[0].text.strip()
+            response_text = response.choices[0].message.content.strip()
 
         except Exception as e:
-            logger.error(
-                f"Claude (Anthropic) classification error: "
-                f"{type(e).__name__}: {e}"
-            )
+            logger.error(f"OpenAI classification API error ({self._model_id}): {type(e).__name__}: {e}")
             return {
                 "form_type": "error",
                 "classified_fields": [],
                 "field_types_used": types,
-                "error": f"Claude (Anthropic) API error: {type(e).__name__}: {e}",
+                "error": f"OpenAI API error: {type(e).__name__}: {e}",
             }
 
-        logger.info(
-            f"Claude (Anthropic) classification response "
-            f"({len(response_text)} chars): {response_text[:200]}"
-        )
+        logger.info(f"OpenAI classification response ({len(response_text)} chars): {response_text[:200]}")
 
         if not response_text:
+            logger.error("OpenAI returned empty response for classification")
             return {
                 "form_type": "error",
                 "classified_fields": [],
                 "field_types_used": types,
-                "error": "Claude (Anthropic) returned an empty response",
+                "error": "OpenAI returned an empty response",
             }
 
         # Strip markdown code fences if present
@@ -209,7 +204,7 @@ class ClaudeFieldClassifier:
             return result
 
         except json.JSONDecodeError as e:
-            logger.error(f"Claude (Anthropic) classification returned invalid JSON: {e}")
+            logger.error(f"OpenAI classification returned invalid JSON: {e}")
             logger.error(f"Raw response was: {response_text[:500]}")
             return {
                 "form_type": "unknown",

@@ -50,6 +50,7 @@ function MatrixSection({ matrixData, isLoading }) {
     field: '',
     testRun: '',
     document: '',
+    prompt: '',
   })
 
   const availableFilters = matrixData?.data?.filters || {}
@@ -65,6 +66,7 @@ function MatrixSection({ matrixData, isLoading }) {
       if (filters.batchType && r.batch_type !== filters.batchType) return false
       if (filters.testRun && r.test_run_id !== filters.testRun) return false
       if (filters.document && r.document_id !== filters.document) return false
+      if (filters.prompt && (r.ocr_prompt_id || '') !== filters.prompt) return false
       return true
     })
   }, [rows, filters])
@@ -114,7 +116,7 @@ function MatrixSection({ matrixData, isLoading }) {
   }, [filteredRows, filters.field])
 
   const clearFilters = () =>
-    setFilters({ user: '', date: '', batch: '', batchJob: '', batchType: '', field: '', testRun: '', document: '' })
+    setFilters({ user: '', date: '', batch: '', batchJob: '', batchType: '', field: '', testRun: '', document: '', prompt: '' })
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length
 
@@ -256,6 +258,21 @@ function MatrixSection({ matrixData, isLoading }) {
             ))}
           </select>
         </div>
+        {availableFilters.prompts?.length > 0 && (
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Prompt</label>
+            <select
+              value={filters.prompt}
+              onChange={(e) => setFilters((f) => ({ ...f, prompt: e.target.value }))}
+              className="w-full text-sm border rounded px-2 py-1.5"
+            >
+              <option value="">All prompts</option>
+              {availableFilters.prompts?.map((p) => (
+                <option key={p.id} value={p.id}>{p.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       <p className="text-xs text-gray-400 mb-4">
@@ -368,6 +385,194 @@ function MatrixSection({ matrixData, isLoading }) {
   )
 }
 
+// ─── Classification Matrix Section ────────────────────────
+function ClassificationMatrixSection({ classMatrixData, isLoading }) {
+  const [filters, setFilters] = useState({ user: '', date: '', classifierModel: '', prompt: '' })
+
+  const availableFilters = classMatrixData?.data?.filters || {}
+  const rows = classMatrixData?.data?.rows || []
+
+  const filteredRows = useMemo(() => {
+    return rows.filter((r) => {
+      if (filters.user && r.user !== filters.user) return false
+      if (filters.date && r.date !== filters.date) return false
+      if (filters.classifierModel && r.classifier_model !== filters.classifierModel) return false
+      if (filters.prompt && (r.prompt_id || '') !== filters.prompt) return false
+      return true
+    })
+  }, [rows, filters])
+
+  // Aggregate by classifier model
+  const modelStats = useMemo(() => {
+    const stats = {}
+    for (const row of filteredRows) {
+      const model = row.classifier_model
+      if (!stats[model]) stats[model] = { total: 0, verified: 0, accSum: 0, accCount: 0 }
+      stats[model].total += 1
+      if (row.is_verified) {
+        stats[model].verified += 1
+        if (row.classification_verified_accuracy != null) {
+          stats[model].accSum += row.classification_verified_accuracy
+          stats[model].accCount += 1
+        }
+      }
+    }
+    return stats
+  }, [filteredRows])
+
+  const modelNames = Object.keys(modelStats).sort()
+
+  const MODEL_LABELS = {
+    claude_bedrock: 'Claude Sonnet 4.5',
+    claude_haiku_bedrock: 'Claude Haiku 4.5',
+    nova_pro: 'Nova Pro',
+    nova_lite: 'Nova Lite',
+    pixtral_large: 'Pixtral Large',
+    llama4_maverick_bedrock: 'Llama 4 Maverick',
+    llama4_scout: 'Llama 4 Scout',
+    gpt5: 'GPT-5',
+    gpt5_mini: 'GPT-5 mini',
+    // Legacy names for old test runs
+    claude: 'Claude Sonnet 4.5',
+    llama4_maverick: 'Llama 4 Maverick',
+    mistral_medium3: 'Mistral Medium 3',
+  }
+
+  const clearFilters = () => setFilters({ user: '', date: '', classifierModel: '', prompt: '' })
+  const activeFilterCount = Object.values(filters).filter(Boolean).length
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4">Classification Accuracy</h3>
+        <p className="text-gray-500">Loading classification data...</p>
+      </div>
+    )
+  }
+
+  if (rows.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4">Classification Accuracy</h3>
+        <p className="text-gray-500">No classification results yet. Run classification on documents to see accuracy by model.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Classification Accuracy</h3>
+        {activeFilterCount > 0 && (
+          <button onClick={clearFilters} className="text-sm text-blue-600 hover:text-blue-800">
+            Clear filters ({activeFilterCount})
+          </button>
+        )}
+      </div>
+
+      {/* Filters */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">User</label>
+          <select
+            value={filters.user}
+            onChange={(e) => setFilters(f => ({ ...f, user: e.target.value }))}
+            className="w-full text-sm border rounded px-2 py-1.5"
+          >
+            <option value="">All users</option>
+            {availableFilters.users?.map(u => (
+              <option key={u} value={u}>{u}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
+          <select
+            value={filters.date}
+            onChange={(e) => setFilters(f => ({ ...f, date: e.target.value }))}
+            className="w-full text-sm border rounded px-2 py-1.5"
+          >
+            <option value="">All dates</option>
+            {availableFilters.dates?.map(d => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Model</label>
+          <select
+            value={filters.classifierModel}
+            onChange={(e) => setFilters(f => ({ ...f, classifierModel: e.target.value }))}
+            className="w-full text-sm border rounded px-2 py-1.5"
+          >
+            <option value="">All models</option>
+            {availableFilters.classifier_models?.map(m => (
+              <option key={m} value={m}>{MODEL_LABELS[m] || m}</option>
+            ))}
+          </select>
+        </div>
+        {availableFilters.prompts?.length > 0 && (
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Prompt</label>
+            <select
+              value={filters.prompt}
+              onChange={(e) => setFilters(f => ({ ...f, prompt: e.target.value }))}
+              className="w-full text-sm border rounded px-2 py-1.5"
+            >
+              <option value="">All prompts</option>
+              {availableFilters.prompts?.map(p => (
+                <option key={p.id} value={p.id}>{p.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+
+      <p className="text-xs text-gray-400 mb-4">
+        Showing {filteredRows.length} classified document{filteredRows.length !== 1 ? 's' : ''} across {modelNames.length} model{modelNames.length !== 1 ? 's' : ''}
+      </p>
+
+      {modelNames.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr>
+                <th className="border px-3 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500">Classifier Model</th>
+                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Avg Accuracy</th>
+                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Verified</th>
+                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Total Classified</th>
+              </tr>
+            </thead>
+            <tbody>
+              {modelNames.map(model => {
+                const s = modelStats[model]
+                const avg = s.accCount > 0 ? s.accSum / s.accCount : null
+                return (
+                  <tr key={model}>
+                    <td className="border px-3 py-2 font-medium text-gray-700 bg-gray-50 text-xs">
+                      {MODEL_LABELS[model] || model}
+                    </td>
+                    <td className={`border px-3 py-2 text-center font-semibold text-sm ${
+                      avg != null ? accuracyColor(avg) : 'text-gray-300'
+                    }`}>
+                      {avg != null ? `${(avg * 100).toFixed(1)}%` : '-'}
+                      {s.accCount > 0 && <div className="text-[10px] font-normal opacity-60">n={s.accCount}</div>}
+                    </td>
+                    <td className="border px-3 py-2 text-center text-sm">{s.verified}</td>
+                    <td className="border px-3 py-2 text-center text-sm">{s.total}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-gray-500">No data matches the current filters.</p>
+      )}
+    </div>
+  )
+}
+
 // ─── Main Page ────────────────────────────────────────────
 function MetricsPage() {
   // Fetch matrix data
@@ -386,6 +591,12 @@ function MetricsPage() {
   const { data: fieldData } = useQuery({
     queryKey: ['metrics-by-field'],
     queryFn: () => metricsAPI.getByField(),
+  })
+
+  // Fetch classification matrix
+  const { data: classMatrixData, isLoading: classMatrixLoading } = useQuery({
+    queryKey: ['metrics-classification-matrix'],
+    queryFn: () => metricsAPI.getClassificationMatrix(),
   })
 
   const handleExport = async (format) => {
@@ -436,6 +647,9 @@ function MetricsPage() {
 
       {/* Layout x OCR Matrices — at the top */}
       <MatrixSection matrixData={matrixData} isLoading={matrixLoading} />
+
+      {/* Classification Accuracy by Model */}
+      <ClassificationMatrixSection classMatrixData={classMatrixData} isLoading={classMatrixLoading} />
 
       {/* Aggregate Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">

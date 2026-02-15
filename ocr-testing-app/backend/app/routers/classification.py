@@ -150,45 +150,29 @@ async def run_classification(
             detail="Result not found",
         )
 
-    # Build text to classify from important/verified content
-    is_handwritten = (
-        not result.extracted_fields
-        and result.ocr_results
-        and result.ocr_results.get("full_text") is not None
-    )
+    # Always use full OCR text + cleaned text if available
+    full_text = result.ocr_results.get("full_text", "")
+    cleaned_text = result.ocr_results.get("cleaned_text", "")
 
-    important_text_parts = []
-    if is_handwritten:
-        text_regions = result.ocr_results.get("text_regions", [])
-        for region in text_regions:
-            if region.get("is_important"):
-                text = region.get("corrected_value") or region.get("text", "")
-                if text:
-                    important_text_parts.append(text)
+    # Prefer cleaned text if available and requested, otherwise use full text
+    text_source = "none"
+    if request.use_cleaned_text and cleaned_text.strip():
+        classify_text = cleaned_text
+        text_source = "cleaned"
+    elif full_text.strip():
+        classify_text = full_text
+        text_source = "full"
     else:
-        for ef in result.extracted_fields:
-            if ef.is_important:
-                value = ef.corrected_value or ef.extracted_value
-                if value:
-                    important_text_parts.append(value)
-
-    important_text = "\n".join(important_text_parts)
-
-    # Choose text source
-    if request.use_cleaned_text and result.ocr_results.get("cleaned_text"):
-        classify_text = result.ocr_results["cleaned_text"]
-    elif important_text:
-        classify_text = important_text
-    else:
-        classify_text = result.ocr_results.get("full_text", "")
+        classify_text = ""
+        text_source = "none"
 
     if not classify_text.strip():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No text available for classification. Verify the document first.",
+            detail="No OCR text available for classification. Run OCR first.",
         )
 
-    # Load document image
+    # Always load document image for visual context
     batch = await firestore.get_batch_by_id(result.batch_id)
     doc_image = None
     if batch:
@@ -197,18 +181,63 @@ async def run_classification(
                 try:
                     image_bytes = await storage.download_file(doc.storage_path)
                     doc_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-                except Exception:
-                    pass
+                except Exception as img_err:
+                    import logging
+                    logging.getLogger(__name__).error(f"Failed to load image: {img_err}")
                 break
 
-    # Run classification
-    from app.processing.classification.claude_classifier import ClaudeFieldClassifier
-    classifier = ClaudeFieldClassifier()
+    # Run classification with selected model
+    BEDROCK_CLASSIFIERS = {
+        "claude_bedrock", "claude_haiku_bedrock",
+        "nova_pro", "nova_lite",
+        "pixtral_large",
+        "llama4_maverick_bedrock", "llama4_scout",
+    }
+
+    VERTEX_CLASSIFIERS = {
+        "llama4_maverick_vertex", "llama4_scout_vertex",
+    }
+
+    if request.classifier_model == "claude":
+        from app.processing.classification.claude_classifier import ClaudeFieldClassifier
+        classifier = ClaudeFieldClassifier()
+    elif request.classifier_model in BEDROCK_CLASSIFIERS:
+        from app.processing.classification.bedrock_classifier import BedrockFieldClassifier
+        classifier = BedrockFieldClassifier(request.classifier_model)
+    elif request.classifier_model in VERTEX_CLASSIFIERS:
+        from app.processing.classification.vertex_classifier import VertexFieldClassifier
+        classifier = VertexFieldClassifier(request.classifier_model)
+    elif request.classifier_model in ("gpt5", "gpt5_mini"):
+        from app.processing.classification.openai_classifier import OpenAIFieldClassifier
+        classifier = OpenAIFieldClassifier(request.classifier_model)
+    else:
+        # Default to Claude via Anthropic API
+        from app.processing.classification.claude_classifier import ClaudeFieldClassifier
+        classifier = ClaudeFieldClassifier()
+
+    # Resolve classification prompt if provided
+    prompt_template = None
+    prompt_name = None
+    if request.prompt_id and request.prompt_id != "default":
+        prompt_doc = await firestore.get_prompt(request.prompt_id)
+        if prompt_doc:
+            prompt_template = prompt_doc.prompt_text
+            prompt_name = prompt_doc.name
+
     classification_result = classifier.classify_fields(
         ocr_text=classify_text,
         image=doc_image,
         field_types=request.field_types,
+        prompt_template=prompt_template,
     )
+
+    # Include metadata about what was sent
+    classification_result["text_source"] = text_source
+    classification_result["text_sent"] = classify_text
+    classification_result["classifier_model"] = request.classifier_model
+    if request.prompt_id and request.prompt_id != "default":
+        classification_result["prompt_id"] = request.prompt_id
+        classification_result["prompt_name"] = prompt_name
 
     return classification_result
 

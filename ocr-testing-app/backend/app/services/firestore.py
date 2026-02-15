@@ -15,6 +15,7 @@ from app.models.form import FormInDB, FieldMapping
 from app.models.batch import BatchInDB, SyntheticDocument
 from app.models.test_run import TestRunInDB, TestStatus, BatchJobInDB
 from app.models.result import ResultInDB, ExtractedField
+from app.models.prompt import PromptInDB, PromptType
 
 settings = get_settings()
 
@@ -83,7 +84,8 @@ class FirestoreService:
         uploaded_by: str,
         form_type: str = "empty",
         uploaded_by_name: str = "",
-        thumbnail_path: Optional[str] = None
+        thumbnail_path: Optional[str] = None,
+        page_count: int = 1,
     ) -> FormInDB:
         """Create a new form."""
         form_id = str(uuid.uuid4())
@@ -97,6 +99,7 @@ class FirestoreService:
             "uploaded_at": datetime.utcnow(),
             "field_mappings": [],
             "thumbnail_path": thumbnail_path,
+            "page_count": page_count,
         }
 
         self.db.collection("forms").document(form_id).set(form_data)
@@ -114,6 +117,7 @@ class FirestoreService:
             data.setdefault("form_type", "empty")
             data.setdefault("uploaded_by_name", "")
             data.setdefault("template_words", None)
+            data.setdefault("page_count", 1)
             return FormInDB(**data)
         return None
 
@@ -129,6 +133,7 @@ class FirestoreService:
             data.setdefault("form_type", "empty")
             data.setdefault("uploaded_by_name", "")
             data.setdefault("template_words", None)
+            data.setdefault("page_count", 1)
             forms.append(FormInDB(**data))
         return forms
 
@@ -294,6 +299,8 @@ class FirestoreService:
         total_documents: int,
         started_by_name: str = "",
         batch_job_id: Optional[str] = None,
+        ocr_prompt_id: Optional[str] = None,
+        ocr_prompt_name: Optional[str] = None,
     ) -> TestRunInDB:
         """Create a new test run."""
         run_id = str(uuid.uuid4())
@@ -311,6 +318,8 @@ class FirestoreService:
             "total_documents": total_documents,
             "processed_documents": 0,
             "batch_job_id": batch_job_id,
+            "ocr_prompt_id": ocr_prompt_id,
+            "ocr_prompt_name": ocr_prompt_name,
         }
 
         self.db.collection("test_runs").document(run_id).set(run_data)
@@ -326,6 +335,8 @@ class FirestoreService:
             data.setdefault("started_by_name", "")
             data.setdefault("batch_job_id", None)
             data.setdefault("last_heartbeat", None)
+            data.setdefault("ocr_prompt_id", None)
+            data.setdefault("ocr_prompt_name", None)
             return TestRunInDB(**data)
         return None
 
@@ -373,6 +384,8 @@ class FirestoreService:
             data.setdefault("started_by_name", "")
             data.setdefault("batch_job_id", None)
             data.setdefault("last_heartbeat", None)
+            data.setdefault("ocr_prompt_id", None)
+            data.setdefault("ocr_prompt_name", None)
 
             # Auto-detect stale running tasks
             if data["status"] in [TestStatus.RUNNING, TestStatus.PENDING]:
@@ -440,6 +453,10 @@ class FirestoreService:
                 ExtractedField(**ef) for ef in data.get("extracted_fields", [])
             ]
             data.setdefault("classification_results", None)
+            data.setdefault("classification_verified_accuracy", None)
+            data.setdefault("classification_verified_by", None)
+            data.setdefault("classification_verified_by_name", None)
+            data.setdefault("classification_verified_at", None)
             results.append(ResultInDB(**data))
         return results
 
@@ -460,6 +477,10 @@ class FirestoreService:
                 ExtractedField(**ef) for ef in data.get("extracted_fields", [])
             ]
             data.setdefault("classification_results", None)
+            data.setdefault("classification_verified_accuracy", None)
+            data.setdefault("classification_verified_by", None)
+            data.setdefault("classification_verified_by_name", None)
+            data.setdefault("classification_verified_at", None)
             return ResultInDB(**data)
         return None
 
@@ -518,6 +539,10 @@ class FirestoreService:
                 ExtractedField(**ef) for ef in data.get("extracted_fields", [])
             ]
             data.setdefault("classification_results", None)
+            data.setdefault("classification_verified_accuracy", None)
+            data.setdefault("classification_verified_by", None)
+            data.setdefault("classification_verified_by_name", None)
+            data.setdefault("classification_verified_at", None)
             return ResultInDB(**data)
         return None
 
@@ -546,6 +571,29 @@ class FirestoreService:
             return False
 
         doc_ref.update({"classification_results": classification_results})
+        return True
+
+    async def update_result_classification_verification(
+        self,
+        result_id: str,
+        classification_results: Dict[str, Any],
+        verified_accuracy: float,
+        verified_by: str,
+        verified_by_name: str = "",
+    ) -> bool:
+        """Update result with classification verification data."""
+        doc_ref = self.db.collection("results").document(result_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        doc_ref.update({
+            "classification_results": classification_results,
+            "classification_verified_accuracy": verified_accuracy,
+            "classification_verified_by": verified_by,
+            "classification_verified_by_name": verified_by_name,
+            "classification_verified_at": datetime.utcnow(),
+        })
         return True
 
     # ==================== Layout Cache Operations ====================
@@ -690,3 +738,71 @@ class FirestoreService:
 
             jobs.append(BatchJobInDB(**data))
         return jobs
+
+    # ==================== Prompt Operations ====================
+
+    async def create_prompt(
+        self,
+        name: str,
+        prompt_type: str,
+        prompt_text: str,
+        created_by: str,
+        created_by_name: str = "",
+    ) -> PromptInDB:
+        """Create a new prompt."""
+        prompt_id = str(uuid.uuid4())
+        now = datetime.utcnow()
+        data = {
+            "id": prompt_id,
+            "name": name,
+            "prompt_type": prompt_type,
+            "prompt_text": prompt_text,
+            "is_default": False,
+            "created_by": created_by,
+            "created_by_name": created_by_name,
+            "created_at": now,
+            "updated_at": None,
+        }
+        self.db.collection("prompts").document(prompt_id).set(data)
+        return PromptInDB(**data)
+
+    async def get_prompt(self, prompt_id: str) -> Optional[PromptInDB]:
+        """Get a prompt by ID."""
+        doc = self.db.collection("prompts").document(prompt_id).get()
+        if doc.exists:
+            return PromptInDB(**doc.to_dict())
+        return None
+
+    async def list_prompts(self, prompt_type: Optional[str] = None) -> List[PromptInDB]:
+        """List all prompts, optionally filtered by type."""
+        query = self.db.collection("prompts")
+        if prompt_type:
+            query = query.where("prompt_type", "==", prompt_type)
+        query = query.order_by("created_at", direction=firestore.Query.DESCENDING)
+        docs = query.stream()
+        return [PromptInDB(**doc.to_dict()) for doc in docs]
+
+    async def update_prompt(
+        self, prompt_id: str, name: Optional[str] = None, prompt_text: Optional[str] = None
+    ) -> bool:
+        """Update a prompt."""
+        doc_ref = self.db.collection("prompts").document(prompt_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+        update_data: Dict[str, Any] = {"updated_at": datetime.utcnow()}
+        if name is not None:
+            update_data["name"] = name
+        if prompt_text is not None:
+            update_data["prompt_text"] = prompt_text
+        doc_ref.update(update_data)
+        return True
+
+    async def delete_prompt(self, prompt_id: str) -> bool:
+        """Delete a prompt."""
+        doc_ref = self.db.collection("prompts").document(prompt_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+        doc_ref.delete()
+        return True

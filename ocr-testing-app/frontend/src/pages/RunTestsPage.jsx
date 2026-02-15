@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { syntheticAPI, testsAPI } from '../services/api'
+import { syntheticAPI, testsAPI, promptsAPI } from '../services/api'
 
 function formatDuration(startedAt, completedAt) {
   if (!startedAt || !completedAt) return null
@@ -23,12 +23,11 @@ function RunTestsPage() {
   const [selectedOCRs, setSelectedOCRs] = useState([])
   const [runningTests, setRunningTests] = useState([])
   const [runningBatchJobs, setRunningBatchJobs] = useState([])
+  const [selectedOcrPrompt, setSelectedOcrPrompt] = useState('')
   const [userFilter, setUserFilter] = useState('')
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-
-  const vlmEngines = ['got_ocr', 'mineru', 'claude']
 
   // Fetch batches
   const { data: batchesData, isLoading: batchesLoading } = useQuery({
@@ -47,6 +46,27 @@ function RunTestsPage() {
     queryKey: ['libraries'],
     queryFn: () => testsAPI.getLibraries(),
   })
+
+  const vlmEngines = librariesData?.data?.vlm_engines || ['got_ocr', 'mineru', 'claude', 'claude_bedrock', 'llama4_maverick_bedrock', 'llama4_maverick_vertex']
+  const promptableEngines = [
+    'claude',
+    'claude_bedrock', 'claude_haiku_bedrock',
+    'nova_pro', 'nova_lite',
+    'pixtral_large',
+    'llama4_maverick_bedrock', 'llama4_scout',
+    'llama4_maverick_vertex', 'llama4_scout_vertex',
+    'gpt5', 'gpt5_mini',
+  ]
+
+  // Fetch OCR prompts
+  const { data: ocrPromptsData } = useQuery({
+    queryKey: ['prompts', 'ocr'],
+    queryFn: () => promptsAPI.list('ocr'),
+  })
+  const ocrPrompts = ocrPromptsData?.data || []
+
+  // Show prompt selector if any selected OCR engine supports prompting
+  const showPromptSelector = selectedOCRs.some(lib => promptableEngines.includes(lib))
 
   // Poll for all running test statuses
   const { data: runningStatusData } = useQuery({
@@ -197,12 +217,13 @@ function RunTestsPage() {
   // Run mutation: single combo uses existing API, multi-combo uses batch job API
   const runMutation = useMutation({
     mutationFn: () => {
+      const promptId = selectedOcrPrompt || null
       if (comboCount === 1) {
         const ocrLib = selectedOCRs[0]
         const layoutLib = vlmEngines.includes(ocrLib) ? '' : selectedLayouts[0]
-        return testsAPI.run(selectedBatches, layoutLib, ocrLib)
+        return testsAPI.run(selectedBatches, layoutLib, ocrLib, promptId)
       } else {
-        return testsAPI.runBatchJob(selectedBatches, selectedLayouts, selectedOCRs)
+        return testsAPI.runBatchJob(selectedBatches, selectedLayouts, selectedOCRs, promptId)
       }
     },
     onSuccess: (response) => {
@@ -366,54 +387,38 @@ function RunTestsPage() {
         {batchesLoading ? (
           <p>Loading batches...</p>
         ) : filteredBatches.length > 0 ? (
-          <div className="max-h-[300px] overflow-y-auto border rounded">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="w-8 p-1.5"></th>
-                  <th className="text-left p-1.5">Batch</th>
-                  <th className="text-left p-1.5">Form</th>
-                  <th className="text-left p-1.5">Type</th>
-                  <th className="text-right p-1.5">Docs</th>
-                  <th className="text-left p-1.5">Date</th>
-                  <th className="text-left p-1.5">User</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBatches.map((batch) => (
-                  <tr
-                    key={batch.id}
-                    onClick={() => toggleBatch(batch.id)}
-                    className={`cursor-pointer border-t hover:bg-gray-50 ${
-                      selectedBatches.includes(batch.id) ? 'bg-blue-50' : ''
-                    }`}
-                  >
-                    <td className="p-1.5 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedBatches.includes(batch.id)}
-                        onChange={() => toggleBatch(batch.id)}
-                        className="rounded"
-                      />
-                    </td>
-                    <td className="p-1.5 font-medium">{batch.batch_number}</td>
-                    <td className="p-1.5 text-gray-600 max-w-[160px] truncate">{batch.form_name}</td>
-                    <td className="p-1.5">
-                      <span className={`px-1.5 py-0.5 rounded text-xs ${
-                        batch.batch_type === 'handwritten'
-                          ? 'bg-purple-100 text-purple-700'
-                          : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        {batch.batch_type}
-                      </span>
-                    </td>
-                    <td className="p-1.5 text-right">{batch.count}</td>
-                    <td className="p-1.5 text-gray-500">{new Date(batch.created_at).toLocaleDateString()}</td>
-                    <td className="p-1.5 text-gray-500">{batch.created_by_name ? batch.created_by_name.split('@')[0] : ''}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="max-h-[250px] overflow-y-auto border rounded-md">
+            {filteredBatches.map((batch) => (
+              <div
+                key={batch.id}
+                onClick={() => toggleBatch(batch.id)}
+                className={`flex items-center gap-3 px-3 py-2 cursor-pointer border-b last:border-b-0 transition-colors ${
+                  selectedBatches.includes(batch.id)
+                    ? 'bg-blue-50'
+                    : 'hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedBatches.includes(batch.id)}
+                  onChange={() => toggleBatch(batch.id)}
+                  className="rounded flex-shrink-0"
+                />
+                <span className="font-medium text-sm min-w-[60px]">{batch.batch_number}</span>
+                <span className={`px-1.5 py-0.5 rounded text-xs font-medium flex-shrink-0 ${
+                  batch.batch_type === 'handwritten'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {batch.batch_type === 'handwritten' ? 'HW' : 'Syn'}
+                </span>
+                <span className="text-sm text-gray-700 truncate flex-1">{batch.form_name}</span>
+                <span className="text-xs text-gray-400 flex-shrink-0">
+                  {batch.count} docs
+                  {batch.created_by_name ? ` · ${batch.created_by_name.split('@')[0]}` : ''}
+                </span>
+              </div>
+            ))}
           </div>
         ) : (
           <p className="text-gray-600">
@@ -479,6 +484,28 @@ function RunTestsPage() {
             {comboCount > 1 && ' sequentially as a batch job'}
           </p>
         )}
+
+        {/* OCR Prompt selector */}
+        {showPromptSelector && (
+          <div className="mt-4 pt-4 border-t">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              OCR Prompt
+            </label>
+            <select
+              value={selectedOcrPrompt}
+              onChange={(e) => setSelectedOcrPrompt(e.target.value)}
+              className="w-full max-w-md px-3 py-2 border rounded-md text-sm"
+            >
+              <option value="">Default Prompt</option>
+              {ocrPrompts.filter(p => !p.is_default).map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Only applies to promptable VLM engines (Bedrock models + GPT-5)
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Run Button */}
@@ -531,70 +558,57 @@ function RunTestsPage() {
         {testsLoading ? (
           <p>Loading...</p>
         ) : filteredTestRuns.length > 0 ? (
-          <div className="space-y-3">
+          <div className="max-h-[300px] overflow-y-auto border rounded-md">
             {filteredTestRuns.map((run) => (
               <div
                 key={run.id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                className="flex items-center gap-2 px-3 py-2 border-b last:border-b-0 hover:bg-gray-50 text-sm"
               >
-                <div>
-                  <p className="font-medium">
-                    {run.layout_library || 'N/A'} + {run.ocr_library}
-                    {run.started_by_name && ` - ${run.started_by_name.split('@')[0]}`}
-                    {' - '}{new Date(run.started_at).toLocaleDateString()}
-                    {run.batch_job_id && (
-                      <span className="ml-2 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
-                        batch
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {run.total_documents} documents •{' '}
-                    {new Date(run.started_at).toLocaleString()}
-                    {formatDuration(run.started_at, run.completed_at) && (
-                      <span className="ml-2 text-gray-500">
-                        ({formatDuration(run.started_at, run.completed_at)})
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span
-                    className={`px-2 py-1 rounded text-sm ${
-                      run.status === 'completed'
-                        ? 'bg-green-100 text-green-700'
-                        : run.status === 'running'
-                        ? 'bg-blue-100 text-blue-700'
-                        : run.status === 'failed'
-                        ? 'bg-red-100 text-red-700'
-                        : 'bg-gray-100 text-gray-700'
-                    }`}
-                  >
-                    {run.status}
+                {/* Status dot */}
+                <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                  run.status === 'completed' ? 'bg-green-500'
+                    : run.status === 'running' ? 'bg-blue-500'
+                    : run.status === 'failed' ? 'bg-red-500'
+                    : 'bg-gray-400'
+                }`} />
+                {/* Libraries */}
+                <span className="font-medium text-xs min-w-[120px]">
+                  {run.layout_library || 'none'} + {run.ocr_library}
+                </span>
+                {run.ocr_prompt_name && (
+                  <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-xs flex-shrink-0">
+                    {run.ocr_prompt_name}
                   </span>
+                )}
+                {run.batch_job_id && (
+                  <span className="px-1 py-0.5 bg-purple-100 text-purple-700 rounded text-xs flex-shrink-0">
+                    batch
+                  </span>
+                )}
+                {/* Date + docs */}
+                <span className="text-xs text-gray-500 flex-1 truncate">
+                  {run.total_documents} docs · {new Date(run.started_at).toLocaleDateString()}{' '}
+                  {new Date(run.started_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  {run.started_by_name && ` · ${run.started_by_name.split('@')[0]}`}
+                  {formatDuration(run.started_at, run.completed_at) && ` (${formatDuration(run.started_at, run.completed_at)})`}
+                </span>
+                {/* Actions */}
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {run.status === 'completed' && (
                     <button
                       onClick={() => navigate(`/results/${run.id}`)}
-                      className="text-blue-600 hover:underline text-sm"
+                      className="text-blue-600 hover:underline text-xs"
                     >
-                      View Results
+                      Results
                     </button>
                   )}
                   {run.status === 'running' && (
                     <button
                       onClick={() => handleCancel(run.id)}
-                      className="text-red-600 hover:underline text-sm"
+                      className="text-red-600 hover:underline text-xs"
                     >
                       Cancel
                     </button>
-                  )}
-                  {run.status === 'failed' && run.error_message && (
-                    <span
-                      className="text-red-500 text-xs max-w-xs truncate"
-                      title={run.error_message}
-                    >
-                      {run.error_message}
-                    </span>
                   )}
                 </div>
               </div>

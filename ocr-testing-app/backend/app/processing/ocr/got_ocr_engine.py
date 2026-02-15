@@ -8,7 +8,7 @@ Uses the HuggingFace transformers integration.
 This engine processes the FULL PAGE in a single pass for efficiency,
 ignoring the layout regions since GOT-OCR is designed for end-to-end OCR.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -56,7 +56,8 @@ class GotOCREngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None,
     ) -> List[OCRResult]:
         """
         Extract text from the FULL PAGE in a single pass.

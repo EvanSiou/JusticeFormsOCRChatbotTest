@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { testsAPI, classifyAPI } from '../services/api'
+import { testsAPI, classifyAPI, promptsAPI } from '../services/api'
 import MagnifyImage from '../components/MagnifyImage'
 
 const DEFAULT_FIELD_TYPES =
-  'full_name, date, case_number, address, monetary_amount, phone_number, id_number'
+  'defendant_name, county, cause_number, charge, condition_order, assessed_amount, address'
 
 function ClassifyPage() {
   const [userFilter, setUserFilter] = useState('')
@@ -12,6 +12,8 @@ function ClassifyPage() {
   const [selectedDocumentId, setSelectedDocumentId] = useState('')
   const [fieldTypesInput, setFieldTypesInput] = useState(DEFAULT_FIELD_TYPES)
   const [useCleanedText, setUseCleanedText] = useState(true)
+  const [classifierModel, setClassifierModel] = useState('claude')
+  const [selectedPromptId, setSelectedPromptId] = useState('')
   const [classificationResult, setClassificationResult] = useState(null)
   const [saved, setSaved] = useState(false)
   const [textView, setTextView] = useState('important') // 'important' | 'cleaned' | 'full'
@@ -83,6 +85,13 @@ function ClassifyPage() {
     }
   }, [docData])
 
+  // Fetch classification prompts
+  const { data: classPromptsData } = useQuery({
+    queryKey: ['prompts', 'classification'],
+    queryFn: () => promptsAPI.list('classification'),
+  })
+  const classPrompts = (classPromptsData?.data || []).filter(p => !p.is_default)
+
   // Run classification mutation
   const runMutation = useMutation({
     mutationFn: () => {
@@ -93,6 +102,8 @@ function ClassifyPage() {
       return classifyAPI.run(selectedTestRun, selectedDocumentId, {
         field_types: fieldTypes.length > 0 ? fieldTypes : null,
         use_cleaned_text: useCleanedText,
+        classifier_model: classifierModel,
+        prompt_id: selectedPromptId || null,
       })
     },
     onSuccess: (response) => {
@@ -122,13 +133,13 @@ function ClassifyPage() {
 
   // Field type badge colors
   const typeColors = {
-    full_name: 'bg-blue-100 text-blue-700',
-    date: 'bg-green-100 text-green-700',
-    case_number: 'bg-purple-100 text-purple-700',
-    address: 'bg-yellow-100 text-yellow-700',
-    monetary_amount: 'bg-red-100 text-red-700',
-    phone_number: 'bg-indigo-100 text-indigo-700',
-    id_number: 'bg-pink-100 text-pink-700',
+    defendant_name: 'bg-blue-100 text-blue-700',
+    county: 'bg-green-100 text-green-700',
+    cause_number: 'bg-purple-100 text-purple-700',
+    charge: 'bg-red-100 text-red-700',
+    condition_order: 'bg-yellow-100 text-yellow-700',
+    assessed_amount: 'bg-orange-100 text-orange-700',
+    address: 'bg-teal-100 text-teal-700',
     other: 'bg-gray-100 text-gray-700',
   }
 
@@ -292,6 +303,54 @@ function ClassifyPage() {
                 />
               </div>
 
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Classifier Model
+                </label>
+                <select
+                  value={classifierModel}
+                  onChange={(e) => setClassifierModel(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                >
+                  <optgroup label="Anthropic (Direct)">
+                    <option value="claude">Claude Sonnet 4.5</option>
+                  </optgroup>
+                  <optgroup label="Amazon Bedrock">
+                    <option value="claude_bedrock">Claude Sonnet 4.5 (Bedrock)</option>
+                    <option value="claude_haiku_bedrock">Claude Haiku 4.5 (Bedrock)</option>
+                    <option value="nova_pro">Nova Pro</option>
+                    <option value="nova_lite">Nova Lite</option>
+                    <option value="pixtral_large">Pixtral Large</option>
+                    <option value="llama4_maverick_bedrock">Llama 4 Maverick (Bedrock)</option>
+                    <option value="llama4_scout">Llama 4 Scout (Bedrock)</option>
+                  </optgroup>
+                  <optgroup label="Google Vertex AI">
+                    <option value="llama4_maverick_vertex">Llama 4 Maverick (Vertex)</option>
+                    <option value="llama4_scout_vertex">Llama 4 Scout (Vertex)</option>
+                  </optgroup>
+                  <optgroup label="OpenAI">
+                    <option value="gpt5">GPT-5</option>
+                    <option value="gpt5_mini">GPT-5 mini</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Classification Prompt
+                </label>
+                <select
+                  value={selectedPromptId}
+                  onChange={(e) => setSelectedPromptId(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                >
+                  <option value="">Default Prompt</option>
+                  {classPrompts.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
               <label className="flex items-center gap-2 cursor-pointer mb-4">
                 <input
                   type="checkbox"
@@ -310,7 +369,9 @@ function ClassifyPage() {
               >
                 {runMutation.isPending
                   ? 'Classifying...'
-                  : 'Classify with Claude'}
+                  : `Classify with ${
+                    {claude: 'Claude Sonnet 4.5', claude_bedrock: 'Claude Sonnet 4.5 (Bedrock)', claude_haiku_bedrock: 'Claude Haiku 4.5 (Bedrock)', nova_pro: 'Nova Pro', nova_lite: 'Nova Lite', pixtral_large: 'Pixtral Large', llama4_maverick_bedrock: 'Llama 4 Maverick (Bedrock)', llama4_scout: 'Llama 4 Scout (Bedrock)', llama4_maverick_vertex: 'Llama 4 Maverick (Vertex)', llama4_scout_vertex: 'Llama 4 Scout (Vertex)', gpt5: 'GPT-5', gpt5_mini: 'GPT-5 mini'}[classifierModel] || classifierModel
+                  }`}
               </button>
 
               {runMutation.isError && (
@@ -338,11 +399,55 @@ function ClassifyPage() {
                   </div>
                 )}
 
+                {/* Model + text source info */}
+                <div className="mb-3 flex items-center gap-3 flex-wrap">
+                  {classificationResult.classifier_model && (
+                    <span>
+                      <span className="text-xs text-gray-500">Model:</span>
+                      <span className="ml-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                        {{claude: 'Claude Sonnet 4.5', claude_bedrock: 'Claude Sonnet 4.5 (Bedrock)', claude_haiku_bedrock: 'Claude Haiku 4.5 (Bedrock)', nova_pro: 'Nova Pro', nova_lite: 'Nova Lite', pixtral_large: 'Pixtral Large', llama4_maverick_bedrock: 'Llama 4 Maverick (Bedrock)', llama4_scout: 'Llama 4 Scout (Bedrock)', llama4_maverick_vertex: 'Llama 4 Maverick (Vertex)', llama4_scout_vertex: 'Llama 4 Scout (Vertex)', gpt5: 'GPT-5', gpt5_mini: 'GPT-5 mini'}[classificationResult.classifier_model] || classificationResult.classifier_model}
+                      </span>
+                    </span>
+                  )}
+                  {classificationResult.text_source && (
+                    <span>
+                      <span className="text-xs text-gray-500">Text:</span>
+                      <span className="ml-1 px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                        {classificationResult.text_source}
+                      </span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Text sent to model (collapsible) */}
+                {classificationResult.text_sent && (
+                  <details className="mb-3">
+                    <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                      Show text sent to model ({classificationResult.text_sent.length} chars)
+                    </summary>
+                    <pre className="mt-1 bg-gray-50 border rounded p-2 text-xs whitespace-pre-wrap max-h-[200px] overflow-y-auto">
+                      {classificationResult.text_sent}
+                    </pre>
+                  </details>
+                )}
+
                 {/* Error */}
                 {classificationResult.error && (
                   <p className="text-red-600 text-sm mb-3">
                     Error: {classificationResult.error}
                   </p>
+                )}
+
+                {/* Raw response (if JSON parsing failed) */}
+                {classificationResult.raw_response && (
+                  <details className="mb-3">
+                    <summary className="text-xs text-red-500 cursor-pointer">
+                      Show raw model response
+                    </summary>
+                    <pre className="mt-1 bg-red-50 border border-red-200 rounded p-2 text-xs whitespace-pre-wrap max-h-[200px] overflow-y-auto">
+                      {classificationResult.raw_response}
+                    </pre>
+                  </details>
                 )}
 
                 {/* Classified fields */}

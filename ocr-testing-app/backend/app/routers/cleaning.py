@@ -65,8 +65,14 @@ STANDARD_PATTERNS = [
     "Signature", "Date",
     "Interpreter's", "(if", "any)",
     "Printed", "Name",
-    # Standalone punctuation
+    # Standalone punctuation and short patterns
     "§",
+    "_", ".", "(", ")", "$_",
+    # Multi-word phrases
+    "if any", "(if any)", "(ifany)",
+    "Procedure Art", "by Code of Criminal",
+    # Additional template words
+    "Art,", "Interpreters",
 ]
 
 

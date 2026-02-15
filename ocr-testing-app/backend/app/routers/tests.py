@@ -28,6 +28,7 @@ async def run_test_background(
     layout_library: str,
     ocr_library: str,
     image_cache: Optional[Dict[str, bytes]] = None,
+    ocr_prompt: Optional[str] = None,
 ):
     """Background task to run OCR pipeline on batches."""
     firestore = FirestoreService()
@@ -59,6 +60,7 @@ async def run_test_background(
                     processed_documents=total_processed + curr
                 ),
                 image_cache=image_cache,
+                ocr_prompt=ocr_prompt,
             )
 
             total_processed += len(batch.documents)
@@ -87,6 +89,9 @@ async def run_batch_job_background(
     started_by: str,
     started_by_name: str,
     total_documents: int,
+    ocr_prompt: Optional[str] = None,
+    ocr_prompt_id: Optional[str] = None,
+    ocr_prompt_name: Optional[str] = None,
 ):
     """Background task to run all layout+OCR combinations sequentially."""
     firestore = FirestoreService()
@@ -120,6 +125,8 @@ async def run_batch_job_background(
                 total_documents=total_documents,
                 started_by_name=started_by_name,
                 batch_job_id=job_id,
+                ocr_prompt_id=ocr_prompt_id,
+                ocr_prompt_name=ocr_prompt_name,
             )
             test_run_ids.append(test_run.id)
             await firestore.update_batch_job(
@@ -134,6 +141,7 @@ async def run_batch_job_background(
                     layout_library=layout_lib,
                     ocr_library=ocr_lib,
                     image_cache=image_cache,
+                    ocr_prompt=ocr_prompt,
                 )
             except Exception:
                 # Individual combo failure doesn't stop the job
@@ -217,6 +225,15 @@ async def run_tests(
     user = await firestore.get_user_by_id(current_user_id)
     started_by_name = user.email if user else ""
 
+    # Resolve OCR prompt if provided
+    ocr_prompt_text = None
+    ocr_prompt_name = None
+    if request.ocr_prompt_id and request.ocr_prompt_id != "default":
+        prompt_doc = await firestore.get_prompt(request.ocr_prompt_id)
+        if prompt_doc:
+            ocr_prompt_text = prompt_doc.prompt_text
+            ocr_prompt_name = prompt_doc.name
+
     # Create test run record
     test_run = await firestore.create_test_run(
         batch_ids=request.batch_ids,
@@ -225,6 +242,8 @@ async def run_tests(
         started_by=current_user_id,
         total_documents=total_documents,
         started_by_name=started_by_name,
+        ocr_prompt_id=request.ocr_prompt_id if request.ocr_prompt_id and request.ocr_prompt_id != "default" else None,
+        ocr_prompt_name=ocr_prompt_name,
     )
 
     # Start background processing
@@ -234,6 +253,8 @@ async def run_tests(
         request.batch_ids,
         layout_library,
         request.ocr_library,
+        None,  # image_cache
+        ocr_prompt_text,  # ocr_prompt
     )
 
     return TestRunResponse(**test_run.model_dump())
@@ -312,6 +333,15 @@ async def run_batch_job(
         started_by_name=started_by_name,
     )
 
+    # Resolve OCR prompt if provided
+    ocr_prompt_text = None
+    ocr_prompt_name = None
+    if request.ocr_prompt_id and request.ocr_prompt_id != "default":
+        prompt_doc = await firestore.get_prompt(request.ocr_prompt_id)
+        if prompt_doc:
+            ocr_prompt_text = prompt_doc.prompt_text
+            ocr_prompt_name = prompt_doc.name
+
     # Start background processing
     background_tasks.add_task(
         run_batch_job_background,
@@ -322,6 +352,9 @@ async def run_batch_job(
         current_user_id,
         started_by_name,
         total_documents,
+        ocr_prompt_text,  # ocr_prompt
+        request.ocr_prompt_id if request.ocr_prompt_id and request.ocr_prompt_id != "default" else None,  # ocr_prompt_id
+        ocr_prompt_name,  # ocr_prompt_name
     )
 
     return BatchJobResponse(**batch_job.model_dump())
@@ -408,9 +441,11 @@ async def get_available_libraries(
     current_user_id: str = Depends(get_current_user_id)
 ):
     """Get available layout and OCR libraries."""
+    from app.processing.ocr import VLM_ENGINES
     return {
         "layout_libraries": list_layout_detectors(),
-        "ocr_libraries": list_ocr_engines()
+        "ocr_libraries": list_ocr_engines(),
+        "vlm_engines": VLM_ENGINES,
     }
 
 

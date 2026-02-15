@@ -34,6 +34,7 @@ class FieldMapping(BaseModel):
     font_size: int = 12
     font_color: str = "#000000"
     field_type: FieldType = FieldType.TEXT_SHORT
+    page: int = 0  # Which page this field is on (0-indexed)
 
 
 class FormBase(BaseModel):
@@ -57,6 +58,7 @@ class FormInDB(FormBase):
     field_mappings: List[FieldMapping] = []
     template_words: Optional[List[str]] = None
     thumbnail_path: Optional[str] = None
+    page_count: int = 1  # Number of pages (1 for images, N for PDFs)
 
 
 class FormResponse(FormInDB):

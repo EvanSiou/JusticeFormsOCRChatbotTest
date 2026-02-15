@@ -41,6 +41,10 @@ class ResultInDB(ResultBase):
     extracted_fields: List[ExtractedField]
     overall_accuracy: float
     classification_results: Optional[Dict[str, Any]] = None
+    classification_verified_accuracy: Optional[float] = None
+    classification_verified_by: Optional[str] = None
+    classification_verified_by_name: Optional[str] = None
+    classification_verified_at: Optional[datetime] = None
     verified_accuracy: Optional[float] = None
     verified_by: Optional[str] = None
     verified_by_name: Optional[str] = None

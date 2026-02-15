@@ -11,6 +11,8 @@ import ViewDataPage from './pages/ViewDataPage'
 import MetricsPage from './pages/MetricsPage'
 import CleanDocumentPage from './pages/CleanDocumentPage'
 import ClassifyPage from './pages/ClassifyPage'
+import PromptsPage from './pages/PromptsPage'
+import ClassifyVerifyPage from './pages/ClassifyVerifyPage'
 import Layout from './components/Layout/Layout'
 
 // Protected route wrapper
@@ -55,7 +57,10 @@ function App() {
         <Route path="verify/:testRunId" element={<VerifyPage />} />
         <Route path="results" element={<ResultsPage />} />
         <Route path="results/:testRunId" element={<ResultsPage />} />
+        <Route path="prompts" element={<PromptsPage />} />
         <Route path="classify" element={<ClassifyPage />} />
+        <Route path="classify-verify" element={<ClassifyVerifyPage />} />
+        <Route path="classify-verify/:testRunId" element={<ClassifyVerifyPage />} />
         <Route path="metrics" element={<MetricsPage />} />
       </Route>
 

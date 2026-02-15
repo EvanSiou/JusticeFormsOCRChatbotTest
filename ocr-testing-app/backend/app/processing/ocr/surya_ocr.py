@@ -4,7 +4,7 @@ Surya OCR engine implementation.
 Uses Surya's batch processing to pass all region bboxes in a single call
 instead of processing each region separately.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 
 from .base import OCREngineBase, OCRResult, TextLine
@@ -35,7 +35,8 @@ class SuryaOCREngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None
     ) -> List[OCRResult]:
         """
         Extract text from all regions in a single batch call.

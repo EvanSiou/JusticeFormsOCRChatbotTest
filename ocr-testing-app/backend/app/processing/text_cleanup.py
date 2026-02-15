@@ -71,13 +71,25 @@ class TemplateTextCleaner:
     def _remove_template_fragments(self, line: str) -> str:
         """Remove template word fragments from within a line."""
         result = line
+
+        # First pass: remove longer patterns (>= 3 chars) as substrings
         for template_word in self.template_lines:
             if len(template_word) < 3:
                 continue
-            # Only remove if the template word appears as a recognizable substring
             idx = result.lower().find(template_word.lower())
             if idx != -1:
                 result = result[:idx] + result[idx + len(template_word):]
+
+        # Second pass: remove short patterns (< 3 chars) only as standalone tokens
+        # to avoid over-aggressive removal (e.g., removing "." from "3.5")
+        for template_word in self.template_lines:
+            if len(template_word) >= 3:
+                continue
+            escaped = re.escape(template_word)
+            # Match standalone: surrounded by whitespace or at start/end of string
+            pattern = r'(?<!\S)' + escaped + r'(?!\S)'
+            result = re.sub(pattern, '', result)
+
         return result
 
     @staticmethod

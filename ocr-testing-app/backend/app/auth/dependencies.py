@@ -60,3 +60,22 @@ async def get_current_user_id(
         raise credentials_exception
 
     return token_data.user_id
+
+
+async def get_current_user_name(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> str:
+    """
+    Dependency to get the current user's display name (email) from JWT token.
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    token_data = decode_access_token(credentials.credentials)
+    if token_data is None:
+        raise credentials_exception
+
+    return token_data.email

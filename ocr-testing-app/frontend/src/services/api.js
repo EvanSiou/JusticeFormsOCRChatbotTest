@@ -58,8 +58,8 @@ export const formsAPI = {
     api.put(`/forms/${id}/fields`, { field_mappings: fieldMappings }),
   delete: (id) =>
     api.delete(`/forms/${id}`),
-  getImage: (id) =>
-    api.get(`/forms/${id}/image`, { responseType: 'blob' }).then(response => {
+  getImage: (id, page = 0) =>
+    api.get(`/forms/${id}/image`, { params: { page }, responseType: 'blob' }).then(response => {
       // Handle both blob (PDF->PNG) and JSON (signed URL) responses
       if (response.data instanceof Blob) {
         const url = URL.createObjectURL(response.data)
@@ -68,7 +68,7 @@ export const formsAPI = {
       return response
     }).catch(() => {
       // Fallback: try without blob responseType (for signed URLs)
-      return api.get(`/forms/${id}/image`)
+      return api.get(`/forms/${id}/image`, { params: { page } })
     }),
   exportConfig: (id) =>
     api.get(`/forms/${id}/config`),
@@ -78,6 +78,17 @@ export const formsAPI = {
     api.get(`/forms/${id}/template-words`),
   updateTemplateWords: (id, words) =>
     api.put(`/forms/${id}/template-words`, { template_words: words }),
+  download: (id, name) =>
+    api.get(`/forms/${id}/download`, { responseType: 'blob' }).then((response) => {
+      const url = URL.createObjectURL(response.data)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = name || 'form'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }),
 }
 
 // Synthetic Data API
@@ -110,19 +121,31 @@ export const syntheticAPI = {
     api.delete(`/synthetic/batches/${batchId}`),
 }
 
+// Prompts API
+export const promptsAPI = {
+  list: (type) => api.get('/prompts', { params: type ? { prompt_type: type } : {} }),
+  get: (id) => api.get(`/prompts/${id}`),
+  create: (data) => api.post('/prompts', data),
+  update: (id, data) => api.put(`/prompts/${id}`, data),
+  delete: (id) => api.delete(`/prompts/${id}`),
+  getDefaults: () => api.get('/prompts/defaults'),
+}
+
 // Tests API
 export const testsAPI = {
-  run: (batchIds, layoutLibrary, ocrLibrary) =>
+  run: (batchIds, layoutLibrary, ocrLibrary, ocrPromptId = null) =>
     api.post('/tests/run', {
       batch_ids: batchIds,
       layout_library: layoutLibrary,
       ocr_library: ocrLibrary,
+      ocr_prompt_id: ocrPromptId,
     }),
-  runBatchJob: (batchIds, layoutLibraries, ocrLibraries) =>
+  runBatchJob: (batchIds, layoutLibraries, ocrLibraries, ocrPromptId = null) =>
     api.post('/tests/batch-job', {
       batch_ids: batchIds,
       layout_libraries: layoutLibraries,
       ocr_libraries: ocrLibraries,
+      ocr_prompt_id: ocrPromptId,
     }),
   listBatchJobs: () =>
     api.get('/tests/batch-jobs'),
@@ -197,6 +220,8 @@ export const metricsAPI = {
     api.get('/metrics/by-field'),
   getComparison: (testRunIds) =>
     api.get('/metrics/comparison', { params: { test_run_ids: testRunIds } }),
+  getClassificationMatrix: () =>
+    api.get('/metrics/classification-matrix'),
   export: (format = 'csv', testRunId = null) => {
     let url = `/metrics/export?format=${format}`
     if (testRunId) url += `&test_run_id=${testRunId}`
@@ -231,6 +256,25 @@ export const classifyAPI = {
     api.post(`/classify/${testRunId}/document/${documentId}/run`, data),
   save: (testRunId, documentId, data) =>
     api.put(`/classify/${testRunId}/document/${documentId}/save`, data),
+}
+
+// Classification Verification API
+export const classifyVerifyAPI = {
+  getDocuments: (testRunId) =>
+    api.get(`/classify-verify/${testRunId}/documents`),
+  getDocument: (testRunId, documentId) =>
+    api.get(`/classify-verify/${testRunId}/document/${documentId}`),
+  getDocumentImage: (testRunId, documentId) =>
+    api.get(`/classify-verify/${testRunId}/document/${documentId}/image`, {
+      responseType: 'blob',
+    }).then((response) => {
+      const url = URL.createObjectURL(response.data)
+      return url
+    }),
+  verify: (testRunId, documentId, data) =>
+    api.put(`/classify-verify/${testRunId}/document/${documentId}/verify`, data),
+  getSummary: (testRunId) =>
+    api.get(`/classify-verify/${testRunId}/summary`),
 }
 
 // Health check

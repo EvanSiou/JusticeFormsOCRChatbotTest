@@ -5,7 +5,7 @@ Runs OCR once on the full document image, then maps detected text
 back to layout regions by bounding box overlap. This avoids redundant
 text detection on each cropped region.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -38,7 +38,8 @@ class EasyOCREngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None
     ) -> List[OCRResult]:
         """
         Extract text by running EasyOCR once on the full image,

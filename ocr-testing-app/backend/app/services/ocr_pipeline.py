@@ -3,9 +3,18 @@ OCR Pipeline service.
 Orchestrates layout detection and OCR extraction.
 """
 import io
+import logging
 from typing import List, Dict, Any, Optional
 from PIL import Image
 from difflib import SequenceMatcher
+
+try:
+    import fitz  # PyMuPDF
+    PYMUPDF_AVAILABLE = True
+except ImportError:
+    PYMUPDF_AVAILABLE = False
+
+logger = logging.getLogger(__name__)
 
 from app.models.batch import BatchInDB, SyntheticDocument
 from app.models.result import ExtractedField
@@ -22,6 +31,30 @@ class OCRPipelineService:
         self.storage = StorageService()
         self.firestore = FirestoreService()
 
+    @staticmethod
+    def _is_pdf(data: bytes) -> bool:
+        """Check if bytes represent a PDF file."""
+        return data[:5] == b'%PDF-'
+
+    @staticmethod
+    def _pdf_bytes_to_images(pdf_bytes: bytes, pages: Optional[List[int]] = None) -> List[Image.Image]:
+        """Convert PDF bytes to a list of PIL images, one per page."""
+        if not PYMUPDF_AVAILABLE:
+            raise RuntimeError("PyMuPDF not installed. Install with: pip install pymupdf")
+        pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        images = []
+        page_indices = pages if pages else range(len(pdf_doc))
+        for i in page_indices:
+            if i >= len(pdf_doc):
+                continue
+            page = pdf_doc[i]
+            mat = fitz.Matrix(2, 2)  # 2x scale for quality
+            pix = page.get_pixmap(matrix=mat)
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            images.append(img)
+        pdf_doc.close()
+        return images
+
     async def process_document(
         self,
         document: SyntheticDocument,
@@ -29,6 +62,7 @@ class OCRPipelineService:
         ocr_library: str,
         image_cache: Optional[Dict[str, bytes]] = None,
         template_words: Optional[List[str]] = None,
+        ocr_prompt: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Process a single document through the pipeline.
@@ -48,46 +82,67 @@ class OCRPipelineService:
             image_bytes = await self.storage.download_file(document.storage_path)
             if image_cache is not None:
                 image_cache[document.storage_path] = image_bytes
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+
+        # Handle multi-page PDFs: process each page separately
+        if self._is_pdf(image_bytes) and PYMUPDF_AVAILABLE:
+            page_images = self._pdf_bytes_to_images(image_bytes)
+            logger.info(f"Processing {len(page_images)} PDF pages with layout={layout_library}, ocr={ocr_library}")
+        else:
+            page_images = [Image.open(io.BytesIO(image_bytes)).convert("RGB")]
 
         # Get layout detector and OCR engine
         layout_detector = get_layout_detector(layout_library)
         ocr_engine = get_ocr_engine(ocr_library)
-
-        # Check layout cache first
         from app.processing.layout.base import Region
-        cached_layout = await self.firestore.get_cached_layout(
-            document.storage_path, layout_library
-        )
-        if cached_layout is not None:
-            # Reconstruct Region objects from cached dict
-            regions = [
-                Region(
-                    id=r["id"],
-                    type=r["type"],
-                    confidence=r["confidence"],
-                    bbox=r["bbox"],
-                )
-                for r in cached_layout.get("regions", [])
-            ]
-            layout_results = cached_layout
-        else:
-            # Run layout detection and cache the results
-            regions = layout_detector.detect(image)
-            layout_results = layout_detector.to_dict(regions)
-            await self.firestore.set_cached_layout(
-                document.storage_path, layout_library, layout_results
-            )
 
-        # Run OCR on detected regions
-        ocr_results_list = ocr_engine.extract_text(image, regions)
-        ocr_results = ocr_engine.to_dict(ocr_results_list)
+        all_ocr_results = []
+        all_layout_regions = []
+        all_full_text_parts = []
+
+        for page_idx, image in enumerate(page_images):
+            cache_key = f"{document.storage_path}__page{page_idx}" if len(page_images) > 1 else document.storage_path
+
+            # Check layout cache first
+            cached_layout = await self.firestore.get_cached_layout(
+                cache_key, layout_library
+            )
+            if cached_layout is not None:
+                regions = [
+                    Region(
+                        id=r["id"],
+                        type=r["type"],
+                        confidence=r["confidence"],
+                        bbox=r["bbox"],
+                    )
+                    for r in cached_layout.get("regions", [])
+                ]
+            else:
+                regions = layout_detector.detect(image)
+                layout_dict = layout_detector.to_dict(regions)
+                await self.firestore.set_cached_layout(
+                    cache_key, layout_library, layout_dict
+                )
+
+            all_layout_regions.extend(regions)
+
+            # Run OCR on detected regions
+            page_ocr_results = ocr_engine.extract_text(image, regions, prompt=ocr_prompt)
+            all_ocr_results.extend(page_ocr_results)
+
+            page_text = " ".join([r.full_text for r in page_ocr_results])
+            if len(page_images) > 1:
+                all_full_text_parts.append(f"--- Page {page_idx + 1} ---\n{page_text}")
+            else:
+                all_full_text_parts.append(page_text)
+
+        layout_results = layout_detector.to_dict(all_layout_regions)
+        ocr_results = ocr_engine.to_dict(all_ocr_results)
 
         # Add full_text and text_regions (needed by verify page for handwritten docs)
-        full_text = " ".join([r.full_text for r in ocr_results_list])
+        full_text = "\n\n".join(all_full_text_parts)
         ocr_results["full_text"] = full_text
         text_regions = []
-        for r in ocr_results_list:
+        for r in all_ocr_results:
             for line in r.lines:
                 text_regions.append({
                     "text": line.text,
@@ -96,12 +151,12 @@ class OCRPipelineService:
         ocr_results["text_regions"] = text_regions
 
         # Text cleanup: remove template words before field matching
-        match_results_list = ocr_results_list
+        match_results_list = all_ocr_results
         if template_words:
             from app.processing.text_cleanup import TemplateTextCleaner
             cleaner = TemplateTextCleaner(template_words)
             match_results_list = TemplateTextCleaner.clean_ocr_results(
-                ocr_results_list, template_words
+                all_ocr_results, template_words
             )
             cleaned_text = cleaner.clean(full_text)
             ocr_results["cleaned_text"] = cleaned_text
@@ -201,6 +256,7 @@ class OCRPipelineService:
         match_fields: bool = False,
         image_cache: Optional[Dict[str, bytes]] = None,
         template_words: Optional[List[str]] = None,
+        ocr_prompt: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Process a document with full-text OCR (no layout detection).
@@ -222,31 +278,47 @@ class OCRPipelineService:
             image_bytes = await self.storage.download_file(document.storage_path)
             if image_cache is not None:
                 image_cache[document.storage_path] = image_bytes
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
         # Get OCR engine
         ocr_engine = get_ocr_engine(ocr_library)
-
-        # Run OCR on the full image as a single region
-        # Create a single region covering the entire image
         from app.processing.layout.base import Region
-        full_region = Region(
-            id=0,
-            type="full_page",
-            confidence=1.0,
-            bbox={"x1": 0, "y1": 0, "x2": image.width, "y2": image.height},
-        )
 
-        ocr_results_list = ocr_engine.extract_text(image, [full_region])
-        ocr_results = ocr_engine.to_dict(ocr_results_list)
+        # Handle multi-page PDFs: process each page separately
+        if self._is_pdf(image_bytes) and PYMUPDF_AVAILABLE:
+            page_images = self._pdf_bytes_to_images(image_bytes)
+            logger.info(f"Processing {len(page_images)} PDF pages with {ocr_library}")
+        else:
+            page_images = [Image.open(io.BytesIO(image_bytes)).convert("RGB")]
+
+        all_ocr_results = []
+        all_full_text_parts = []
+
+        for page_idx, image in enumerate(page_images):
+            full_region = Region(
+                id=page_idx,
+                type="full_page",
+                confidence=1.0,
+                bbox={"x1": 0, "y1": 0, "x2": image.width, "y2": image.height},
+            )
+
+            page_results = ocr_engine.extract_text(image, [full_region], prompt=ocr_prompt)
+            all_ocr_results.extend(page_results)
+
+            page_text = " ".join([r.full_text for r in page_results])
+            if len(page_images) > 1:
+                all_full_text_parts.append(f"--- Page {page_idx + 1} ---\n{page_text}")
+            else:
+                all_full_text_parts.append(page_text)
+
+        ocr_results = ocr_engine.to_dict(all_ocr_results)
 
         # Combine all text
-        full_text = " ".join([r.full_text for r in ocr_results_list])
+        full_text = "\n\n".join(all_full_text_parts)
         ocr_results["full_text"] = full_text
 
         # Collect individual text regions
         regions = []
-        for r in ocr_results_list:
+        for r in all_ocr_results:
             for line in r.lines:
                 regions.append({
                     "text": line.text,
@@ -255,12 +327,12 @@ class OCRPipelineService:
         ocr_results["text_regions"] = regions
 
         # Text cleanup: remove template words before field matching
-        match_results_list = ocr_results_list
+        match_results_list = all_ocr_results
         if template_words:
             from app.processing.text_cleanup import TemplateTextCleaner
             cleaner = TemplateTextCleaner(template_words)
             match_results_list = TemplateTextCleaner.clean_ocr_results(
-                ocr_results_list, template_words
+                all_ocr_results, template_words
             )
             cleaned_text = cleaner.clean(full_text)
             ocr_results["cleaned_text"] = cleaned_text
@@ -290,6 +362,7 @@ class OCRPipelineService:
         test_run_id: str,
         progress_callback: Optional[callable] = None,
         image_cache: Optional[Dict[str, bytes]] = None,
+        ocr_prompt: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """
         Process all documents in a batch.
@@ -330,6 +403,7 @@ class OCRPipelineService:
                     match_fields=should_match_fields,
                     image_cache=image_cache,
                     template_words=template_words,
+                    ocr_prompt=ocr_prompt,
                 )
             else:
                 doc_results = await self.process_document(
@@ -338,6 +412,7 @@ class OCRPipelineService:
                     ocr_library=ocr_library,
                     image_cache=image_cache,
                     template_words=template_words,
+                    ocr_prompt=ocr_prompt,
                 )
 
             # Store result in Firestore

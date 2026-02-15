@@ -41,8 +41,14 @@ accelerate>=0.28.0
 mineru-vl-utils[transformers]
 qwen-vl-utils>=0.0.8
 
-# Claude API
+# Claude API (kept for reference/fallback)
 anthropic>=0.40.0
+
+# OpenAI API (GPT-5 / GPT-5 mini)
+openai>=1.0.0
+
+# Amazon Bedrock
+boto3>=1.35.0
 
 # Utilities
 python-dateutil>=2.8.0

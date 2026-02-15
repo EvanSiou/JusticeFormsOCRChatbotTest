@@ -12,7 +12,7 @@ Note: PaddleOCR 3.x on Python 3.13 requires setting HUB_DATASET_ENDPOINT
 environment variable before importing. This is handled in this module.
 """
 import os
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -162,7 +162,8 @@ class PaddleOCREngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None
     ) -> List[OCRResult]:
         """
         Extract text by running PaddleOCR once on the full image,

@@ -6,7 +6,7 @@ TrOCR processes single-line text images, so each cropped region is treated
 as a text line. For multi-line regions, we split into lines via simple
 horizontal projection and process each line individually.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -86,7 +86,8 @@ class TrOCREngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None
     ) -> List[OCRResult]:
         """Extract text from all regions."""
         results = []

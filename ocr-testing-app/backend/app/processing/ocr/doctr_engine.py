@@ -4,7 +4,7 @@ DocTR OCR engine implementation.
 Uses docTR's recognition_predictor with the parseq architecture
 for text recognition on cropped regions from layout detection.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -38,7 +38,8 @@ class DocTROCREngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None
     ) -> List[OCRResult]:
         """
         Extract text from all regions by cropping each region

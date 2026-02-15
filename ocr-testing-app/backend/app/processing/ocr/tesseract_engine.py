@@ -3,7 +3,7 @@ Tesseract 5 OCR engine implementation.
 
 Requires tesseract-ocr system package to be installed.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -21,7 +21,8 @@ class TesseractEngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None
     ) -> List[OCRResult]:
         """Extract text from all regions."""
         results = []

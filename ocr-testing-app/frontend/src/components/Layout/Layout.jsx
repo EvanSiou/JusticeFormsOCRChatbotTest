@@ -10,7 +10,9 @@ const navItems = [
   { path: '/clean', label: 'Clean Document', icon: '🧹' },
   { path: '/verify', label: 'Verify Results', icon: '✅' },
   { path: '/results', label: 'View Results', icon: '📊' },
+  { path: '/prompts', label: 'Prompts', icon: '📝' },
   { path: '/classify', label: 'Classify', icon: '🏷️' },
+  { path: '/classify-verify', label: 'Verify Classification', icon: '🔍' },
   { path: '/metrics', label: 'Metrics', icon: '📈' },
 ]
 

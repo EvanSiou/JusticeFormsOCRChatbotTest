@@ -16,6 +16,8 @@ from app.routers.metrics import router as metrics_router
 from app.routers.verification import router as verification_router
 from app.routers.cleaning import router as cleaning_router
 from app.routers.classification import router as classification_router
+from app.routers.classification_verification import router as classify_verify_router
+from app.routers.prompts import router as prompts_router
 
 settings = get_settings()
 
@@ -47,6 +49,8 @@ app.include_router(metrics_router, prefix="/api/metrics", tags=["Metrics"])
 app.include_router(verification_router, prefix="/api/verify", tags=["Verification"])
 app.include_router(cleaning_router, prefix="/api/clean", tags=["Cleaning"])
 app.include_router(classification_router, prefix="/api/classify", tags=["Classification"])
+app.include_router(classify_verify_router, prefix="/api/classify-verify", tags=["Classification Verification"])
+app.include_router(prompts_router, prefix="/api/prompts", tags=["Prompts"])
 
 
 @app.get("/")

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { testsAPI, cleaningAPI } from '../services/api'
+import { testsAPI, cleaningAPI, resultsAPI } from '../services/api'
 
 const STANDARD_PATTERNS = [
   // Decoration patterns
@@ -49,8 +49,14 @@ const STANDARD_PATTERNS = [
   'Signature', 'Date',
   "Interpreter's", '(if', 'any)',
   'Printed', 'Name',
-  // Standalone punctuation
+  // Standalone punctuation and short patterns
   '§',
+  '_', '.', '(', ')', '$_',
+  // Multi-word phrases
+  'if any', '(if any)', '(ifany)',
+  'Procedure Art', 'by Code of Criminal',
+  // Additional template words
+  'Art,', 'Interpreters',
 ]
 
 function CleanDocumentPage() {
@@ -62,6 +68,8 @@ function CleanDocumentPage() {
   const [previewData, setPreviewData] = useState(null)
   const [currentDocIndex, setCurrentDocIndex] = useState(0)
   const [saved, setSaved] = useState(false)
+  const [savedCount, setSavedCount] = useState(0)
+  const [documentImageUrl, setDocumentImageUrl] = useState(null)
 
   // Fetch test runs (completed only)
   const { data: testsData, isLoading: testsLoading } = useQuery({
@@ -123,13 +131,29 @@ function CleanDocumentPage() {
         custom_words: customList.length > 0 ? customList : null,
       })
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       setSaved(true)
+      setSavedCount(response.data?.documents_cleaned || 0)
     },
   })
 
   const currentDoc = previewData?.documents?.[currentDocIndex]
   const hasOptions = useStandardPatterns || customWords.trim().length > 0
+
+  // Load document image when current document changes
+  useEffect(() => {
+    if (selectedTestRun && currentDoc?.document_id) {
+      setDocumentImageUrl(null)
+      resultsAPI.getDocumentImage(selectedTestRun, currentDoc.document_id)
+        .then((url) => setDocumentImageUrl(url))
+        .catch(() => setDocumentImageUrl(null))
+    } else {
+      setDocumentImageUrl(null)
+    }
+    return () => {
+      if (documentImageUrl) URL.revokeObjectURL(documentImageUrl)
+    }
+  }, [selectedTestRun, currentDoc?.document_id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
@@ -302,9 +326,27 @@ function CleanDocumentPage() {
             </div>
           </div>
 
-          {/* Two-column diff */}
+          {/* Three-column: Image | Original | Cleaned */}
           {currentDoc && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  Document Image
+                </h4>
+                <div className="border border-gray-200 rounded bg-gray-50 max-h-[500px] overflow-y-auto">
+                  {documentImageUrl ? (
+                    <img
+                      src={documentImageUrl}
+                      alt="Document"
+                      className="w-full h-auto"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
+                      Loading image...
+                    </div>
+                  )}
+                </div>
+              </div>
               <div>
                 <h4 className="text-sm font-medium text-red-700 mb-2">
                   Original Text
@@ -340,7 +382,7 @@ function CleanDocumentPage() {
 
             {saved && (
               <span className="text-green-600 text-sm">
-                Cleaned text saved for {previewData.documents.length} documents.
+                Cleaned text saved for {savedCount} of {previewData.documents.length} documents.
               </span>
             )}
 

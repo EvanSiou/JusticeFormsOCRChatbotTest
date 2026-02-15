@@ -2,10 +2,49 @@
 from .base import OCREngineBase, OCRResult
 
 # VLM engines skip layout detection and process the full page in a single pass
-VLM_ENGINES = ['got_ocr', 'mineru', 'claude']
+VLM_ENGINES = [
+    'got_ocr', 'mineru',
+    # Claude (Anthropic direct)
+    'claude',
+    # Claude (Bedrock)
+    'claude_bedrock', 'claude_haiku_bedrock',
+    # Amazon Nova (Bedrock)
+    'nova_pro', 'nova_lite',
+    # Mistral Pixtral (Bedrock)
+    'pixtral_large',
+    # Llama 4 (Bedrock)
+    'llama4_maverick_bedrock', 'llama4_scout',
+    # Llama 4 (Vertex AI)
+    'llama4_maverick_vertex', 'llama4_scout_vertex',
+    # OpenAI
+    'gpt5', 'gpt5_mini',
+]
+
+# Bedrock engine names (all use BedrockOCREngine)
+BEDROCK_ENGINE_NAMES = {
+    'claude_bedrock', 'claude_haiku_bedrock',
+    'nova_pro', 'nova_lite',
+    'pixtral_large',
+    'llama4_maverick_bedrock', 'llama4_scout',
+}
+
+# Vertex AI engine names (all use VertexOCREngine)
+VERTEX_ENGINE_NAMES = {
+    'llama4_maverick_vertex', 'llama4_scout_vertex',
+}
 
 # Lazy registry - only import implementations when requested
-_OCR_ENGINE_NAMES = ["easyocr", "surya", "paddleocr", "tesseract", "trocr", "doctr", "got_ocr", "mineru", "claude"]
+_OCR_ENGINE_NAMES = [
+    "easyocr", "surya", "paddleocr", "tesseract", "trocr", "doctr",
+    "got_ocr", "mineru",
+    "claude",
+    "claude_bedrock", "claude_haiku_bedrock",
+    "nova_pro", "nova_lite",
+    "pixtral_large",
+    "llama4_maverick_bedrock", "llama4_scout",
+    "llama4_maverick_vertex", "llama4_scout_vertex",
+    "gpt5", "gpt5_mini",
+]
 
 def get_ocr_engine(name: str) -> OCREngineBase:
     """Get an OCR engine by name (lazy import)."""
@@ -36,6 +75,15 @@ def get_ocr_engine(name: str) -> OCREngineBase:
     elif name == "claude":
         from .claude_engine import ClaudeOCREngine
         return ClaudeOCREngine()
+    elif name in BEDROCK_ENGINE_NAMES:
+        from .bedrock_engine import BedrockOCREngine
+        return BedrockOCREngine(name)
+    elif name in VERTEX_ENGINE_NAMES:
+        from .vertex_engine import VertexOCREngine
+        return VertexOCREngine(name)
+    elif name in ("gpt5", "gpt5_mini"):
+        from .openai_engine import OpenAIVisionEngine
+        return OpenAIVisionEngine(name)
     else:
         raise ValueError(f"Unknown OCR engine: {name}. Available: {_OCR_ENGINE_NAMES}")
 

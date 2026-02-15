@@ -153,7 +153,7 @@ class SyntheticGeneratorService:
     ) -> tuple[bytes, Dict[str, str]]:
         """
         Generate a single filled form.
-        Supports both image (PNG/JPEG) and PDF templates.
+        Supports both image (PNG/JPEG) and multi-page PDF templates.
 
         Args:
             base_image_bytes: The base form image or PDF as bytes
@@ -163,46 +163,88 @@ class SyntheticGeneratorService:
         Returns:
             Tuple of (filled_image_bytes, field_values_dict)
         """
-        # Convert PDF to image if needed
-        if self._is_pdf(base_image_bytes):
-            image = self._pdf_to_image(base_image_bytes)
-        else:
-            image = Image.open(io.BytesIO(base_image_bytes)).convert("RGB")
-        draw = ImageDraw.Draw(image)
-
         field_values = {}
 
+        # Generate all field values first
         for field in field_mappings:
-            # Get value for this field
             custom_options = None
             if field_value_options and field.name in field_value_options:
                 custom_options = field_value_options[field.name]
-
             value = self._get_synthetic_value(
                 field.name, custom_options, field_type=field.field_type.value
             )
             field_values[field.name] = value
 
-            # Get font
-            font = self._get_font(field.font_size)
+        is_pdf = self._is_pdf(base_image_bytes)
 
-            # Get color
-            color = self._hex_to_rgb(field.font_color)
+        if is_pdf and PYMUPDF_AVAILABLE:
+            # Multi-page PDF: render fields grouped by page
+            pdf_doc = fitz.open(stream=base_image_bytes, filetype="pdf")
+            page_count = len(pdf_doc)
+            pdf_doc.close()
 
-            # Draw text at field position
-            draw.text(
-                (field.x, field.y),
-                value,
-                font=font,
-                fill=color
-            )
+            # Group fields by page
+            fields_by_page = {}
+            for field in field_mappings:
+                pg = field.page if field.page < page_count else 0
+                fields_by_page.setdefault(pg, []).append(field)
 
-        # Save to bytes
-        output = io.BytesIO()
-        image.save(output, format="PNG")
-        output.seek(0)
+            page_images = []
+            for page_idx in range(page_count):
+                image = self._pdf_to_image(base_image_bytes, page_num=page_idx)
+                page_fields = fields_by_page.get(page_idx, [])
+                if page_fields:
+                    draw = ImageDraw.Draw(image)
+                    for field in page_fields:
+                        font = self._get_font(field.font_size)
+                        color = self._hex_to_rgb(field.font_color)
+                        draw.text(
+                            (field.x, field.y),
+                            field_values[field.name],
+                            font=font,
+                            fill=color,
+                        )
+                page_images.append(image)
 
-        return output.getvalue(), field_values
+            # If single page, save as PNG; if multi-page, save as multi-page PDF
+            if len(page_images) == 1:
+                output = io.BytesIO()
+                page_images[0].save(output, format="PNG")
+                output.seek(0)
+                return output.getvalue(), field_values
+            else:
+                # Save as PNG of first page (OCR pipeline handles multi-page via PDF)
+                # Re-assemble into a multi-page PDF
+                pdf_out = fitz.open()
+                for img in page_images:
+                    img_bytes = io.BytesIO()
+                    img.save(img_bytes, format="PNG")
+                    img_bytes.seek(0)
+                    img_pdf = fitz.open(stream=img_bytes.getvalue(), filetype="png")
+                    pdf_out.insert_pdf(img_pdf)
+                    img_pdf.close()
+                pdf_bytes = pdf_out.tobytes()
+                pdf_out.close()
+                return pdf_bytes, field_values
+        else:
+            # Single image
+            image = Image.open(io.BytesIO(base_image_bytes)).convert("RGB")
+            draw = ImageDraw.Draw(image)
+
+            for field in field_mappings:
+                font = self._get_font(field.font_size)
+                color = self._hex_to_rgb(field.font_color)
+                draw.text(
+                    (field.x, field.y),
+                    field_values[field.name],
+                    font=font,
+                    fill=color,
+                )
+
+            output = io.BytesIO()
+            image.save(output, format="PNG")
+            output.seek(0)
+            return output.getvalue(), field_values
 
     async def generate_batch(
         self,
@@ -235,6 +277,13 @@ class SyntheticGeneratorService:
         documents = []
         batch_id = str(uuid.uuid4())
 
+        # Detect if base form is a multi-page PDF
+        is_multipage_pdf = (
+            self._is_pdf(base_image_bytes)
+            and PYMUPDF_AVAILABLE
+            and fitz.open(stream=base_image_bytes, filetype="pdf").page_count > 1
+        )
+
         for i in range(count):
             doc_id = str(uuid.uuid4())
 
@@ -251,10 +300,11 @@ class SyntheticGeneratorService:
                     filled_image_bytes, preset=skew_preset
                 )
 
-            # Upload to storage
+            # Upload to storage (use .pdf extension for multi-page documents)
+            ext = "pdf" if is_multipage_pdf else "png"
             storage_path = await self.storage.upload_bytes(
                 data=filled_image_bytes,
-                blob_name=f"batches/{batch_id}/{doc_id}.png"
+                blob_name=f"batches/{batch_id}/{doc_id}.{ext}"
             )
 
             documents.append(SyntheticDocument(

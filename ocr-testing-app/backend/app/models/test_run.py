@@ -40,6 +40,8 @@ class TestRunInDB(TestRunBase):
     processed_documents: int = 0
     batch_job_id: Optional[str] = None
     last_heartbeat: Optional[datetime] = None
+    ocr_prompt_id: Optional[str] = None
+    ocr_prompt_name: Optional[str] = None
 
 
 class TestRunResponse(TestRunInDB):
@@ -58,6 +60,7 @@ class RunTestsRequest(BaseModel):
     batch_ids: List[str]
     layout_library: str = ""
     ocr_library: str
+    ocr_prompt_id: Optional[str] = None
 
 
 class RunBatchJobRequest(BaseModel):
@@ -65,6 +68,7 @@ class RunBatchJobRequest(BaseModel):
     batch_ids: List[str]
     layout_libraries: List[str]
     ocr_libraries: List[str]
+    ocr_prompt_id: Optional[str] = None
 
 
 class BatchJobInDB(BaseModel):

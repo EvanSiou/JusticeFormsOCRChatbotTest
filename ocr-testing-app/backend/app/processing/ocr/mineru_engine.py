@@ -7,7 +7,7 @@ parsing model based on Qwen2VL. Handles text, tables, formulas, and more.
 This engine processes the FULL PAGE in a single pass for efficiency,
 using MinerU's built-in layout detection + OCR pipeline.
 """
-from typing import List
+from typing import List, Optional
 from PIL import Image
 import numpy as np
 
@@ -60,7 +60,8 @@ class MinerUEngine(OCREngineBase):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None,
     ) -> List[OCRResult]:
         """
         Extract text from the FULL PAGE in a single pass.

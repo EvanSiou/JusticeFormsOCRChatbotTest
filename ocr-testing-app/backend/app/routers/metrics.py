@@ -32,6 +32,7 @@ async def get_matrix_data(
         return {"rows": [], "filters": {
             "users": [], "dates": [], "batches": [], "batch_jobs": [],
             "batch_types": [], "fields": [], "test_runs": [], "documents": [],
+            "prompts": [],
         }}
 
     # Get all batches for type info
@@ -51,6 +52,7 @@ async def get_matrix_data(
     test_runs_list = []
     documents_set = set()
     batch_jobs_set = set()
+    prompts_set = set()
 
     vlm_engines = {"got_ocr", "mineru"}
 
@@ -89,6 +91,12 @@ async def get_matrix_data(
                 bj_label = f"Job {batch_job_id[:8]}"
             batch_jobs_set.add((batch_job_id, bj_label))
 
+        # Prompt tracking
+        ocr_prompt_id = getattr(tr, 'ocr_prompt_id', None) or ""
+        ocr_prompt_name = getattr(tr, 'ocr_prompt_name', None) or "Default"
+        if ocr_prompt_id:
+            prompts_set.add((ocr_prompt_id, ocr_prompt_name))
+
         users_set.add(user_label)
         dates_set.add(date_label)
         batch_types_set.add(batch_type)
@@ -121,6 +129,8 @@ async def get_matrix_data(
                 "batch_type": batch_type,
                 "layout_library": tr.layout_library,
                 "ocr_library": tr.ocr_library,
+                "ocr_prompt_id": ocr_prompt_id,
+                "ocr_prompt_name": ocr_prompt_name,
                 "user": user_label,
                 "date": date_label,
                 "overall_accuracy": round(result.overall_accuracy, 4),
@@ -139,6 +149,72 @@ async def get_matrix_data(
         "fields": sorted(fields_set),
         "test_runs": test_runs_list,
         "documents": sorted(documents_set),
+        "prompts": [{"id": pid, "label": plabel} for pid, plabel in sorted(prompts_set, key=lambda x: x[1])],
+    }
+
+    return {"rows": rows, "filters": filters}
+
+
+@router.get("/classification-matrix")
+async def get_classification_matrix(
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """Return classification accuracy data grouped by classifier model."""
+    firestore = FirestoreService()
+
+    test_runs = await firestore.list_test_runs()
+    completed_runs = [tr for tr in test_runs if tr.status.value == "completed"]
+
+    if not completed_runs:
+        return {"rows": [], "filters": {"users": [], "dates": [], "classifier_models": [], "prompts": []}}
+
+    rows = []
+    users_set = set()
+    dates_set = set()
+    models_set = set()
+    cls_prompts_set = set()
+
+    for tr in completed_runs:
+        results = await firestore.get_results_by_test_run(tr.id)
+
+        user_label = tr.started_by_name.split("@")[0] if tr.started_by_name else tr.started_by[:8]
+        date_label = tr.started_at.strftime("%Y-%m-%d")
+
+        for result in results:
+            if not result.classification_results:
+                continue
+
+            classifier_model = result.classification_results.get("classifier_model", "unknown")
+            cls_prompt_id = result.classification_results.get("prompt_id", "")
+            cls_prompt_name = result.classification_results.get("prompt_name", "Default")
+            models_set.add(classifier_model)
+            if cls_prompt_id:
+                cls_prompts_set.add((cls_prompt_id, cls_prompt_name))
+            users_set.add(user_label)
+            dates_set.add(date_label)
+
+            rows.append({
+                "test_run_id": tr.id,
+                "document_id": result.document_id,
+                "batch_id": result.batch_id,
+                "classifier_model": classifier_model,
+                "prompt_id": cls_prompt_id,
+                "prompt_name": cls_prompt_name,
+                "user": user_label,
+                "date": date_label,
+                "classification_verified_accuracy": (
+                    round(result.classification_verified_accuracy, 4)
+                    if result.classification_verified_accuracy is not None
+                    else None
+                ),
+                "is_verified": result.classification_verified_by is not None,
+            })
+
+    filters = {
+        "users": sorted(users_set),
+        "dates": sorted(dates_set, reverse=True),
+        "classifier_models": sorted(models_set),
+        "prompts": [{"id": pid, "label": plabel} for pid, plabel in sorted(cls_prompts_set, key=lambda x: x[1])],
     }
 
     return {"rows": rows, "filters": filters}

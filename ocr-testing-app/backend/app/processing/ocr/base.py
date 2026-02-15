@@ -2,7 +2,7 @@
 Base class for OCR engines.
 """
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from PIL import Image
 
@@ -46,7 +46,8 @@ class OCREngineBase(ABC):
     def extract_text(
         self,
         image: Image.Image,
-        regions: List[Region]
+        regions: List[Region],
+        prompt: Optional[str] = None,
     ) -> List[OCRResult]:
         """
         Extract text from regions in an image.
@@ -54,6 +55,7 @@ class OCREngineBase(ABC):
         Args:
             image: PIL Image object
             regions: List of Region objects from layout detection
+            prompt: Optional custom prompt text (for VLM engines)
 
         Returns:
             List of OCRResult objects
