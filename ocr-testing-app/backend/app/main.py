@@ -3,6 +3,16 @@ Court Form OCR Testing App - FastAPI Backend
 
 Main application entry point.
 """
+import logging
+import sys
+
+# Configure logging before any other imports so all loggers pick it up
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(name)s: %(message)s",
+    stream=sys.stderr,
+)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,6 +28,7 @@ from app.routers.cleaning import router as cleaning_router
 from app.routers.classification import router as classification_router
 from app.routers.classification_verification import router as classify_verify_router
 from app.routers.prompts import router as prompts_router
+from app.routers.reference_data import router as reference_data_router
 
 settings = get_settings()
 
@@ -51,6 +62,7 @@ app.include_router(cleaning_router, prefix="/api/clean", tags=["Cleaning"])
 app.include_router(classification_router, prefix="/api/classify", tags=["Classification"])
 app.include_router(classify_verify_router, prefix="/api/classify-verify", tags=["Classification Verification"])
 app.include_router(prompts_router, prefix="/api/prompts", tags=["Prompts"])
+app.include_router(reference_data_router, prefix="/api/reference", tags=["Reference Data"])
 
 
 @app.get("/")

@@ -22,7 +22,7 @@ function PromptsPage() {
     queryFn: () => promptsAPI.getDefaults(),
   })
 
-  const prompts = promptsData?.data || []
+  const prompts = promptsData?.data?.prompts || []
   const defaults = defaultsData?.data || {}
   const defaultPromptText = activeTab === 'ocr' ? defaults.ocr : defaults.classification
 

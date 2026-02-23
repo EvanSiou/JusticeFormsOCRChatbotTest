@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { syntheticAPI, testsAPI, promptsAPI } from '../services/api'
+import { syntheticAPI, testsAPI, promptsAPI, referenceAPI } from '../services/api'
 
 function formatDuration(startedAt, completedAt) {
   if (!startedAt || !completedAt) return null
@@ -24,6 +24,11 @@ function RunTestsPage() {
   const [runningTests, setRunningTests] = useState([])
   const [runningBatchJobs, setRunningBatchJobs] = useState([])
   const [selectedOcrPrompt, setSelectedOcrPrompt] = useState('')
+  const [selectedClassifier, setSelectedClassifier] = useState('')
+  const [selectedClassificationPrompt, setSelectedClassificationPrompt] = useState('')
+  const [selectedFieldTypes, setSelectedFieldTypes] = useState([])
+  const [selectedJudgeModel, setSelectedJudgeModel] = useState('')
+  const [selectedJudgePrompt, setSelectedJudgePrompt] = useState('')
   const [userFilter, setUserFilter] = useState('')
 
   const navigate = useNavigate()
@@ -51,9 +56,9 @@ function RunTestsPage() {
   const promptableEngines = [
     'claude',
     'claude_bedrock', 'claude_haiku_bedrock',
-    'nova_pro', 'nova_lite',
-    'pixtral_large',
-    'llama4_maverick_bedrock', 'llama4_scout',
+    'nova_pro_bedrock', 'nova_lite_bedrock',
+    'pixtral_large_bedrock',
+    'llama4_maverick_bedrock', 'llama4_scout_bedrock',
     'llama4_maverick_vertex', 'llama4_scout_vertex',
     'gpt5', 'gpt5_mini',
   ]
@@ -63,10 +68,48 @@ function RunTestsPage() {
     queryKey: ['prompts', 'ocr'],
     queryFn: () => promptsAPI.list('ocr'),
   })
-  const ocrPrompts = ocrPromptsData?.data || []
+  const ocrPrompts = ocrPromptsData?.data?.prompts || []
+
+  // Fetch classification prompts
+  const { data: clsPromptsData } = useQuery({
+    queryKey: ['prompts', 'classification'],
+    queryFn: () => promptsAPI.list('classification'),
+  })
+  const classificationPrompts = clsPromptsData?.data?.prompts || []
+
+  // Fetch judge prompts
+  const { data: judgePromptsData } = useQuery({
+    queryKey: ['prompts', 'judge'],
+    queryFn: () => promptsAPI.list('judge'),
+  })
+  const judgePrompts = judgePromptsData?.data?.prompts || []
+
+  // Fetch reference templates (for auto-populating field types)
+  const { data: templatesData } = useQuery({
+    queryKey: ['reference-templates'],
+    queryFn: () => referenceAPI.listTemplates(),
+  })
+  const referenceTemplates = templatesData?.data || []
+
+  // Available classifier and judge models from libraries endpoint
+  const classifierModels = librariesData?.data?.classifier_models || []
+  const judgeModels = librariesData?.data?.judge_models || []
 
   // Show prompt selector if any selected OCR engine supports prompting
   const showPromptSelector = selectedOCRs.some(lib => promptableEngines.includes(lib))
+
+  // Auto-populate field types from reference template when batch is selected
+  useEffect(() => {
+    if (selectedBatches.length > 0 && selectedFieldTypes.length === 0) {
+      const batch = allBatches.find(b => b.id === selectedBatches[0])
+      if (batch?.reference_template_id) {
+        const template = referenceTemplates.find(t => t.id === batch.reference_template_id)
+        if (template?.fields) {
+          setSelectedFieldTypes(template.fields.map(f => f.field_name))
+        }
+      }
+    }
+  }, [selectedBatches, referenceTemplates]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Poll for all running test statuses
   const { data: runningStatusData } = useQuery({
@@ -188,11 +231,17 @@ function RunTestsPage() {
     ? allTestRuns.filter(r => r.started_by_name && r.started_by_name.split('@')[0] === userFilter)
     : allTestRuns
 
+  // Determine which selected OCRs can also act as classifiers
+  const sameAsOcrMode = selectedClassifier === '__same_as_ocr__'
+  const ocrsThatAreClassifiers = selectedOCRs.filter(ocr => classifierModels.includes(ocr))
+  const ocrsNotClassifiers = selectedOCRs.filter(ocr => !classifierModels.includes(ocr))
+
   // Calculate combinations
   const allVlm = selectedOCRs.length > 0 && selectedOCRs.every(lib => vlmEngines.includes(lib))
   const comboCount = (() => {
     let count = 0
-    for (const ocr of selectedOCRs) {
+    const ocrsToCount = sameAsOcrMode ? ocrsThatAreClassifiers : selectedOCRs
+    for (const ocr of ocrsToCount) {
       if (vlmEngines.includes(ocr)) {
         count += 1
       } else {
@@ -218,12 +267,31 @@ function RunTestsPage() {
   const runMutation = useMutation({
     mutationFn: () => {
       const promptId = selectedOcrPrompt || null
+      const clsPromptId = selectedClassificationPrompt || null
+      const fieldTypes = selectedFieldTypes.length > 0 ? selectedFieldTypes : null
+      const judgeModel = selectedJudgeModel || null
+      const judgePromptId = selectedJudgePrompt || null
+
+      if (sameAsOcrMode) {
+        // "Same as OCR" mode: each OCR engine is its own classifier
+        const validOCRs = ocrsThatAreClassifiers
+        if (validOCRs.length === 1) {
+          const ocrLib = validOCRs[0]
+          const layoutLib = vlmEngines.includes(ocrLib) ? '' : selectedLayouts[0]
+          return testsAPI.run(selectedBatches, layoutLib, ocrLib, promptId, ocrLib, clsPromptId, fieldTypes, judgeModel, judgePromptId)
+        } else {
+          return testsAPI.runBatchJob(selectedBatches, selectedLayouts, validOCRs, promptId, ['__same_as_ocr__'], clsPromptId, fieldTypes, judgeModel, judgePromptId)
+        }
+      }
+
+      const clsModel = selectedClassifier || null
       if (comboCount === 1) {
         const ocrLib = selectedOCRs[0]
         const layoutLib = vlmEngines.includes(ocrLib) ? '' : selectedLayouts[0]
-        return testsAPI.run(selectedBatches, layoutLib, ocrLib, promptId)
+        return testsAPI.run(selectedBatches, layoutLib, ocrLib, promptId, clsModel, clsPromptId, fieldTypes, judgeModel, judgePromptId)
       } else {
-        return testsAPI.runBatchJob(selectedBatches, selectedLayouts, selectedOCRs, promptId)
+        const clsModels = clsModel ? [clsModel] : null
+        return testsAPI.runBatchJob(selectedBatches, selectedLayouts, selectedOCRs, promptId, clsModels, clsPromptId, fieldTypes, judgeModel, judgePromptId)
       }
     },
     onSuccess: (response) => {
@@ -508,6 +576,190 @@ function RunTestsPage() {
         )}
       </div>
 
+      {/* Step 2.5: Classification Configuration (optional) */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4">
+          Classification (Optional)
+          {selectedClassifier && !sameAsOcrMode && selectedOCRs.length === 1 && selectedOCRs[0] === selectedClassifier && (
+            <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">
+              Single API Call
+            </span>
+          )}
+          {sameAsOcrMode && (
+            <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+              Same as OCR — {ocrsThatAreClassifiers.length} matched pair{ocrsThatAreClassifiers.length !== 1 ? 's' : ''}
+            </span>
+          )}
+        </h3>
+        <p className="text-sm text-gray-500 mb-4">
+          Run field classification alongside OCR. When the same model is used for both, a single API call is made.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Classifier Model */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Classifier Model
+            </label>
+            <select
+              value={selectedClassifier}
+              onChange={(e) => setSelectedClassifier(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md text-sm"
+            >
+              <option value="">None (OCR only)</option>
+              <option value="__same_as_ocr__">Same as OCR (match each OCR to itself)</option>
+              {classifierModels.map((model) => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+            </select>
+            {sameAsOcrMode && ocrsThatAreClassifiers.length > 0 && (
+              <div className="mt-2 text-xs text-gray-600">
+                <span className="font-medium">Pairings:</span>{' '}
+                {ocrsThatAreClassifiers.map((ocr, i) => (
+                  <span key={ocr}>
+                    {i > 0 && ', '}
+                    <span className="text-blue-700">{ocr}↔{ocr}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+            {sameAsOcrMode && ocrsNotClassifiers.length > 0 && (
+              <p className="mt-1 text-xs text-amber-600">
+                Skipped (not classifiers): {ocrsNotClassifiers.join(', ')}
+              </p>
+            )}
+          </div>
+
+          {/* Classification Prompt */}
+          {selectedClassifier && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Classification Prompt
+              </label>
+              <select
+                value={selectedClassificationPrompt}
+                onChange={(e) => setSelectedClassificationPrompt(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              >
+                <option value="">Default Prompt</option>
+                {classificationPrompts.filter(p => !p.is_default).map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+
+        {/* Field Types */}
+        {selectedClassifier && (
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Field Types to Extract
+            </label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {selectedFieldTypes.map((ft, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs"
+                >
+                  {ft}
+                  <button
+                    onClick={() => setSelectedFieldTypes(prev => prev.filter((_, i) => i !== idx))}
+                    className="text-purple-500 hover:text-purple-800"
+                  >
+                    x
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Add field type (e.g., defendant_name)"
+                className="flex-1 max-w-md px-3 py-2 border rounded-md text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.target.value.trim()) {
+                    setSelectedFieldTypes(prev => [...prev, e.target.value.trim()])
+                    e.target.value = ''
+                  }
+                }}
+              />
+              {referenceTemplates.length > 0 && (
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const template = referenceTemplates.find(t => t.id === e.target.value)
+                      if (template?.fields) {
+                        setSelectedFieldTypes(template.fields.map(f => f.field_name))
+                      }
+                      e.target.value = ''
+                    }
+                  }}
+                  className="px-3 py-2 border rounded-md text-sm"
+                >
+                  <option value="">Load from template...</option>
+                  {referenceTemplates.map((t) => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Press Enter to add each field type. Or load from a reference template.
+            </p>
+            {selectedFieldTypes.length === 0 && selectedClassifier && (
+              <p className="text-xs text-amber-600 mt-1">
+                No field types selected. Classification needs at least one field type to extract.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Step 2.75: LLM-as-a-Judge (optional) */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4">LLM-as-a-Judge (Optional)</h3>
+        <p className="text-sm text-gray-500 mb-4">
+          Select a second model to independently evaluate OCR and classification results against reference data.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Judge Model
+            </label>
+            <select
+              value={selectedJudgeModel}
+              onChange={(e) => setSelectedJudgeModel(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md text-sm"
+            >
+              <option value="">None (skip judge)</option>
+              {judgeModels.map((model) => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+            </select>
+          </div>
+
+          {selectedJudgeModel && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Judge Prompt
+              </label>
+              <select
+                value={selectedJudgePrompt}
+                onChange={(e) => setSelectedJudgePrompt(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              >
+                <option value="">Default Judge Prompt</option>
+                {judgePrompts.filter(p => !p.is_default).map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Run Button */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <div className="flex items-center justify-between">
@@ -578,6 +830,21 @@ function RunTestsPage() {
                 {run.ocr_prompt_name && (
                   <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-xs flex-shrink-0">
                     {run.ocr_prompt_name}
+                  </span>
+                )}
+                {run.classifier_model && (
+                  <span className="px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-xs flex-shrink-0">
+                    cls:{run.classifier_model}
+                  </span>
+                )}
+                {run.judge_model && (
+                  <span className="px-1.5 py-0.5 bg-amber-50 text-amber-600 rounded text-xs flex-shrink-0">
+                    judge:{run.judge_model}
+                  </span>
+                )}
+                {run.is_unified && (
+                  <span className="px-1 py-0.5 bg-green-100 text-green-700 rounded text-xs flex-shrink-0">
+                    unified
                   </span>
                 )}
                 {run.batch_job_id && (

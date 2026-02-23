@@ -21,6 +21,12 @@ VERTEX_MODELS = {
     "llama4_scout_vertex": "meta/llama-4-scout-17b-16e-instruct-maas",
 }
 
+# Model-specific max output token limits
+VERTEX_MAX_TOKENS = {
+    "llama4_maverick_vertex": 8192,
+    "llama4_scout_vertex": 8192,
+}
+
 DEFAULT_FIELD_TYPES = [
     "defendant_name",
     "county",
@@ -36,6 +42,7 @@ class VertexFieldClassifier:
     """Post-OCR field classification using Vertex AI models."""
 
     _clients = {}
+    _credentials = {}
 
     def __init__(self, model_name: str = "llama4_maverick_vertex"):
         if model_name not in VERTEX_MODELS:
@@ -47,32 +54,40 @@ class VertexFieldClassifier:
         self._model_id = VERTEX_MODELS[model_name]
 
     def _get_client(self):
-        """Lazy-init the Vertex AI client via OpenAI-compatible endpoint."""
+        """Lazy-init the Vertex AI client via OpenAI-compatible endpoint.
+        Refreshes OAuth token if expired."""
         project = os.environ.get("GCP_PROJECT_ID", "")
         region = os.environ.get("VERTEX_AI_REGION", "us-central1")
         key = f"{project}:{region}"
 
-        if key not in VertexFieldClassifier._clients:
-            from openai import OpenAI
+        import google.auth
+        import google.auth.transport.requests
 
-            base_url = f"https://{region}-aiplatform.googleapis.com/v1/projects/{project}/locations/{region}/endpoints/openapi"
-
-            import google.auth
-            import google.auth.transport.requests
-
+        # Always refresh credentials to ensure token is valid
+        if key not in VertexFieldClassifier._credentials:
             credentials, _ = google.auth.default()
-            credentials.refresh(google.auth.transport.requests.Request())
-            token = credentials.token
+            VertexFieldClassifier._credentials[key] = credentials
 
+        creds = VertexFieldClassifier._credentials[key]
+        creds.refresh(google.auth.transport.requests.Request())
+        token = creds.token
+
+        from openai import OpenAI
+
+        base_url = f"https://{region}-aiplatform.googleapis.com/v1/projects/{project}/locations/{region}/endpoints/openapi"
+
+        if key not in VertexFieldClassifier._clients:
             logger.info(
                 f"Initializing Vertex AI classifier client in {region} "
                 f"for project {project} (model: {self._model_id})"
             )
 
-            VertexFieldClassifier._clients[key] = OpenAI(
-                base_url=base_url,
-                api_key=token,
-            )
+        # Recreate client with fresh token each time
+        VertexFieldClassifier._clients[key] = OpenAI(
+            base_url=base_url,
+            api_key=token,
+            timeout=300.0,
+        )
         return VertexFieldClassifier._clients[key]
 
     def _resize_for_api(self, image: Image.Image) -> Image.Image:
@@ -90,12 +105,38 @@ class VertexFieldClassifier:
             )
         return image
 
+    def _image_to_content_block(self, image: Image.Image, label: str = "") -> dict:
+        """Convert a PIL image to an OpenAI-compatible image content block."""
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        image = self._resize_for_api(image)
+
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=85)
+        image_bytes = buffer.getvalue()
+
+        if len(image_bytes) > 5_000_000:
+            buffer = io.BytesIO()
+            image.save(buffer, format="JPEG", quality=60)
+            image_bytes = buffer.getvalue()
+
+        b64_image = base64.b64encode(image_bytes).decode("utf-8")
+        logger.info(
+            f"Classification image {label}({self._model_name}): "
+            f"{image.width}x{image.height}, {len(image_bytes)} bytes"
+        )
+        return {
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"},
+        }
+
     def classify_fields(
         self,
         ocr_text: str,
         image: Optional[Image.Image] = None,
         field_types: Optional[List[str]] = None,
         prompt_template: Optional[str] = None,
+        images: Optional[List[Image.Image]] = None,
     ) -> dict:
         """
         Classify fields in OCR text using a Vertex AI vision model.
@@ -117,32 +158,12 @@ class VertexFieldClassifier:
 
         content = []
 
-        # Include image if provided for visual context
-        if image is not None:
-            if image.mode != "RGB":
-                image = image.convert("RGB")
-            image = self._resize_for_api(image)
-
-            buffer = io.BytesIO()
-            image.save(buffer, format="JPEG", quality=85)
-            image_bytes = buffer.getvalue()
-
-            if len(image_bytes) > 5_000_000:
-                buffer = io.BytesIO()
-                image.save(buffer, format="JPEG", quality=60)
-                image_bytes = buffer.getvalue()
-
-            b64_image = base64.b64encode(image_bytes).decode("utf-8")
-            logger.info(
-                f"Classification image ({self._model_name}): "
-                f"{image.width}x{image.height}, {len(image_bytes)} bytes"
-            )
-            content.append(
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"},
-                }
-            )
+        # Include images for visual context (multi-page or single)
+        page_images = images if images else ([image] if image is not None else [])
+        for idx, img in enumerate(page_images):
+            if img is not None:
+                label = f"page {idx+1}/{len(page_images)} " if len(page_images) > 1 else ""
+                content.append(self._image_to_content_block(img, label=label))
 
         types_list = "\n".join(f"- {t}" for t in types)
 
@@ -173,7 +194,7 @@ class VertexFieldClassifier:
                 "{\n"
                 '  "form_type": "descriptive name of the form type",\n'
                 '  "classified_fields": [\n'
-                '    {"field_type": "...", "value": "...", "context": "nearby label or description", "confidence": 0.0-1.0}\n'
+                '    {"field_type": "...", "value": "...", "context": "nearby label or description", "confidence": 0.0-1.0, "page": 1, "area": "top|middle|bottom of page"}\n'
                 "  ]\n"
                 "}\n\n"
                 "OCR Text:\n"
@@ -191,13 +212,15 @@ class VertexFieldClassifier:
         )
 
         try:
+            max_tokens = VERTEX_MAX_TOKENS.get(self._model_name, 16384)
             response = client.chat.completions.create(
                 model=self._model_id,
                 messages=[{"role": "user", "content": content}],
-                max_completion_tokens=2048,
+                max_completion_tokens=max_tokens,
             )
 
             response_text = response.choices[0].message.content.strip()
+            finish_reason = response.choices[0].finish_reason
 
         except Exception as e:
             logger.error(
@@ -213,8 +236,18 @@ class VertexFieldClassifier:
 
         logger.info(
             f"Vertex AI classification response ({self._model_name}, "
-            f"{len(response_text)} chars): {response_text[:200]}"
+            f"finish_reason={finish_reason}, {len(response_text)} chars): {response_text[:500]}"
         )
+
+        if finish_reason == "length":
+            logger.warning(f"Vertex AI response was truncated due to max_tokens limit ({self._model_name})")
+            return {
+                "form_type": "error",
+                "classified_fields": [],
+                "field_types_used": types,
+                "error": f"Response was truncated (hit max_tokens limit). The model produced too much output ({len(response_text)} chars). Try simplifying your prompt or reducing the number of field types.",
+                "raw_response": response_text,
+            }
 
         if not response_text:
             return {
@@ -233,10 +266,8 @@ class VertexFieldClassifier:
         try:
             result = json.loads(response_text)
 
-            if "form_type" not in result:
-                result["form_type"] = "unknown"
-            if "classified_fields" not in result:
-                result["classified_fields"] = []
+            from app.processing.classification.normalize import normalize_classification_response
+            normalize_classification_response(result)
 
             result["field_types_used"] = types
             return result
@@ -250,5 +281,6 @@ class VertexFieldClassifier:
                 "form_type": "unknown",
                 "classified_fields": [],
                 "field_types_used": types,
+                "error": f"Model response was not valid JSON (possible truncation). JSON error: {e}",
                 "raw_response": response_text,
             }

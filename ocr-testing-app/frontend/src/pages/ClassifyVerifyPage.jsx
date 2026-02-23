@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, classifyVerifyAPI } from '../services/api'
 import MagnifyImage from '../components/MagnifyImage'
+import PageNavigator from '../components/PageNavigator'
 
 const ERROR_REASONS = [
   { value: 'wrong_classification', label: 'Wrong Classification' },
@@ -24,11 +25,11 @@ const TYPE_COLORS = {
 const MODEL_LABELS = {
   claude_bedrock: 'Claude Sonnet 4.5',
   claude_haiku_bedrock: 'Claude Haiku 4.5',
-  nova_pro: 'Nova Pro',
-  nova_lite: 'Nova Lite',
-  pixtral_large: 'Pixtral Large',
+  nova_pro_bedrock: 'Nova Pro',
+  nova_lite_bedrock: 'Nova Lite',
+  pixtral_large_bedrock: 'Pixtral Large',
   llama4_maverick_bedrock: 'Llama 4 Maverick',
-  llama4_scout: 'Llama 4 Scout',
+  llama4_scout_bedrock: 'Llama 4 Scout',
   gpt5: 'GPT-5',
   gpt5_mini: 'GPT-5 mini',
   // Legacy names for old test runs
@@ -47,6 +48,7 @@ function ClassifyVerifyPage() {
   const [userFilter, setUserFilter] = useState('')
   const [fieldVerifications, setFieldVerifications] = useState({})
   const [missedFields, setMissedFields] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
 
   // Fetch completed test runs
   const { data: testsData } = useQuery({
@@ -95,11 +97,12 @@ function ClassifyVerifyPage() {
   })
 
   const docData = docDetail?.data
+  const pageCount = docData?.page_count || 1
 
   // Load document image
   const { data: imageUrl } = useQuery({
-    queryKey: ['classify-verify-image', selectedTestRunId, selectedDocumentId],
-    queryFn: () => classifyVerifyAPI.getDocumentImage(selectedTestRunId, selectedDocumentId),
+    queryKey: ['classify-verify-image', selectedTestRunId, selectedDocumentId, currentPage],
+    queryFn: () => classifyVerifyAPI.getDocumentImage(selectedTestRunId, selectedDocumentId, currentPage),
     enabled: !!selectedTestRunId && !!selectedDocumentId,
   })
 
@@ -149,6 +152,7 @@ function ClassifyVerifyPage() {
   useEffect(() => {
     setFieldVerifications({})
     setMissedFields([])
+    setCurrentPage(0)
   }, [selectedDocumentId])
 
   // Submit verification
@@ -322,6 +326,7 @@ function ClassifyVerifyPage() {
               <div className="bg-white rounded-lg shadow p-4">
                 <h3 className="font-semibold mb-3">Document Image</h3>
                 <MagnifyImage src={imageUrl} alt="Document" />
+                <PageNavigator currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
               </div>
             )}
 

@@ -2,8 +2,12 @@
 Synthetic data generation routes.
 """
 import uuid
-from fastapi import APIRouter, HTTPException, status, Depends, Query
+import logging
+from typing import List, Optional
+from fastapi import APIRouter, HTTPException, status, Depends, Query, File, UploadFile, Form
 from fastapi.responses import Response
+
+logger = logging.getLogger(__name__)
 
 try:
     import fitz  # PyMuPDF
@@ -21,10 +25,12 @@ from app.models.batch import (
     RemoveDocumentsRequest,
     SyntheticDocument,
 )
+from app.auth.dependencies import get_current_user_name
 from app.services.firestore import FirestoreService
 from app.services.synthetic_generator import SyntheticGeneratorService
 from app.services.scan_simulator import ScanSimulatorService
 from app.services.storage import StorageService
+from app.services.reference_parser import parse_reference_file
 
 router = APIRouter()
 
@@ -101,9 +107,11 @@ async def generate_batch(
                 # Reassemble into multi-page PDF
                 pdf_out = fitz.open()
                 for sp_bytes in skewed_pages:
-                    img_pdf = fitz.open(stream=sp_bytes, filetype="png")
-                    pdf_out.insert_pdf(img_pdf)
-                    img_pdf.close()
+                    img = fitz.open(stream=sp_bytes, filetype="png")
+                    img_rect = img[0].rect
+                    page = pdf_out.new_page(width=img_rect.width, height=img_rect.height)
+                    page.insert_image(img_rect, stream=sp_bytes)
+                    img.close()
                 final_bytes = pdf_out.tobytes()
                 pdf_out.close()
                 ext = "pdf"
@@ -137,6 +145,7 @@ async def generate_batch(
             batch_type="handwritten",
             created_by_name=created_by_name,
             skew_preset=preset,
+            page_count=getattr(form, 'page_count', 1),
         )
 
         return BatchResponse(**batch.model_dump())
@@ -166,9 +175,112 @@ async def generate_batch(
             batch_type="synthetic",
             created_by_name=created_by_name,
             skew_preset=request.skew_preset,
+            page_count=getattr(form, 'page_count', 1),
         )
 
         return BatchResponse(**batch.model_dump())
+
+
+@router.post("/upload-with-reference", response_model=BatchResponse)
+async def upload_with_reference(
+    files: List[UploadFile] = File(..., description="Document files (PDF/PNG/JPEG)"),
+    reference_file: UploadFile = File(..., description="Reference data file (Excel .xlsx or CSV)"),
+    form_id: str = Form(...),
+    reference_template_id: Optional[str] = Form(None),
+    current_user_id: str = Depends(get_current_user_id),
+    current_user_name: str = Depends(get_current_user_name),
+):
+    """Upload filled forms with reference data (Excel/CSV with expected field values)."""
+    firestore = FirestoreService()
+    storage = StorageService()
+
+    # Validate form exists
+    form = await firestore.get_form_by_id(form_id)
+    if not form:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Form not found",
+        )
+
+    # Parse reference data from Excel/CSV
+    ref_bytes = await reference_file.read()
+    try:
+        reference_data = parse_reference_file(ref_bytes, reference_file.filename)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to parse reference file: {e}",
+        )
+
+    if not reference_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Reference file contains no data rows",
+        )
+
+    # Build field_values from reference_data for backward compat
+    field_values = {
+        rd["field_name"]: rd["resolved_value"] or rd["raw_value"]
+        for rd in reference_data
+        if rd.get("resolved_value") or rd.get("raw_value")
+    }
+
+    # Upload each document file
+    batch_uuid = str(uuid.uuid4())
+    documents = []
+
+    for file in files:
+        doc_id = str(uuid.uuid4())
+        file_bytes = await file.read()
+
+        # Determine extension from original filename
+        ext = "png"
+        if file.filename:
+            if file.filename.lower().endswith(".pdf"):
+                ext = "pdf"
+            elif file.filename.lower().endswith((".jpg", ".jpeg")):
+                ext = "jpg"
+
+        storage_path = await storage.upload_bytes(
+            data=file_bytes,
+            blob_name=f"batches/{batch_uuid}/{doc_id}.{ext}",
+        )
+
+        documents.append(SyntheticDocument(
+            id=doc_id,
+            storage_path=storage_path,
+            field_values=field_values,
+            is_skewed=False,
+            reference_data=reference_data,
+        ))
+
+    # Detect page count
+    page_count = getattr(form, "page_count", 1)
+
+    # Create batch
+    batch = await firestore.create_batch(
+        form_id=form.id,
+        form_name=form.name,
+        created_by=current_user_id,
+        count=len(documents),
+        documents=documents,
+        batch_type="handwritten",
+        created_by_name=current_user_name,
+        page_count=page_count,
+    )
+
+    # Update reference_template_id if provided
+    if reference_template_id:
+        doc_ref = firestore.db.collection("batches").document(batch.id)
+        doc_ref.update({"reference_template_id": reference_template_id})
+        batch.reference_template_id = reference_template_id
+
+    logger.info(
+        f"Uploaded {len(documents)} documents with {len(reference_data)} reference fields "
+        f"to batch {batch.batch_number}"
+    )
+
+    return BatchResponse(**batch.model_dump())
 
 
 @router.get("/batches", response_model=BatchListResponse)
@@ -254,6 +366,7 @@ async def merge_batches(
         batch_type=merged_type,
         created_by_name=created_by_name,
         source_batch_ids=request.source_batch_ids,
+        page_count=source_batches[0].page_count,
     )
 
     return BatchResponse(**merged_batch.model_dump())
@@ -406,6 +519,12 @@ async def get_batch(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Batch not found"
         )
+
+    # For older batches that lack page_count, look it up from the form
+    if batch.page_count <= 1:
+        form = await firestore.get_form_by_id(batch.form_id)
+        if form and getattr(form, 'page_count', 1) > 1:
+            batch.page_count = form.page_count
 
     return BatchResponse(**batch.model_dump())
 

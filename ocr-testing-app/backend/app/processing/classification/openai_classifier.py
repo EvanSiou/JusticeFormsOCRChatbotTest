@@ -21,6 +21,12 @@ OPENAI_MODELS = {
     "gpt5_mini": "gpt-5-mini",
 }
 
+# Model-specific max output token limits
+OPENAI_MAX_TOKENS = {
+    "gpt5": 16384,
+    "gpt5_mini": 16384,
+}
+
 DEFAULT_FIELD_TYPES = [
     "defendant_name",
     "county",
@@ -50,7 +56,7 @@ class OpenAIFieldClassifier:
             if not api_key:
                 raise RuntimeError("OPENAI_API_KEY is not set")
 
-            OpenAIFieldClassifier._client = OpenAI(api_key=api_key)
+            OpenAIFieldClassifier._client = OpenAI(api_key=api_key, timeout=300.0)
         return OpenAIFieldClassifier._client
 
     def _resize_for_api(self, image: Image.Image) -> Image.Image:
@@ -65,17 +71,45 @@ class OpenAIFieldClassifier:
             logger.info(f"Resized image from {w}x{h} to {new_w}x{new_h} for classification")
         return image
 
+    def _image_to_content_block(self, image: Image.Image, label: str = "") -> dict:
+        """Convert a PIL image to an OpenAI image content block."""
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        image = self._resize_for_api(image)
+
+        buffer = io.BytesIO()
+        image.save(buffer, format='JPEG', quality=85)
+        image_bytes = buffer.getvalue()
+
+        if len(image_bytes) > 5_000_000:
+            buffer = io.BytesIO()
+            image.save(buffer, format='JPEG', quality=60)
+            image_bytes = buffer.getvalue()
+
+        b64_image = base64.b64encode(image_bytes).decode('utf-8')
+        logger.info(f"Classification image {label}: {image.width}x{image.height}, {len(image_bytes)} bytes")
+        return {
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"},
+        }
+
     def classify_fields(
         self,
         ocr_text: str,
         image: Optional[Image.Image] = None,
         field_types: Optional[List[str]] = None,
         prompt_template: Optional[str] = None,
+        images: Optional[List[Image.Image]] = None,
     ) -> dict:
         """
         Classify fields in OCR text using OpenAI Vision.
 
-        Same interface as ClaudeFieldClassifier.classify_fields().
+        Args:
+            ocr_text: OCR extracted text (may span multiple pages)
+            image: Single page image for visual context (used if images not provided)
+            field_types: List of field types to extract
+            prompt_template: Optional custom prompt template
+            images: List of page images for multi-page documents
         """
         types = field_types if field_types else DEFAULT_FIELD_TYPES
 
@@ -92,27 +126,12 @@ class OpenAIFieldClassifier:
 
         content = []
 
-        # Include image if provided for visual context
-        if image is not None:
-            if image.mode != 'RGB':
-                image = image.convert('RGB')
-            image = self._resize_for_api(image)
-
-            buffer = io.BytesIO()
-            image.save(buffer, format='JPEG', quality=85)
-            image_bytes = buffer.getvalue()
-
-            if len(image_bytes) > 5_000_000:
-                buffer = io.BytesIO()
-                image.save(buffer, format='JPEG', quality=60)
-                image_bytes = buffer.getvalue()
-
-            b64_image = base64.b64encode(image_bytes).decode('utf-8')
-            logger.info(f"Classification image: {image.width}x{image.height}, {len(image_bytes)} bytes")
-            content.append({
-                "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{b64_image}"},
-            })
+        # Include images for visual context (multi-page or single)
+        page_images = images if images else ([image] if image is not None else [])
+        for idx, img in enumerate(page_images):
+            if img is not None:
+                label = f"page {idx+1}/{len(page_images)} " if len(page_images) > 1 else ""
+                content.append(self._image_to_content_block(img, label=label))
 
         types_list = "\n".join(f"- {t}" for t in types)
 
@@ -141,7 +160,7 @@ class OpenAIFieldClassifier:
                 "{\n"
                 '  "form_type": "descriptive name of the form type",\n'
                 '  "classified_fields": [\n'
-                '    {"field_type": "...", "value": "...", "context": "nearby label or description", "confidence": 0.0-1.0}\n'
+                '    {"field_type": "...", "value": "...", "context": "nearby label or description", "confidence": 0.0-1.0, "page": 1, "area": "top|middle|bottom of page"}\n'
                 "  ]\n"
                 "}\n\n"
                 "OCR Text:\n"
@@ -159,12 +178,14 @@ class OpenAIFieldClassifier:
         )
 
         try:
+            max_tokens = OPENAI_MAX_TOKENS.get(self._model_key, 16384)
             response = client.chat.completions.create(
                 model=self._model_id,
                 messages=[{"role": "user", "content": content}],
-                max_completion_tokens=2048,
+                max_completion_tokens=max_tokens,
             )
             response_text = response.choices[0].message.content.strip()
+            finish_reason = response.choices[0].finish_reason
 
         except Exception as e:
             logger.error(f"OpenAI classification API error ({self._model_id}): {type(e).__name__}: {e}")
@@ -175,7 +196,17 @@ class OpenAIFieldClassifier:
                 "error": f"OpenAI API error: {type(e).__name__}: {e}",
             }
 
-        logger.info(f"OpenAI classification response ({len(response_text)} chars): {response_text[:200]}")
+        logger.info(f"OpenAI classification response (finish_reason={finish_reason}, {len(response_text)} chars): {response_text[:500]}")
+
+        if finish_reason == "length":
+            logger.warning("OpenAI response was truncated due to max_tokens limit")
+            return {
+                "form_type": "error",
+                "classified_fields": [],
+                "field_types_used": types,
+                "error": f"Response was truncated (hit max_tokens limit). The model produced too much output ({len(response_text)} chars). Try simplifying your prompt or reducing the number of field types.",
+                "raw_response": response_text,
+            }
 
         if not response_text:
             logger.error("OpenAI returned empty response for classification")
@@ -195,10 +226,8 @@ class OpenAIFieldClassifier:
         try:
             result = json.loads(response_text)
 
-            if "form_type" not in result:
-                result["form_type"] = "unknown"
-            if "classified_fields" not in result:
-                result["classified_fields"] = []
+            from app.processing.classification.normalize import normalize_classification_response
+            normalize_classification_response(result)
 
             result["field_types_used"] = types
             return result
@@ -210,5 +239,6 @@ class OpenAIFieldClassifier:
                 "form_type": "unknown",
                 "classified_fields": [],
                 "field_types_used": types,
+                "error": f"Model response was not valid JSON (possible truncation). JSON error: {e}",
                 "raw_response": response_text,
             }

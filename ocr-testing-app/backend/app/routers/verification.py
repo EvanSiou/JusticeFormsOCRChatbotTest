@@ -2,9 +2,15 @@
 Verification routes.
 Allows users to review, confirm, and correct OCR results.
 """
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from fastapi.responses import Response
 from typing import Optional
+
+try:
+    import fitz  # PyMuPDF
+    PYMUPDF_AVAILABLE = True
+except ImportError:
+    PYMUPDF_AVAILABLE = False
 
 from app.auth.dependencies import get_current_user_id
 from app.models.result import (
@@ -118,6 +124,22 @@ async def get_document_for_verification(
 
     image_url = f"/api/verify/{test_run_id}/document/{document_id}/image"
 
+    # Determine page count from storage path or OCR text
+    page_count = 1
+    if document and document.storage_path.lower().endswith('.pdf') and PYMUPDF_AVAILABLE:
+        storage = StorageService()
+        try:
+            file_bytes = await storage.download_file(document.storage_path)
+            pdf_doc = fitz.open(stream=file_bytes, filetype="pdf")
+            page_count = len(pdf_doc)
+            pdf_doc.close()
+        except Exception:
+            # Fall back to counting page markers in OCR text
+            full_text = result.ocr_results.get("full_text", "") if result.ocr_results else ""
+            markers = full_text.count("--- Page ")
+            if markers > 1:
+                page_count = markers
+
     return {
         "result_id": result.id,
         "document_id": document_id,
@@ -130,6 +152,7 @@ async def get_document_for_verification(
         "verified_accuracy": result.verified_accuracy,
         "layout_results": result.layout_results,
         "ocr_results": result.ocr_results,
+        "page_count": page_count,
     }
 
 
@@ -137,9 +160,11 @@ async def get_document_for_verification(
 async def get_document_image(
     test_run_id: str,
     document_id: str,
+    page: int = Query(0, ge=0, description="Page number (0-indexed) for multi-page documents"),
     current_user_id: str = Depends(get_current_user_id),
 ):
-    """Proxy endpoint to serve document image for verification."""
+    """Proxy endpoint to serve document image for verification.
+    For multi-page PDF documents, converts the requested page to PNG."""
     firestore = FirestoreService()
     storage = StorageService()
 
@@ -170,6 +195,23 @@ async def get_document_image(
         )
 
     image_bytes = await storage.download_file(document.storage_path)
+
+    # If it's a PDF, convert the requested page to PNG
+    if document.storage_path.lower().endswith('.pdf') and PYMUPDF_AVAILABLE:
+        pdf_doc = fitz.open(stream=image_bytes, filetype="pdf")
+        if page >= len(pdf_doc):
+            pdf_doc.close()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Page {page} out of range (0-{len(pdf_doc)-1})"
+            )
+        page_obj = pdf_doc[page]
+        mat = fitz.Matrix(2, 2)
+        pix = page_obj.get_pixmap(matrix=mat)
+        png_bytes = pix.tobytes("png")
+        pdf_doc.close()
+        return Response(content=png_bytes, media_type="image/png")
+
     return Response(content=image_bytes, media_type="image/png")
 
 

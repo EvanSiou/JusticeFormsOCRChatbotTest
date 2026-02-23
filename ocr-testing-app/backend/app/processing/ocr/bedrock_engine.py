@@ -6,6 +6,7 @@ A single engine class handles Claude, Nova, Pixtral, Llama, etc.
 """
 import io
 import os
+import time
 import logging
 from typing import List, Optional
 from PIL import Image
@@ -19,34 +20,45 @@ logger = logging.getLogger(__name__)
 BEDROCK_MODELS = {
     "claude_bedrock": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
     "claude_haiku_bedrock": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
-    "nova_pro": "us.amazon.nova-pro-v1:0",
-    "nova_lite": "us.amazon.nova-lite-v1:0",
-    "pixtral_large": "us.mistral.pixtral-large-2502-v1:0",
+    "nova_pro_bedrock": "us.amazon.nova-pro-v1:0",
+    "nova_lite_bedrock": "us.amazon.nova-lite-v1:0",
+    "pixtral_large_bedrock": "us.mistral.pixtral-large-2502-v1:0",
     "llama4_maverick_bedrock": "us.meta.llama4-maverick-17b-instruct-v1:0",
-    "llama4_scout": "us.meta.llama4-scout-17b-instruct-v1:0",
+    "llama4_scout_bedrock": "us.meta.llama4-scout-17b-instruct-v1:0",
 }
 
 # Max tokens per model (some models have different limits)
 MODEL_MAX_TOKENS = {
     "claude_bedrock": 4096,
     "claude_haiku_bedrock": 4096,
-    "nova_pro": 4096,
-    "nova_lite": 4096,
-    "pixtral_large": 4096,
+    "nova_pro_bedrock": 4096,
+    "nova_lite_bedrock": 4096,
+    "pixtral_large_bedrock": 4096,
     "llama4_maverick_bedrock": 4096,
-    "llama4_scout": 4096,
+    "llama4_scout_bedrock": 4096,
 }
 
 # Default confidence scores per model family
 MODEL_CONFIDENCE = {
     "claude_bedrock": 0.95,
     "claude_haiku_bedrock": 0.90,
-    "nova_pro": 0.90,
-    "nova_lite": 0.85,
-    "pixtral_large": 0.92,
+    "nova_pro_bedrock": 0.90,
+    "nova_lite_bedrock": 0.85,
+    "pixtral_large_bedrock": 0.92,
     "llama4_maverick_bedrock": 0.90,
-    "llama4_scout": 0.88,
+    "llama4_scout_bedrock": 0.88,
 }
+
+# Minimum delay (seconds) between consecutive API calls per model.
+# Models with very low rate limits need longer gaps.
+MODEL_REQUEST_DELAY = {
+    "pixtral_large_bedrock": 15,
+    "llama4_maverick_bedrock": 10,
+    "llama4_scout_bedrock": 10,
+}
+
+# Module-level last-request tracker shared across OCR engine and classifier
+_bedrock_last_request_time = {}
 
 
 class BedrockOCREngine(OCREngineBase):
@@ -67,6 +79,7 @@ class BedrockOCREngine(OCREngineBase):
         self._model_id = BEDROCK_MODELS[engine_name]
         self._max_tokens = MODEL_MAX_TOKENS.get(engine_name, 4096)
         self._confidence = MODEL_CONFIDENCE.get(engine_name, 0.90)
+        self._request_delay = MODEL_REQUEST_DELAY.get(engine_name, 0)
 
     @property
     def name(self) -> str:
@@ -82,6 +95,16 @@ class BedrockOCREngine(OCREngineBase):
         region = os.environ.get("AWS_DEFAULT_REGION", "us-west-2")
         if region not in BedrockOCREngine._clients:
             import boto3
+            from botocore.config import Config
+
+            # Disable botocore's internal retries for throttling —
+            # our app-level retry loop uses longer backoffs (15s+)
+            # that actually respect per-model rate limits.
+            boto_config = Config(
+                read_timeout=300,
+                connect_timeout=10,
+                retries={"max_attempts": 0},
+            )
 
             bearer_token = os.environ.get("AWS_BEARER_TOKEN_BEDROCK", "")
             aws_key = os.environ.get("AWS_ACCESS_KEY_ID", "")
@@ -96,6 +119,7 @@ class BedrockOCREngine(OCREngineBase):
                 BedrockOCREngine._clients[region] = boto3.client(
                     "bedrock-runtime",
                     region_name=region,
+                    config=boto_config,
                 )
             elif aws_key and aws_secret:
                 # IAM credentials auth
@@ -108,6 +132,7 @@ class BedrockOCREngine(OCREngineBase):
                     region_name=region,
                     aws_access_key_id=aws_key,
                     aws_secret_access_key=aws_secret,
+                    config=boto_config,
                 )
             else:
                 raise RuntimeError(
@@ -205,34 +230,66 @@ class BedrockOCREngine(OCREngineBase):
             }
         ]
 
-        try:
-            response = client.converse(
-                modelId=self._model_id,
-                messages=messages,
-                inferenceConfig={"maxTokens": self._max_tokens},
-            )
+        # Rate-limit: wait between requests for models with low quotas
+        if self._request_delay > 0:
+            last_t = _bedrock_last_request_time.get(self._engine_name, 0)
+            elapsed = time.time() - last_t
+            if elapsed < self._request_delay:
+                gap = self._request_delay - elapsed
+                logger.info(
+                    f"Rate-limit delay for {self._engine_name}: "
+                    f"waiting {gap:.1f}s before next request"
+                )
+                time.sleep(gap)
 
-            # Extract text from response
-            output = response.get("output", {})
-            message = output.get("message", {})
-            content_blocks = message.get("content", [])
+        # Retry with exponential backoff for throttling/timeout errors
+        max_retries = 5
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                _bedrock_last_request_time[self._engine_name] = time.time()
+                response = client.converse(
+                    modelId=self._model_id,
+                    messages=messages,
+                    inferenceConfig={"maxTokens": self._max_tokens},
+                )
 
-            full_text = ""
-            for block in content_blocks:
-                if "text" in block:
-                    full_text += block["text"]
+                # Extract text from response
+                output = response.get("output", {})
+                message = output.get("message", {})
+                content_blocks = message.get("content", [])
 
-            full_text = full_text.strip()
+                full_text = ""
+                for block in content_blocks:
+                    if "text" in block:
+                        full_text += block["text"]
 
-        except Exception as e:
-            logger.error(
-                f"Bedrock API error ({self._engine_name}): "
-                f"{type(e).__name__}: {e}"
-            )
-            raise RuntimeError(
-                f"Bedrock API call failed ({self._engine_name}): "
-                f"{type(e).__name__}: {e}"
-            ) from e
+                full_text = full_text.strip()
+                break  # Success
+
+            except Exception as e:
+                last_error = e
+                error_name = type(e).__name__
+                retryable = "Throttling" in error_name or "Throttling" in str(e) or \
+                            "ModelTimeout" in error_name or "ModelTimeout" in str(e) or \
+                            "ServiceUnavailable" in str(e)
+                if retryable and attempt < max_retries - 1:
+                    wait = (2 ** attempt) * 15  # 15s, 30s, 60s, 120s
+                    logger.warning(
+                        f"Bedrock retryable error ({self._engine_name}), "
+                        f"attempt {attempt + 1}/{max_retries}, waiting {wait}s: "
+                        f"{error_name}: {e}"
+                    )
+                    time.sleep(wait)
+                    continue
+                logger.error(
+                    f"Bedrock API error ({self._engine_name}): "
+                    f"{error_name}: {e}"
+                )
+                raise RuntimeError(
+                    f"Bedrock API call failed ({self._engine_name}): "
+                    f"{error_name}: {e}"
+                ) from e
 
         # Split into lines
         lines = []

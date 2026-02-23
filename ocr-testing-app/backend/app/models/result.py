@@ -18,12 +18,18 @@ class ExtractedField(BaseModel):
     """An extracted field from OCR."""
     field_name: str
     expected_value: str
-    extracted_value: str
-    confidence: float
-    match_score: float  # 0.0 to 1.0
+    extracted_value: str  # Best matching OCR text snippet
+    confidence: float  # OCR confidence for extracted_value
+    match_score: float  # 0.0 to 1.0 — OCR match score
     is_important: bool = False
     verification_status: VerificationStatus = VerificationStatus.UNVERIFIED
     corrected_value: Optional[str] = None
+    classified_field_type: Optional[str] = None  # Classifier's field name that matched
+    classified_value: Optional[str] = None
+    classification_match_score: Optional[float] = None
+    classification_confidence: Optional[float] = None
+    judge_score: Optional[float] = None  # LLM judge score for this field
+    judge_reasoning: Optional[str] = None  # Judge's reasoning
 
 
 class ResultBase(BaseModel):
@@ -45,6 +51,11 @@ class ResultInDB(ResultBase):
     classification_verified_by: Optional[str] = None
     classification_verified_by_name: Optional[str] = None
     classification_verified_at: Optional[datetime] = None
+    ocr_accuracy: Optional[float] = None
+    classification_accuracy: Optional[float] = None
+    judge_results: Optional[Dict[str, Any]] = None
+    judge_model: Optional[str] = None
+    judge_overall_score: Optional[float] = None
     verified_accuracy: Optional[float] = None
     verified_by: Optional[str] = None
     verified_by_name: Optional[str] = None

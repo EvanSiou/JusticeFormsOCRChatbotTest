@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, resultsAPI } from '../services/api'
 import MagnifyImage from '../components/MagnifyImage'
+import PageNavigator from '../components/PageNavigator'
 
 function formatDuration(startedAt, completedAt) {
   if (!startedAt || !completedAt) return null
@@ -23,6 +24,11 @@ function ResultsPage() {
   const navigate = useNavigate()
   const [selectedDocument, setSelectedDocument] = useState(null)
   const [userFilter, setUserFilter] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageCount, setPageCount] = useState(1)
+  const [showOcr, setShowOcr] = useState(true)
+  const [showClassification, setShowClassification] = useState(true)
+  const [showJudge, setShowJudge] = useState(true)
 
   // Fetch test runs
   const { data: testsData, isLoading: testsLoading } = useQuery({
@@ -51,6 +57,20 @@ function ResultsPage() {
     enabled: !!testRunId && !!selectedDocument,
   })
 
+  // Reset to first page when selected document changes
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [selectedDocument])
+
+  // Store page count from document data
+  useEffect(() => {
+    if (documentData?.data?.page_count) {
+      setPageCount(documentData.data.page_count)
+    } else {
+      setPageCount(1)
+    }
+  }, [documentData])
+
   // Fetch document image as blob
   const [documentImageUrl, setDocumentImageUrl] = useState(null)
   const [imageLoading, setImageLoading] = useState(false)
@@ -59,7 +79,7 @@ function ResultsPage() {
     if (testRunId && selectedDocument) {
       setImageLoading(true)
       setDocumentImageUrl(null)
-      resultsAPI.getDocumentImage(testRunId, selectedDocument)
+      resultsAPI.getDocumentImage(testRunId, selectedDocument, currentPage)
         .then((url) => setDocumentImageUrl(url))
         .catch(() => setDocumentImageUrl(null))
         .finally(() => setImageLoading(false))
@@ -71,7 +91,7 @@ function ResultsPage() {
         URL.revokeObjectURL(documentImageUrl)
       }
     }
-  }, [testRunId, selectedDocument])
+  }, [testRunId, selectedDocument, currentPage])
 
   const allCompletedRuns = testsData?.data?.test_runs?.filter(
     (tr) => tr.status === 'completed'
@@ -173,6 +193,8 @@ function ResultsPage() {
               {completedRuns.map((run) => (
                 <option key={run.id} value={run.id}>
                   {run.layout_library || 'N/A'} + {run.ocr_library}
+                  {run.classifier_model ? ` cls:${run.classifier_model}` : ''}
+                  {run.judge_model ? ` judge:${run.judge_model}` : ''}
                   {run.started_by_name ? ` - ${run.started_by_name.split('@')[0]}` : ''}
                   {' - '}{new Date(run.started_at).toLocaleDateString()}
                   {` (${run.total_documents} docs)`}
@@ -209,7 +231,7 @@ function ResultsPage() {
       {testRunId && summaryData?.data && (
         <div className="bg-white rounded-lg shadow p-6 mb-4">
           <h3 className="font-semibold mb-4">Summary</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div>
               <p className="text-sm text-gray-500">Documents</p>
               <p className="text-xl font-bold">{summaryData.data.total_documents}</p>
@@ -228,18 +250,64 @@ function ResultsPage() {
               <p className="text-sm text-gray-500">OCR</p>
               <p className="text-sm font-medium">{summaryData.data.ocr_library}</p>
             </div>
-            {(() => {
-              const currentRun = allCompletedRuns.find(r => r.id === testRunId)
-              const duration = currentRun ? formatDuration(currentRun.started_at, currentRun.completed_at) : null
-              return duration ? (
-                <div>
-                  <p className="text-sm text-gray-500">Duration</p>
-                  <p className="text-xl font-bold text-gray-700">{duration}</p>
-                </div>
-              ) : null
-            })()}
           </div>
 
+          {/* Dual Accuracy + Judge cards (shown only when data exists) */}
+          {(summaryData.data.average_ocr_accuracy != null || summaryData.data.average_classification_accuracy != null || summaryData.data.average_judge_score != null) && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 pt-4 border-t">
+              {summaryData.data.average_ocr_accuracy != null && (
+                <div>
+                  <p className="text-sm text-gray-500">OCR Accuracy</p>
+                  <p className="text-xl font-bold text-blue-600">
+                    {(summaryData.data.average_ocr_accuracy * 100).toFixed(1)}%
+                  </p>
+                </div>
+              )}
+              {summaryData.data.average_classification_accuracy != null && (
+                <div>
+                  <p className="text-sm text-gray-500">Classification Accuracy</p>
+                  <p className="text-xl font-bold text-purple-600">
+                    {(summaryData.data.average_classification_accuracy * 100).toFixed(1)}%
+                  </p>
+                </div>
+              )}
+              {summaryData.data.average_judge_score != null && (
+                <div>
+                  <p className="text-sm text-gray-500">Judge Score</p>
+                  <p className="text-xl font-bold text-amber-600">
+                    {(summaryData.data.average_judge_score * 100).toFixed(1)}%
+                  </p>
+                </div>
+              )}
+              {summaryData.data.classifier_model && (
+                <div>
+                  <p className="text-sm text-gray-500">Classifier</p>
+                  <p className="text-sm font-medium">{summaryData.data.classifier_model}</p>
+                  {summaryData.data.judge_model && (
+                    <>
+                      <p className="text-sm text-gray-500 mt-1">Judge</p>
+                      <p className="text-sm font-medium">{summaryData.data.judge_model}</p>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Duration */}
+          {(() => {
+            const currentRun = allCompletedRuns.find(r => r.id === testRunId)
+            const duration = currentRun ? formatDuration(currentRun.started_at, currentRun.completed_at) : null
+            return duration ? (
+              <div className="pt-2 border-t">
+                <span className="text-sm text-gray-500">Duration: </span>
+                <span className="text-sm font-bold text-gray-700">{duration}</span>
+                {summaryData.data.is_unified && (
+                  <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">unified</span>
+                )}
+              </div>
+            ) : null
+          })()}
         </div>
       )}
 
@@ -270,39 +338,168 @@ function ResultsPage() {
                 <p className="text-sm text-gray-400 p-4">Image unavailable</p>
               )}
             </div>
+            <PageNavigator
+              currentPage={currentPage}
+              pageCount={pageCount}
+              onPageChange={setCurrentPage}
+            />
           </div>
 
           {/* Right: Extracted Fields + Layout + OCR */}
           <div className="space-y-4">
-            {/* Extracted Fields */}
+            {/* Extracted Fields — Table with toggle buttons */}
             {sortedFields.length > 0 && (
               <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="font-semibold mb-3">Extracted Fields</h3>
-                <div className="space-y-2">
-                  {sortedFields.map((field, idx) => (
-                    <div key={idx} className="p-2 bg-gray-50 rounded text-sm">
-                      <div className="flex justify-between">
-                        <span className="font-medium">{field.field_name}</span>
-                        <span className={`${
-                          field.match_score >= 0.8 ? 'text-green-600'
-                            : field.match_score >= 0.5 ? 'text-yellow-600'
-                            : 'text-red-600'
-                        }`}>
-                          {(field.match_score * 100).toFixed(0)}%
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 mt-1">
-                        <div>
-                          <span className="text-xs text-gray-500">Expected:</span>
-                          <p className="text-xs">{field.expected_value}</p>
-                        </div>
-                        <div>
-                          <span className="text-xs text-gray-500">Extracted:</span>
-                          <p className="text-xs">{field.extracted_value || '(empty)'}</p>
-                        </div>
-                      </div>
+                {/* Header: title + accuracy badges */}
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold">Field Comparison</h3>
+                  <div className="flex gap-1.5 text-xs">
+                    {documentData.data.ocr_accuracy != null && (
+                      <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                        OCR: {(documentData.data.ocr_accuracy * 100).toFixed(0)}%
+                      </span>
+                    )}
+                    {documentData.data.classification_accuracy != null && (
+                      <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded">
+                        Cls: {(documentData.data.classification_accuracy * 100).toFixed(0)}%
+                      </span>
+                    )}
+                    {documentData.data.judge_overall_score != null && (
+                      <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded">
+                        Judge: {(documentData.data.judge_overall_score * 100).toFixed(0)}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Toggle buttons */}
+                {(() => {
+                  const hasOcrData = sortedFields.some(f => f.extracted_value && String(f.extracted_value).length > 0)
+                  const hasClsData = sortedFields.some(f => f.classified_value != null && String(f.classified_value).length > 0)
+                  const hasJudgeData = sortedFields.some(f => f.judge_score != null)
+                  return (
+                    <div className="flex gap-2 mb-3">
+                      {hasOcrData && (
+                        <button
+                          onClick={() => setShowOcr(!showOcr)}
+                          className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${showOcr ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                        >
+                          OCR
+                        </button>
+                      )}
+                      {hasClsData && (
+                        <button
+                          onClick={() => setShowClassification(!showClassification)}
+                          className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${showClassification ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                        >
+                          Classification
+                        </button>
+                      )}
+                      {hasJudgeData && (
+                        <button
+                          onClick={() => setShowJudge(!showJudge)}
+                          className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${showJudge ? 'bg-amber-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                        >
+                          Judge
+                        </button>
+                      )}
                     </div>
-                  ))}
+                  )
+                })()}
+
+                {/* Field rows — original table layout with toggleable columns */}
+                <div className="space-y-1">
+                  {sortedFields.map((field, idx) => {
+                    const displayValue = (val) => {
+                      if (val == null) return '—'
+                      if (typeof val === 'object') return JSON.stringify(val)
+                      return String(val) || '—'
+                    }
+                    const hasClassification = field.classified_value != null && String(field.classified_value).length > 0
+                    const hasJudge = field.judge_score != null
+                    const scoreColor = (score) => score >= 0.8 ? 'text-green-600'
+                      : score >= 0.5 ? 'text-yellow-600' : 'text-red-600'
+                    const bgColor = (score) => score >= 0.8 ? 'bg-green-50'
+                      : score >= 0.5 ? 'bg-yellow-50' : 'bg-red-50'
+
+                    // Count visible columns: Expected is always shown
+                    const visibleCols = 1 + (showOcr ? 1 : 0) + (showClassification ? 1 : 0)
+                    const gridCols = visibleCols <= 1 ? 'grid-cols-1' : visibleCols === 2 ? 'grid-cols-2' : 'grid-cols-3'
+
+                    return (
+                      <div key={idx} className="border rounded p-2 text-xs">
+                        {/* Row 1: Field name + judge score badge */}
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold text-gray-800">{field.field_name}</span>
+                          {showJudge && hasJudge && (
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${bgColor(field.judge_score)} ${scoreColor(field.judge_score)}`}>
+                              Judge: {(field.judge_score * 100).toFixed(0)}%
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Row 2: Expected / (optional OCR) / (optional Classification) */}
+                        <div className={`grid ${gridCols} gap-2`}>
+                          {/* Expected (Reference) */}
+                          <div>
+                            <div className="text-gray-400 mb-0.5">Expected</div>
+                            <div className="font-mono text-gray-800 break-words">
+                              {displayValue(field.expected_value)}
+                            </div>
+                          </div>
+
+                          {/* OCR Result */}
+                          {showOcr && (
+                            <div>
+                              <div className="text-gray-400 mb-0.5">
+                                OCR
+                                {field.match_score > 0 && (
+                                  <span className={`ml-1 font-mono ${scoreColor(field.match_score)}`}>
+                                    {(field.match_score * 100).toFixed(0)}%
+                                  </span>
+                                )}
+                              </div>
+                              <div className="font-mono text-gray-800 break-words">
+                                {displayValue(field.extracted_value)}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Classification Result */}
+                          {showClassification && (
+                            <div>
+                              <div className="text-gray-400 mb-0.5">
+                                Classification
+                                {hasClassification && field.classification_match_score != null && (
+                                  <span className={`ml-1 font-mono ${scoreColor(field.classification_match_score)}`}>
+                                    {(field.classification_match_score * 100).toFixed(0)}%
+                                  </span>
+                                )}
+                                {field.classification_confidence != null && field.classification_confidence > 0 && (
+                                  <span className="ml-1 text-gray-400 font-mono">
+                                    conf:{(field.classification_confidence * 100).toFixed(0)}%
+                                  </span>
+                                )}
+                              </div>
+                              {field.classified_field_type && (
+                                <div className="text-purple-500 text-[10px] mb-0.5">{field.classified_field_type}</div>
+                              )}
+                              <div className="font-mono text-gray-800 break-words">
+                                {hasClassification ? displayValue(field.classified_value) : '—'}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Row 3: Judge reasoning (if toggled on) */}
+                        {showJudge && field.judge_reasoning && (
+                          <div className="mt-1 text-gray-500 italic border-t pt-1">
+                            {field.judge_reasoning}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -325,7 +522,7 @@ function ResultsPage() {
                         <span className="px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 whitespace-nowrap">
                           {cf.field_type}
                         </span>
-                        <span className="flex-1 font-mono text-xs">{cf.value}</span>
+                        <span className="flex-1 font-mono text-xs">{typeof cf.value === 'object' ? JSON.stringify(cf.value) : String(cf.value ?? '')}</span>
                         {cf.context && (
                           <span className="text-xs text-gray-400 truncate max-w-[120px]" title={cf.context}>
                             {cf.context}
@@ -344,6 +541,67 @@ function ResultsPage() {
                   <p className="text-sm text-red-500 mt-2">
                     Error: {documentData.data.classification_results.error}
                   </p>
+                )}
+              </div>
+            )}
+
+            {/* Judge Results */}
+            {documentData?.data?.judge_results && !documentData.data.judge_results.error && (
+              <div className="bg-white rounded-lg shadow p-4">
+                <h3 className="font-semibold mb-3">
+                  Judge Evaluation
+                  {documentData.data.judge_model && (
+                    <span className="ml-2 text-sm font-normal text-amber-600">
+                      {documentData.data.judge_model}
+                    </span>
+                  )}
+                </h3>
+                {/* Judge summary scores */}
+                <div className="flex gap-4 mb-3">
+                  {documentData.data.judge_results.overall_ocr_score != null && (
+                    <div className="px-3 py-2 bg-blue-50 rounded">
+                      <p className="text-xs text-gray-500">Judge OCR Score</p>
+                      <p className="text-lg font-bold text-blue-600">
+                        {(documentData.data.judge_results.overall_ocr_score * 100).toFixed(0)}%
+                      </p>
+                    </div>
+                  )}
+                  {documentData.data.judge_results.overall_classification_score != null && (
+                    <div className="px-3 py-2 bg-purple-50 rounded">
+                      <p className="text-xs text-gray-500">Judge Cls Score</p>
+                      <p className="text-lg font-bold text-purple-600">
+                        {(documentData.data.judge_results.overall_classification_score * 100).toFixed(0)}%
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {documentData.data.judge_results.summary && (
+                  <p className="text-sm text-gray-700 mb-3 italic">
+                    {documentData.data.judge_results.summary}
+                  </p>
+                )}
+                {/* Per-field judge evaluations */}
+                {documentData.data.judge_results.field_evaluations?.length > 0 && (
+                  <div className="space-y-1">
+                    {documentData.data.judge_results.field_evaluations.map((ev, idx) => (
+                      <div key={idx} className="p-2 bg-gray-50 rounded text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-xs">{ev.field_name}</span>
+                          <div className="flex gap-2 text-xs">
+                            <span className={ev.ocr_score >= 0.8 ? 'text-green-600' : ev.ocr_score >= 0.5 ? 'text-yellow-600' : 'text-red-600'}>
+                              OCR: {(ev.ocr_score * 100).toFixed(0)}%
+                            </span>
+                            <span className={ev.classification_score >= 0.8 ? 'text-green-600' : ev.classification_score >= 0.5 ? 'text-yellow-600' : 'text-red-600'}>
+                              Cls: {(ev.classification_score * 100).toFixed(0)}%
+                            </span>
+                          </div>
+                        </div>
+                        {ev.reasoning && (
+                          <p className="text-xs text-gray-500 mt-1">{ev.reasoning}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             )}

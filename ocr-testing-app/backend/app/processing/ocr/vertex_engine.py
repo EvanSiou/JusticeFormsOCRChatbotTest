@@ -33,6 +33,7 @@ class VertexOCREngine(OCREngineBase):
     """OCR engine using Vertex AI (Llama, Gemini, etc.)."""
 
     _clients = {}
+    _credentials = {}
 
     def __init__(self, engine_name: str):
         if engine_name not in VERTEX_MODELS:
@@ -49,34 +50,38 @@ class VertexOCREngine(OCREngineBase):
         return self._engine_name
 
     def _get_client(self):
-        """Lazy-init the Vertex AI client."""
+        """Lazy-init the Vertex AI client. Refreshes OAuth token if expired."""
         project = os.environ.get("GCP_PROJECT_ID", "")
         region = os.environ.get("VERTEX_AI_REGION", "us-central1")
         key = f"{project}:{region}"
 
-        if key not in VertexOCREngine._clients:
-            from openai import OpenAI
+        import google.auth
+        import google.auth.transport.requests
 
-            # Vertex AI supports OpenAI-compatible endpoint for Llama models
-            base_url = f"https://{region}-aiplatform.googleapis.com/v1/projects/{project}/locations/{region}/endpoints/openapi"
-
-            # Use Google auth token
-            import google.auth
-            import google.auth.transport.requests
-
+        # Always refresh credentials to ensure token is valid
+        if key not in VertexOCREngine._credentials:
             credentials, _ = google.auth.default()
-            credentials.refresh(google.auth.transport.requests.Request())
-            token = credentials.token
+            VertexOCREngine._credentials[key] = credentials
 
+        creds = VertexOCREngine._credentials[key]
+        creds.refresh(google.auth.transport.requests.Request())
+        token = creds.token
+
+        from openai import OpenAI
+
+        base_url = f"https://{region}-aiplatform.googleapis.com/v1/projects/{project}/locations/{region}/endpoints/openapi"
+
+        if key not in VertexOCREngine._clients:
             logger.info(
                 f"Initializing Vertex AI client in {region} "
                 f"for project {project} (model: {self._model_id})"
             )
 
-            VertexOCREngine._clients[key] = OpenAI(
-                base_url=base_url,
-                api_key=token,
-            )
+        # Recreate client with fresh token each time
+        VertexOCREngine._clients[key] = OpenAI(
+            base_url=base_url,
+            api_key=token,
+        )
         return VertexOCREngine._clients[key]
 
     DEFAULT_PROMPT = (

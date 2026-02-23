@@ -12,6 +12,7 @@ class SyntheticDocument(BaseModel):
     storage_path: str
     field_values: Dict[str, str]
     is_skewed: bool = False
+    reference_data: Optional[List[Dict[str, str]]] = None
 
 
 class BatchBase(BaseModel):
@@ -40,6 +41,8 @@ class BatchInDB(BatchBase):
     skew_preset: Optional[str] = None
     documents: List[SyntheticDocument] = []
     source_batch_ids: Optional[List[str]] = None
+    page_count: int = 1
+    reference_template_id: Optional[str] = None
 
 
 class BatchResponse(BatchInDB):

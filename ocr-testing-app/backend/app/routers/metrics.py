@@ -121,6 +121,19 @@ async def get_matrix_data(
                     acc = field.match_score
                 field_accuracies[field.field_name] = round(acc, 4)
 
+            # Per-field classification and judge scores
+            field_classification_scores = {}
+            field_judge_scores = {}
+            for field in result.extracted_fields:
+                if field.classification_match_score is not None:
+                    field_classification_scores[field.field_name] = round(field.classification_match_score, 4)
+                if field.judge_score is not None:
+                    field_judge_scores[field.field_name] = round(field.judge_score, 4)
+
+            classifier_model = None
+            if result.classification_results:
+                classifier_model = result.classification_results.get("classifier_model")
+
             rows.append({
                 "test_run_id": tr.id,
                 "document_id": result.document_id,
@@ -131,13 +144,19 @@ async def get_matrix_data(
                 "ocr_library": tr.ocr_library,
                 "ocr_prompt_id": ocr_prompt_id,
                 "ocr_prompt_name": ocr_prompt_name,
+                "classifier_model": classifier_model,
                 "user": user_label,
                 "date": date_label,
                 "overall_accuracy": round(result.overall_accuracy, 4),
                 "verified_accuracy": round(result.verified_accuracy, 4) if result.verified_accuracy is not None else None,
+                "classification_accuracy": round(result.classification_accuracy, 4) if result.classification_accuracy is not None else None,
+                "judge_overall_score": round(result.judge_overall_score, 4) if result.judge_overall_score is not None else None,
+                "judge_model": result.judge_model,
                 "duration_s": duration_s,
                 "total_documents": tr.total_documents,
                 "field_accuracies": field_accuracies,
+                "field_classification_scores": field_classification_scores,
+                "field_judge_scores": field_judge_scores,
             })
 
     filters = {
@@ -197,16 +216,21 @@ async def get_classification_matrix(
                 "test_run_id": tr.id,
                 "document_id": result.document_id,
                 "batch_id": result.batch_id,
+                "ocr_library": tr.ocr_library,
                 "classifier_model": classifier_model,
                 "prompt_id": cls_prompt_id,
                 "prompt_name": cls_prompt_name,
                 "user": user_label,
                 "date": date_label,
+                "ocr_accuracy": round(result.ocr_accuracy, 4) if result.ocr_accuracy is not None else None,
+                "classification_accuracy": round(result.classification_accuracy, 4) if result.classification_accuracy is not None else None,
                 "classification_verified_accuracy": (
                     round(result.classification_verified_accuracy, 4)
                     if result.classification_verified_accuracy is not None
                     else None
                 ),
+                "judge_overall_score": round(result.judge_overall_score, 4) if result.judge_overall_score is not None else None,
+                "judge_model": result.judge_model,
                 "is_verified": result.classification_verified_by is not None,
             })
 

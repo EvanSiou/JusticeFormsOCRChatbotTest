@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { testsAPI, classifyAPI, promptsAPI } from '../services/api'
 import MagnifyImage from '../components/MagnifyImage'
+import PageNavigator from '../components/PageNavigator'
 
 const DEFAULT_FIELD_TYPES =
   'defendant_name, county, cause_number, charge, condition_order, assessed_amount, address'
@@ -17,6 +18,7 @@ function ClassifyPage() {
   const [classificationResult, setClassificationResult] = useState(null)
   const [saved, setSaved] = useState(false)
   const [textView, setTextView] = useState('important') // 'important' | 'cleaned' | 'full'
+  const [currentPage, setCurrentPage] = useState(0)
 
   // Fetch test runs (completed only)
   const { data: testsData } = useQuery({
@@ -63,19 +65,21 @@ function ClassifyPage() {
   })
 
   const docData = docDetail?.data
+  const pageCount = docData?.page_count || 1
 
   // Load document image
   const { data: imageUrl } = useQuery({
-    queryKey: ['classify-image', selectedTestRun, selectedDocumentId],
+    queryKey: ['classify-image', selectedTestRun, selectedDocumentId, currentPage],
     queryFn: () =>
-      classifyAPI.getDocumentImage(selectedTestRun, selectedDocumentId),
+      classifyAPI.getDocumentImage(selectedTestRun, selectedDocumentId, currentPage),
     enabled: !!selectedTestRun && !!selectedDocumentId,
   })
 
-  // Reset classification when document changes
+  // Reset classification and page when document changes
   useEffect(() => {
     setClassificationResult(null)
     setSaved(false)
+    setCurrentPage(0)
   }, [selectedDocumentId])
 
   // Load existing classification if present
@@ -90,7 +94,7 @@ function ClassifyPage() {
     queryKey: ['prompts', 'classification'],
     queryFn: () => promptsAPI.list('classification'),
   })
-  const classPrompts = (classPromptsData?.data || []).filter(p => !p.is_default)
+  const classPrompts = (classPromptsData?.data?.prompts || []).filter(p => !p.is_default)
 
   // Run classification mutation
   const runMutation = useMutation({
@@ -234,6 +238,7 @@ function ClassifyPage() {
               <div className="bg-white rounded-lg shadow p-4">
                 <h3 className="text-sm font-semibold mb-2">Document Image</h3>
                 <MagnifyImage src={imageUrl} alt="Document" />
+                <PageNavigator currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
               </div>
             )}
 
@@ -318,11 +323,11 @@ function ClassifyPage() {
                   <optgroup label="Amazon Bedrock">
                     <option value="claude_bedrock">Claude Sonnet 4.5 (Bedrock)</option>
                     <option value="claude_haiku_bedrock">Claude Haiku 4.5 (Bedrock)</option>
-                    <option value="nova_pro">Nova Pro</option>
-                    <option value="nova_lite">Nova Lite</option>
-                    <option value="pixtral_large">Pixtral Large</option>
+                    <option value="nova_pro_bedrock">Nova Pro (Bedrock)</option>
+                    <option value="nova_lite_bedrock">Nova Lite (Bedrock)</option>
+                    <option value="pixtral_large_bedrock">Pixtral Large (Bedrock)</option>
                     <option value="llama4_maverick_bedrock">Llama 4 Maverick (Bedrock)</option>
-                    <option value="llama4_scout">Llama 4 Scout (Bedrock)</option>
+                    <option value="llama4_scout_bedrock">Llama 4 Scout (Bedrock)</option>
                   </optgroup>
                   <optgroup label="Google Vertex AI">
                     <option value="llama4_maverick_vertex">Llama 4 Maverick (Vertex)</option>
@@ -370,7 +375,7 @@ function ClassifyPage() {
                 {runMutation.isPending
                   ? 'Classifying...'
                   : `Classify with ${
-                    {claude: 'Claude Sonnet 4.5', claude_bedrock: 'Claude Sonnet 4.5 (Bedrock)', claude_haiku_bedrock: 'Claude Haiku 4.5 (Bedrock)', nova_pro: 'Nova Pro', nova_lite: 'Nova Lite', pixtral_large: 'Pixtral Large', llama4_maverick_bedrock: 'Llama 4 Maverick (Bedrock)', llama4_scout: 'Llama 4 Scout (Bedrock)', llama4_maverick_vertex: 'Llama 4 Maverick (Vertex)', llama4_scout_vertex: 'Llama 4 Scout (Vertex)', gpt5: 'GPT-5', gpt5_mini: 'GPT-5 mini'}[classifierModel] || classifierModel
+                    {claude: 'Claude Sonnet 4.5', claude_bedrock: 'Claude Sonnet 4.5 (Bedrock)', claude_haiku_bedrock: 'Claude Haiku 4.5 (Bedrock)', nova_pro_bedrock: 'Nova Pro (Bedrock)', nova_lite_bedrock: 'Nova Lite (Bedrock)', pixtral_large_bedrock: 'Pixtral Large (Bedrock)', llama4_maverick_bedrock: 'Llama 4 Maverick (Bedrock)', llama4_scout_bedrock: 'Llama 4 Scout (Bedrock)', llama4_maverick_vertex: 'Llama 4 Maverick (Vertex)', llama4_scout_vertex: 'Llama 4 Scout (Vertex)', gpt5: 'GPT-5', gpt5_mini: 'GPT-5 mini'}[classifierModel] || classifierModel
                   }`}
               </button>
 
@@ -405,7 +410,7 @@ function ClassifyPage() {
                     <span>
                       <span className="text-xs text-gray-500">Model:</span>
                       <span className="ml-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
-                        {{claude: 'Claude Sonnet 4.5', claude_bedrock: 'Claude Sonnet 4.5 (Bedrock)', claude_haiku_bedrock: 'Claude Haiku 4.5 (Bedrock)', nova_pro: 'Nova Pro', nova_lite: 'Nova Lite', pixtral_large: 'Pixtral Large', llama4_maverick_bedrock: 'Llama 4 Maverick (Bedrock)', llama4_scout: 'Llama 4 Scout (Bedrock)', llama4_maverick_vertex: 'Llama 4 Maverick (Vertex)', llama4_scout_vertex: 'Llama 4 Scout (Vertex)', gpt5: 'GPT-5', gpt5_mini: 'GPT-5 mini'}[classificationResult.classifier_model] || classificationResult.classifier_model}
+                        {{claude: 'Claude Sonnet 4.5', claude_bedrock: 'Claude Sonnet 4.5 (Bedrock)', claude_haiku_bedrock: 'Claude Haiku 4.5 (Bedrock)', nova_pro_bedrock: 'Nova Pro (Bedrock)', nova_lite_bedrock: 'Nova Lite (Bedrock)', pixtral_large_bedrock: 'Pixtral Large (Bedrock)', llama4_maverick_bedrock: 'Llama 4 Maverick (Bedrock)', llama4_scout_bedrock: 'Llama 4 Scout (Bedrock)', llama4_maverick_vertex: 'Llama 4 Maverick (Vertex)', llama4_scout_vertex: 'Llama 4 Scout (Vertex)', gpt5: 'GPT-5', gpt5_mini: 'GPT-5 mini'}[classificationResult.classifier_model] || classificationResult.classifier_model}
                       </span>
                     </span>
                   )}
@@ -450,37 +455,55 @@ function ClassifyPage() {
                   </details>
                 )}
 
-                {/* Classified fields */}
+                {/* Classified fields table */}
                 {classificationResult.classified_fields?.length > 0 ? (
-                  <div className="space-y-2">
-                    {classificationResult.classified_fields.map((field, i) => (
-                      <div
-                        key={i}
-                        className="border rounded p-3 bg-gray-50"
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <span
-                            className={`px-2 py-0.5 rounded text-xs font-medium ${
-                              typeColors[field.field_type] ||
-                              typeColors.other
-                            }`}
-                          >
-                            {field.field_type}
-                          </span>
-                          {field.confidence != null && (
-                            <span className="text-xs text-gray-500">
-                              {Math.round(field.confidence * 100)}%
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm font-medium">{field.value}</p>
-                        {field.context && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            Context: {field.context}
-                          </p>
-                        )}
-                      </div>
-                    ))}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100 text-left">
+                          <th className="px-2 py-1.5 font-semibold text-gray-600 border-b">Field</th>
+                          <th className="px-2 py-1.5 font-semibold text-gray-600 border-b">Value</th>
+                          <th className="px-2 py-1.5 font-semibold text-gray-600 border-b text-center w-16">Conf.</th>
+                          <th className="px-2 py-1.5 font-semibold text-gray-600 border-b text-center w-12">Pg</th>
+                          <th className="px-2 py-1.5 font-semibold text-gray-600 border-b w-16">Area</th>
+                          <th className="px-2 py-1.5 font-semibold text-gray-600 border-b">Context</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {classificationResult.classified_fields.map((field, i) => {
+                          const conf = field.confidence != null ? Math.round(field.confidence * 100) : null
+                          const confColor = conf == null ? '' : conf >= 90 ? 'text-green-700 bg-green-50' : conf >= 70 ? 'text-yellow-700 bg-yellow-50' : 'text-red-700 bg-red-50'
+                          return (
+                            <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                              <td className="px-2 py-1.5">
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap ${typeColors[field.field_type] || typeColors.other}`}>
+                                  {field.field_type}
+                                </span>
+                              </td>
+                              <td className="px-2 py-1.5 font-medium text-gray-900 max-w-[200px] truncate" title={field.value}>
+                                {field.value}
+                              </td>
+                              <td className="px-2 py-1.5 text-center">
+                                {conf != null && (
+                                  <span className={`px-1.5 py-0.5 rounded font-medium ${confColor}`}>
+                                    {conf}%
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-2 py-1.5 text-center text-gray-600">
+                                {field.page || '-'}
+                              </td>
+                              <td className="px-2 py-1.5 text-gray-600 capitalize">
+                                {field.area || '-'}
+                              </td>
+                              <td className="px-2 py-1.5 text-gray-500 max-w-[150px] truncate" title={field.context}>
+                                {field.context || '-'}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 ) : (
                   <p className="text-gray-500 text-sm">

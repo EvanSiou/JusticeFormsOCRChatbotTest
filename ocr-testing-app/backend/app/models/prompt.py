@@ -10,6 +10,8 @@ from pydantic import BaseModel
 class PromptType(str, Enum):
     OCR = "ocr"
     CLASSIFICATION = "classification"
+    JUDGE = "judge"
+    UNIFIED = "unified"
 
 
 class PromptInDB(BaseModel):

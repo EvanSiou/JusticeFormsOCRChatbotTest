@@ -9,11 +9,11 @@ VLM_ENGINES = [
     # Claude (Bedrock)
     'claude_bedrock', 'claude_haiku_bedrock',
     # Amazon Nova (Bedrock)
-    'nova_pro', 'nova_lite',
+    'nova_pro_bedrock', 'nova_lite_bedrock',
     # Mistral Pixtral (Bedrock)
-    'pixtral_large',
+    'pixtral_large_bedrock',
     # Llama 4 (Bedrock)
-    'llama4_maverick_bedrock', 'llama4_scout',
+    'llama4_maverick_bedrock', 'llama4_scout_bedrock',
     # Llama 4 (Vertex AI)
     'llama4_maverick_vertex', 'llama4_scout_vertex',
     # OpenAI
@@ -23,9 +23,9 @@ VLM_ENGINES = [
 # Bedrock engine names (all use BedrockOCREngine)
 BEDROCK_ENGINE_NAMES = {
     'claude_bedrock', 'claude_haiku_bedrock',
-    'nova_pro', 'nova_lite',
-    'pixtral_large',
-    'llama4_maverick_bedrock', 'llama4_scout',
+    'nova_pro_bedrock', 'nova_lite_bedrock',
+    'pixtral_large_bedrock',
+    'llama4_maverick_bedrock', 'llama4_scout_bedrock',
 }
 
 # Vertex AI engine names (all use VertexOCREngine)
@@ -39,9 +39,9 @@ _OCR_ENGINE_NAMES = [
     "got_ocr", "mineru",
     "claude",
     "claude_bedrock", "claude_haiku_bedrock",
-    "nova_pro", "nova_lite",
-    "pixtral_large",
-    "llama4_maverick_bedrock", "llama4_scout",
+    "nova_pro_bedrock", "nova_lite_bedrock",
+    "pixtral_large_bedrock",
+    "llama4_maverick_bedrock", "llama4_scout_bedrock",
     "llama4_maverick_vertex", "llama4_scout_vertex",
     "gpt5", "gpt5_mini",
 ]

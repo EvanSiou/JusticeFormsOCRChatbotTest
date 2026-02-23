@@ -16,6 +16,7 @@ from app.models.batch import BatchInDB, SyntheticDocument
 from app.models.test_run import TestRunInDB, TestStatus, BatchJobInDB
 from app.models.result import ResultInDB, ExtractedField
 from app.models.prompt import PromptInDB, PromptType
+from app.models.reference_data import ReferenceDataTemplate, ReferenceField
 
 settings = get_settings()
 
@@ -188,6 +189,7 @@ class FirestoreService:
         created_by_name: str = "",
         skew_preset: Optional[str] = None,
         source_batch_ids: Optional[List[str]] = None,
+        page_count: int = 1,
     ) -> BatchInDB:
         """Create a new batch."""
         batch_id = str(uuid.uuid4())
@@ -209,6 +211,7 @@ class FirestoreService:
             "skew_preset": skew_preset,
             "documents": [doc.model_dump() for doc in documents],
             "source_batch_ids": source_batch_ids,
+            "page_count": page_count,
         }
 
         self.db.collection("batches").document(batch_id).set(batch_data)
@@ -227,6 +230,8 @@ class FirestoreService:
             data.setdefault("created_by_name", "")
             data.setdefault("skew_preset", None)
             data.setdefault("source_batch_ids", None)
+            data.setdefault("page_count", 1)
+            data.setdefault("reference_template_id", None)
             return BatchInDB(**data)
         return None
 
@@ -243,6 +248,8 @@ class FirestoreService:
             data.setdefault("created_by_name", "")
             data.setdefault("skew_preset", None)
             data.setdefault("source_batch_ids", None)
+            data.setdefault("page_count", 1)
+            data.setdefault("reference_template_id", None)
             batches.append(BatchInDB(**data))
         return batches
 
@@ -301,6 +308,14 @@ class FirestoreService:
         batch_job_id: Optional[str] = None,
         ocr_prompt_id: Optional[str] = None,
         ocr_prompt_name: Optional[str] = None,
+        classifier_model: Optional[str] = None,
+        classification_prompt_id: Optional[str] = None,
+        classification_prompt_name: Optional[str] = None,
+        field_types: Optional[List[str]] = None,
+        is_unified: bool = False,
+        judge_model: Optional[str] = None,
+        judge_prompt_id: Optional[str] = None,
+        judge_prompt_name: Optional[str] = None,
     ) -> TestRunInDB:
         """Create a new test run."""
         run_id = str(uuid.uuid4())
@@ -320,6 +335,14 @@ class FirestoreService:
             "batch_job_id": batch_job_id,
             "ocr_prompt_id": ocr_prompt_id,
             "ocr_prompt_name": ocr_prompt_name,
+            "classifier_model": classifier_model,
+            "classification_prompt_id": classification_prompt_id,
+            "classification_prompt_name": classification_prompt_name,
+            "field_types": field_types,
+            "is_unified": is_unified,
+            "judge_model": judge_model,
+            "judge_prompt_id": judge_prompt_id,
+            "judge_prompt_name": judge_prompt_name,
         }
 
         self.db.collection("test_runs").document(run_id).set(run_data)
@@ -337,6 +360,14 @@ class FirestoreService:
             data.setdefault("last_heartbeat", None)
             data.setdefault("ocr_prompt_id", None)
             data.setdefault("ocr_prompt_name", None)
+            data.setdefault("classifier_model", None)
+            data.setdefault("classification_prompt_id", None)
+            data.setdefault("classification_prompt_name", None)
+            data.setdefault("field_types", None)
+            data.setdefault("is_unified", False)
+            data.setdefault("judge_model", None)
+            data.setdefault("judge_prompt_id", None)
+            data.setdefault("judge_prompt_name", None)
             return TestRunInDB(**data)
         return None
 
@@ -386,6 +417,14 @@ class FirestoreService:
             data.setdefault("last_heartbeat", None)
             data.setdefault("ocr_prompt_id", None)
             data.setdefault("ocr_prompt_name", None)
+            data.setdefault("classifier_model", None)
+            data.setdefault("classification_prompt_id", None)
+            data.setdefault("classification_prompt_name", None)
+            data.setdefault("field_types", None)
+            data.setdefault("is_unified", False)
+            data.setdefault("judge_model", None)
+            data.setdefault("judge_prompt_id", None)
+            data.setdefault("judge_prompt_name", None)
 
             # Auto-detect stale running tasks
             if data["status"] in [TestStatus.RUNNING, TestStatus.PENDING]:
@@ -421,6 +460,11 @@ class FirestoreService:
         extracted_fields: List[ExtractedField],
         overall_accuracy: float,
         classification_results: Optional[Dict[str, Any]] = None,
+        ocr_accuracy: Optional[float] = None,
+        classification_accuracy: Optional[float] = None,
+        judge_results: Optional[Dict[str, Any]] = None,
+        judge_model: Optional[str] = None,
+        judge_overall_score: Optional[float] = None,
     ) -> ResultInDB:
         """Create a new result."""
         result_id = str(uuid.uuid4())
@@ -437,6 +481,16 @@ class FirestoreService:
         }
         if classification_results is not None:
             result_data["classification_results"] = classification_results
+        if ocr_accuracy is not None:
+            result_data["ocr_accuracy"] = ocr_accuracy
+        if classification_accuracy is not None:
+            result_data["classification_accuracy"] = classification_accuracy
+        if judge_results is not None:
+            result_data["judge_results"] = judge_results
+        if judge_model is not None:
+            result_data["judge_model"] = judge_model
+        if judge_overall_score is not None:
+            result_data["judge_overall_score"] = judge_overall_score
 
         self.db.collection("results").document(result_id).set(result_data)
 
@@ -457,6 +511,11 @@ class FirestoreService:
             data.setdefault("classification_verified_by", None)
             data.setdefault("classification_verified_by_name", None)
             data.setdefault("classification_verified_at", None)
+            data.setdefault("ocr_accuracy", None)
+            data.setdefault("classification_accuracy", None)
+            data.setdefault("judge_results", None)
+            data.setdefault("judge_model", None)
+            data.setdefault("judge_overall_score", None)
             results.append(ResultInDB(**data))
         return results
 
@@ -481,6 +540,11 @@ class FirestoreService:
             data.setdefault("classification_verified_by", None)
             data.setdefault("classification_verified_by_name", None)
             data.setdefault("classification_verified_at", None)
+            data.setdefault("ocr_accuracy", None)
+            data.setdefault("classification_accuracy", None)
+            data.setdefault("judge_results", None)
+            data.setdefault("judge_model", None)
+            data.setdefault("judge_overall_score", None)
             return ResultInDB(**data)
         return None
 
@@ -543,6 +607,11 @@ class FirestoreService:
             data.setdefault("classification_verified_by", None)
             data.setdefault("classification_verified_by_name", None)
             data.setdefault("classification_verified_at", None)
+            data.setdefault("ocr_accuracy", None)
+            data.setdefault("classification_accuracy", None)
+            data.setdefault("judge_results", None)
+            data.setdefault("judge_model", None)
+            data.setdefault("judge_overall_score", None)
             return ResultInDB(**data)
         return None
 
@@ -805,4 +874,116 @@ class FirestoreService:
         if not doc.exists:
             return False
         doc_ref.delete()
+        return True
+
+    # ==================== Reference Data Template Operations ====================
+
+    async def create_reference_template(
+        self,
+        name: str,
+        fields: List[ReferenceField],
+        created_by: str,
+        created_by_name: str = "",
+        form_type_description: str = "",
+    ) -> ReferenceDataTemplate:
+        """Create a new reference data template."""
+        template_id = str(uuid.uuid4())
+        now = datetime.utcnow()
+        data = {
+            "id": template_id,
+            "name": name,
+            "form_type_description": form_type_description,
+            "fields": [f.model_dump() for f in fields],
+            "created_by": created_by,
+            "created_by_name": created_by_name,
+            "created_at": now,
+            "updated_at": None,
+        }
+        self.db.collection("reference_templates").document(template_id).set(data)
+        return ReferenceDataTemplate(**data)
+
+    async def get_reference_template(self, template_id: str) -> Optional[ReferenceDataTemplate]:
+        """Get reference template by ID."""
+        doc = self.db.collection("reference_templates").document(template_id).get()
+        if doc.exists:
+            data = doc.to_dict()
+            data["fields"] = [ReferenceField(**f) for f in data.get("fields", [])]
+            data.setdefault("form_type_description", "")
+            data.setdefault("created_by_name", "")
+            data.setdefault("updated_at", None)
+            return ReferenceDataTemplate(**data)
+        return None
+
+    async def list_reference_templates(self) -> List[ReferenceDataTemplate]:
+        """List all reference data templates."""
+        docs = self.db.collection("reference_templates").order_by(
+            "created_at", direction=firestore.Query.DESCENDING
+        ).stream()
+        templates = []
+        for doc in docs:
+            data = doc.to_dict()
+            data["fields"] = [ReferenceField(**f) for f in data.get("fields", [])]
+            data.setdefault("form_type_description", "")
+            data.setdefault("created_by_name", "")
+            data.setdefault("updated_at", None)
+            templates.append(ReferenceDataTemplate(**data))
+        return templates
+
+    async def update_reference_template(
+        self,
+        template_id: str,
+        name: Optional[str] = None,
+        form_type_description: Optional[str] = None,
+        fields: Optional[List[ReferenceField]] = None,
+    ) -> bool:
+        """Update a reference data template."""
+        doc_ref = self.db.collection("reference_templates").document(template_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+        update_data: Dict[str, Any] = {"updated_at": datetime.utcnow()}
+        if name is not None:
+            update_data["name"] = name
+        if form_type_description is not None:
+            update_data["form_type_description"] = form_type_description
+        if fields is not None:
+            update_data["fields"] = [f.model_dump() for f in fields]
+        doc_ref.update(update_data)
+        return True
+
+    async def delete_reference_template(self, template_id: str) -> bool:
+        """Delete a reference data template."""
+        doc_ref = self.db.collection("reference_templates").document(template_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+        doc_ref.delete()
+        return True
+
+    # ==================== Document Reference Data Operations ====================
+
+    async def update_document_reference_data(
+        self,
+        batch_id: str,
+        document_id: str,
+        reference_data: List[Dict[str, str]],
+        field_values: Dict[str, str],
+    ) -> bool:
+        """Update reference data for a specific document in a batch."""
+        doc_ref = self.db.collection("batches").document(batch_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+        data = doc.to_dict()
+        documents = data.get("documents", [])
+        found = False
+        for d in documents:
+            if d["id"] == document_id:
+                d["reference_data"] = reference_data
+                d["field_values"] = field_values
+                found = True
+                break
+        if not found:
+            return False
+        doc_ref.update({"documents": documents})
         return True

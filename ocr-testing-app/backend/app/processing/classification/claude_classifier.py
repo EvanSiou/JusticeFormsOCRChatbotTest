@@ -34,7 +34,9 @@ class ClaudeFieldClassifier:
         if ClaudeFieldClassifier._client is None:
             import anthropic
 
-            ClaudeFieldClassifier._client = anthropic.Anthropic()
+            ClaudeFieldClassifier._client = anthropic.Anthropic(
+                timeout=300.0,
+            )
         return ClaudeFieldClassifier._client
 
     def _resize_for_api(self, image: Image.Image) -> Image.Image:
@@ -49,12 +51,46 @@ class ClaudeFieldClassifier:
             logger.info(f"Resized image from {w}x{h} to {new_w}x{new_h} for Claude classification")
         return image
 
+    def _image_to_content_block(self, image: Image.Image, label: str = "") -> dict:
+        """Convert a PIL image to an Anthropic API image content block."""
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        image = self._resize_for_api(image)
+
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        image_bytes = buffer.getvalue()
+
+        # Fall back to JPEG if too large
+        if len(image_bytes) > 3_500_000:
+            buffer = io.BytesIO()
+            image.save(buffer, format="JPEG", quality=85)
+            image_bytes = buffer.getvalue()
+            media_type = "image/jpeg"
+        else:
+            media_type = "image/png"
+
+        base64_image = base64.b64encode(image_bytes).decode("utf-8")
+        logger.info(
+            f"Classification image {label}(claude_anthropic): "
+            f"{image.width}x{image.height}, {len(image_bytes)} bytes"
+        )
+        return {
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": media_type,
+                "data": base64_image,
+            },
+        }
+
     def classify_fields(
         self,
         ocr_text: str,
         image: Optional[Image.Image] = None,
         field_types: Optional[List[str]] = None,
         prompt_template: Optional[str] = None,
+        images: Optional[List[Image.Image]] = None,
     ) -> dict:
         """
         Classify fields in OCR text using Claude (Anthropic API).
@@ -76,40 +112,12 @@ class ClaudeFieldClassifier:
 
         content = []
 
-        # Include image if provided for visual context
-        if image is not None:
-            if image.mode != "RGB":
-                image = image.convert("RGB")
-            image = self._resize_for_api(image)
-
-            buffer = io.BytesIO()
-            image.save(buffer, format="PNG")
-            image_bytes = buffer.getvalue()
-
-            # Fall back to JPEG if too large
-            if len(image_bytes) > 3_500_000:
-                buffer = io.BytesIO()
-                image.save(buffer, format="JPEG", quality=85)
-                image_bytes = buffer.getvalue()
-                media_type = "image/jpeg"
-            else:
-                media_type = "image/png"
-
-            base64_image = base64.b64encode(image_bytes).decode("utf-8")
-            logger.info(
-                f"Classification image (claude_anthropic): "
-                f"{image.width}x{image.height}, {len(image_bytes)} bytes"
-            )
-            content.append(
-                {
-                    "type": "image",
-                    "source": {
-                        "type": "base64",
-                        "media_type": media_type,
-                        "data": base64_image,
-                    },
-                }
-            )
+        # Include images for visual context (multi-page or single)
+        page_images = images if images else ([image] if image is not None else [])
+        for idx, img in enumerate(page_images):
+            if img is not None:
+                label = f"page {idx+1}/{len(page_images)} " if len(page_images) > 1 else ""
+                content.append(self._image_to_content_block(img, label=label))
 
         types_list = "\n".join(f"- {t}" for t in types)
 
@@ -140,7 +148,7 @@ class ClaudeFieldClassifier:
                 "{\n"
                 '  "form_type": "descriptive name of the form type",\n'
                 '  "classified_fields": [\n'
-                '    {"field_type": "...", "value": "...", "context": "nearby label or description", "confidence": 0.0-1.0}\n'
+                '    {"field_type": "...", "value": "...", "context": "nearby label or description", "confidence": 0.0-1.0, "page": 1, "area": "top|middle|bottom of page"}\n'
                 "  ]\n"
                 "}\n\n"
                 "OCR Text:\n"
@@ -160,11 +168,12 @@ class ClaudeFieldClassifier:
         try:
             message = client.messages.create(
                 model="claude-sonnet-4-5-20250929",
-                max_tokens=2048,
+                max_tokens=8192,
                 messages=[{"role": "user", "content": content}],
             )
 
             response_text = message.content[0].text.strip()
+            stop_reason = message.stop_reason
 
         except Exception as e:
             logger.error(
@@ -180,8 +189,18 @@ class ClaudeFieldClassifier:
 
         logger.info(
             f"Claude (Anthropic) classification response "
-            f"({len(response_text)} chars): {response_text[:200]}"
+            f"(stop_reason={stop_reason}, {len(response_text)} chars): {response_text[:500]}"
         )
+
+        if stop_reason == "max_tokens":
+            logger.warning("Claude response was truncated due to max_tokens limit")
+            return {
+                "form_type": "error",
+                "classified_fields": [],
+                "field_types_used": types,
+                "error": f"Response was truncated (hit max_tokens limit). The model produced too much output ({len(response_text)} chars). Try simplifying your prompt or reducing the number of field types.",
+                "raw_response": response_text,
+            }
 
         if not response_text:
             return {
@@ -200,10 +219,8 @@ class ClaudeFieldClassifier:
         try:
             result = json.loads(response_text)
 
-            if "form_type" not in result:
-                result["form_type"] = "unknown"
-            if "classified_fields" not in result:
-                result["classified_fields"] = []
+            from app.processing.classification.normalize import normalize_classification_response
+            normalize_classification_response(result)
 
             result["field_types_used"] = types
             return result
@@ -215,5 +232,6 @@ class ClaudeFieldClassifier:
                 "form_type": "unknown",
                 "classified_fields": [],
                 "field_types_used": types,
+                "error": f"Model response was not valid JSON (possible truncation). JSON error: {e}",
                 "raw_response": response_text,
             }

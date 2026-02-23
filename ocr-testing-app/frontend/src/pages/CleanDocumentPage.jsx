@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { testsAPI, cleaningAPI, resultsAPI } from '../services/api'
+import PageNavigator from '../components/PageNavigator'
 
 const STANDARD_PATTERNS = [
   // Decoration patterns
@@ -70,6 +71,8 @@ function CleanDocumentPage() {
   const [saved, setSaved] = useState(false)
   const [savedCount, setSavedCount] = useState(0)
   const [documentImageUrl, setDocumentImageUrl] = useState(null)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageCount, setPageCount] = useState(1)
 
   // Fetch test runs (completed only)
   const { data: testsData, isLoading: testsLoading } = useQuery({
@@ -140,11 +143,24 @@ function CleanDocumentPage() {
   const currentDoc = previewData?.documents?.[currentDocIndex]
   const hasOptions = useStandardPatterns || customWords.trim().length > 0
 
-  // Load document image when current document changes
+  // Reset page when document changes
+  useEffect(() => {
+    setCurrentPage(0)
+    // Detect page count from OCR text page markers
+    if (currentDoc) {
+      const fullText = currentDoc.original_text || ''
+      const markers = (fullText.match(/--- Page \d+ ---/g) || []).length
+      setPageCount(markers > 1 ? markers : 1)
+    } else {
+      setPageCount(1)
+    }
+  }, [currentDoc?.document_id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load document image when current document or page changes
   useEffect(() => {
     if (selectedTestRun && currentDoc?.document_id) {
       setDocumentImageUrl(null)
-      resultsAPI.getDocumentImage(selectedTestRun, currentDoc.document_id)
+      resultsAPI.getDocumentImage(selectedTestRun, currentDoc.document_id, currentPage)
         .then((url) => setDocumentImageUrl(url))
         .catch(() => setDocumentImageUrl(null))
     } else {
@@ -153,7 +169,7 @@ function CleanDocumentPage() {
     return () => {
       if (documentImageUrl) URL.revokeObjectURL(documentImageUrl)
     }
-  }, [selectedTestRun, currentDoc?.document_id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedTestRun, currentDoc?.document_id, currentPage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
@@ -335,11 +351,14 @@ function CleanDocumentPage() {
                 </h4>
                 <div className="border border-gray-200 rounded bg-gray-50 max-h-[500px] overflow-y-auto">
                   {documentImageUrl ? (
+                    <>
                     <img
                       src={documentImageUrl}
                       alt="Document"
                       className="w-full h-auto"
                     />
+                    <PageNavigator currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+                    </>
                   ) : (
                     <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
                       Loading image...

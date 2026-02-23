@@ -104,8 +104,9 @@ export const syntheticAPI = {
     api.get('/synthetic/batches'),
   getBatch: (id) =>
     api.get(`/synthetic/batches/${id}`),
-  getDocumentImage: (batchId, documentId) =>
+  getDocumentImage: (batchId, documentId, page = 0) =>
     api.get(`/synthetic/batches/${batchId}/documents/${documentId}/image`, {
+      params: { page },
       responseType: 'blob',
     }).then((response) => {
       const url = URL.createObjectURL(response.data)
@@ -119,6 +120,10 @@ export const syntheticAPI = {
     api.post(`/synthetic/batches/${targetBatchId}/append`, { source_batch_id: sourceBatchId, document_ids: documentIds }),
   deleteBatch: (batchId) =>
     api.delete(`/synthetic/batches/${batchId}`),
+  uploadWithReference: (formData) =>
+    api.post('/synthetic/upload-with-reference', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 }
 
 // Prompts API
@@ -131,21 +136,58 @@ export const promptsAPI = {
   getDefaults: () => api.get('/prompts/defaults'),
 }
 
+// Reference Data API
+export const referenceAPI = {
+  listTemplates: () => api.get('/reference/templates'),
+  getTemplate: (id) => api.get(`/reference/templates/${id}`),
+  createTemplate: (data) => api.post('/reference/templates', data),
+  updateTemplate: (id, data) => api.put(`/reference/templates/${id}`, data),
+  deleteTemplate: (id) => api.delete(`/reference/templates/${id}`),
+  getBatchRef: (batchId) => api.get(`/reference/batches/${batchId}`),
+  getDocumentRef: (batchId, docId) => api.get(`/reference/batches/${batchId}/documents/${docId}`),
+  updateDocumentRef: (batchId, docId, data) => api.put(`/reference/batches/${batchId}/documents/${docId}`, data),
+  uploadBatchRef: (batchId, formData) =>
+    api.post(`/reference/batches/${batchId}/upload`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  downloadTemplate: (templateName) =>
+    api.get(`/reference/templates/download/${templateName}`, { responseType: 'blob' }).then((response) => {
+      const url = URL.createObjectURL(response.data)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${templateName}_reference_template.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }),
+}
+
 // Tests API
 export const testsAPI = {
-  run: (batchIds, layoutLibrary, ocrLibrary, ocrPromptId = null) =>
+  run: (batchIds, layoutLibrary, ocrLibrary, ocrPromptId = null, classifierModel = null, classificationPromptId = null, fieldTypes = null, judgeModel = null, judgePromptId = null) =>
     api.post('/tests/run', {
       batch_ids: batchIds,
       layout_library: layoutLibrary,
       ocr_library: ocrLibrary,
       ocr_prompt_id: ocrPromptId,
+      classifier_model: classifierModel,
+      classification_prompt_id: classificationPromptId,
+      field_types: fieldTypes,
+      judge_model: judgeModel,
+      judge_prompt_id: judgePromptId,
     }),
-  runBatchJob: (batchIds, layoutLibraries, ocrLibraries, ocrPromptId = null) =>
+  runBatchJob: (batchIds, layoutLibraries, ocrLibraries, ocrPromptId = null, classifierModels = null, classificationPromptId = null, fieldTypes = null, judgeModel = null, judgePromptId = null) =>
     api.post('/tests/batch-job', {
       batch_ids: batchIds,
       layout_libraries: layoutLibraries,
       ocr_libraries: ocrLibraries,
       ocr_prompt_id: ocrPromptId,
+      classifier_models: classifierModels,
+      classification_prompt_id: classificationPromptId,
+      field_types: fieldTypes,
+      judge_model: judgeModel,
+      judge_prompt_id: judgePromptId,
     }),
   listBatchJobs: () =>
     api.get('/tests/batch-jobs'),
@@ -176,8 +218,9 @@ export const resultsAPI = {
     api.get(`/results/${testRunId}`),
   getDocument: (testRunId, documentId) =>
     api.get(`/results/${testRunId}/document/${documentId}`),
-  getDocumentImage: (testRunId, documentId) =>
+  getDocumentImage: (testRunId, documentId, page = 0) =>
     api.get(`/results/${testRunId}/document/${documentId}/image`, {
+      params: { page },
       responseType: 'blob',
     }).then((response) => {
       const url = URL.createObjectURL(response.data)
@@ -193,8 +236,9 @@ export const verificationAPI = {
     api.get(`/verify/${testRunId}/documents`),
   getDocument: (testRunId, documentId) =>
     api.get(`/verify/${testRunId}/document/${documentId}`),
-  getDocumentImage: (testRunId, documentId) =>
+  getDocumentImage: (testRunId, documentId, page = 0) =>
     api.get(`/verify/${testRunId}/document/${documentId}/image`, {
+      params: { page },
       responseType: 'blob',
     }).then((response) => {
       const url = URL.createObjectURL(response.data)
@@ -245,8 +289,9 @@ export const classifyAPI = {
     api.get(`/classify/${testRunId}/documents`),
   getDocument: (testRunId, documentId) =>
     api.get(`/classify/${testRunId}/document/${documentId}`),
-  getDocumentImage: (testRunId, documentId) =>
+  getDocumentImage: (testRunId, documentId, page = 0) =>
     api.get(`/classify/${testRunId}/document/${documentId}/image`, {
+      params: { page },
       responseType: 'blob',
     }).then((response) => {
       const url = URL.createObjectURL(response.data)
@@ -264,8 +309,9 @@ export const classifyVerifyAPI = {
     api.get(`/classify-verify/${testRunId}/documents`),
   getDocument: (testRunId, documentId) =>
     api.get(`/classify-verify/${testRunId}/document/${documentId}`),
-  getDocumentImage: (testRunId, documentId) =>
+  getDocumentImage: (testRunId, documentId, page = 0) =>
     api.get(`/classify-verify/${testRunId}/document/${documentId}/image`, {
+      params: { page },
       responseType: 'blob',
     }).then((response) => {
       const url = URL.createObjectURL(response.data)

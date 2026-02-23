@@ -3,9 +3,15 @@ Classification routes.
 Allows users to classify fields in verified OCR results using Claude.
 """
 import io
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from fastapi.responses import Response
 from PIL import Image
+
+try:
+    import fitz  # PyMuPDF
+    PYMUPDF_AVAILABLE = True
+except ImportError:
+    PYMUPDF_AVAILABLE = False
 
 from app.auth.dependencies import get_current_user_id
 from app.models.classification import (
@@ -120,6 +126,25 @@ async def get_document_for_classification(
 
     important_text = "\n".join(important_text_parts)
 
+    # Determine page count
+    page_count = 1
+    storage = StorageService()
+    batch = await firestore.get_batch_by_id(result.batch_id)
+    if batch:
+        for doc in batch.documents:
+            if doc.id == document_id and doc.storage_path.lower().endswith('.pdf') and PYMUPDF_AVAILABLE:
+                try:
+                    file_bytes = await storage.download_file(doc.storage_path)
+                    pdf_doc = fitz.open(stream=file_bytes, filetype="pdf")
+                    page_count = len(pdf_doc)
+                    pdf_doc.close()
+                except Exception:
+                    full_text = result.ocr_results.get("full_text", "") if result.ocr_results else ""
+                    markers = full_text.count("--- Page ")
+                    if markers > 1:
+                        page_count = markers
+                break
+
     return {
         "result_id": result.id,
         "document_id": document_id,
@@ -129,6 +154,7 @@ async def get_document_for_classification(
         "cleaned_text": result.ocr_results.get("cleaned_text", ""),
         "existing_classification": result.classification_results,
         "image_url": f"/api/classify/{test_run_id}/document/{document_id}/image",
+        "page_count": page_count,
     }
 
 
@@ -172,26 +198,38 @@ async def run_classification(
             detail="No OCR text available for classification. Run OCR first.",
         )
 
-    # Always load document image for visual context
+    # Always load document images for visual context (all pages for PDFs)
     batch = await firestore.get_batch_by_id(result.batch_id)
-    doc_image = None
+    doc_images = []
     if batch:
         for doc in batch.documents:
             if doc.id == document_id:
                 try:
                     image_bytes = await storage.download_file(doc.storage_path)
-                    doc_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+                    if doc.storage_path.lower().endswith('.pdf') and PYMUPDF_AVAILABLE:
+                        # Extract all pages from PDF
+                        pdf_doc = fitz.open(stream=image_bytes, filetype="pdf")
+                        for page_idx in range(len(pdf_doc)):
+                            page = pdf_doc[page_idx]
+                            mat = fitz.Matrix(2, 2)
+                            pix = page.get_pixmap(matrix=mat)
+                            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                            doc_images.append(img)
+                        pdf_doc.close()
+                    else:
+                        doc_images.append(Image.open(io.BytesIO(image_bytes)).convert("RGB"))
                 except Exception as img_err:
                     import logging
                     logging.getLogger(__name__).error(f"Failed to load image: {img_err}")
                 break
+    doc_image = doc_images[0] if doc_images else None
 
     # Run classification with selected model
     BEDROCK_CLASSIFIERS = {
         "claude_bedrock", "claude_haiku_bedrock",
-        "nova_pro", "nova_lite",
-        "pixtral_large",
-        "llama4_maverick_bedrock", "llama4_scout",
+        "nova_pro_bedrock", "nova_lite_bedrock",
+        "pixtral_large_bedrock",
+        "llama4_maverick_bedrock", "llama4_scout_bedrock",
     }
 
     VERTEX_CLASSIFIERS = {
@@ -224,11 +262,62 @@ async def run_classification(
             prompt_template = prompt_doc.prompt_text
             prompt_name = prompt_doc.name
 
+    # Pass all page images (all classifiers now support the images parameter)
     classification_result = classifier.classify_fields(
         ocr_text=classify_text,
         image=doc_image,
         field_types=request.field_types,
         prompt_template=prompt_template,
+        images=doc_images if len(doc_images) > 1 else None,
+    )
+
+    import logging
+    _log = logging.getLogger(__name__)
+    _log.info(
+        f"Classification result keys: {list(classification_result.keys())}, "
+        f"has classified_fields: {'classified_fields' in classification_result}, "
+        f"has fields: {'fields' in classification_result}, "
+        f"classified_fields count: {len(classification_result.get('classified_fields', []))}"
+    )
+
+    # Convert custom prompt "fields" dict format to "classified_fields" array format
+    # Custom prompts may return: {"fields": {"name": {"value": "X", "confidence": 0.9}}}
+    # Frontend expects: {"classified_fields": [{"field_type": "name", "value": "X", "confidence": 0.9}]}
+    # Note: classifiers always add an empty "classified_fields" default, so check length too
+    if "fields" in classification_result and not classification_result.get("classified_fields"):
+        fields_dict = classification_result["fields"]
+        classified_fields = []
+        for field_name, field_data in fields_dict.items():
+            if isinstance(field_data, dict) and "value" in field_data:
+                classified_fields.append({
+                    "field_type": field_name,
+                    "value": field_data.get("value"),
+                    "confidence": field_data.get("confidence"),
+                    "page": field_data.get("page"),
+                    "area": field_data.get("area"),
+                    "context": field_data.get("context"),
+                })
+            elif isinstance(field_data, list):
+                # Handle array fields like property lists
+                for j, item in enumerate(field_data):
+                    if isinstance(item, dict):
+                        desc = ", ".join(f"{k}: {v}" for k, v in item.items() if v)
+                        classified_fields.append({
+                            "field_type": field_name,
+                            "value": desc or "(empty)",
+                            "confidence": item.get("confidence"),
+                        })
+        classification_result["classified_fields"] = classified_fields
+        if "form_type" not in classification_result:
+            classification_result["form_type"] = "custom"
+
+    # Ensure classified_fields exists
+    if "classified_fields" not in classification_result:
+        classification_result["classified_fields"] = []
+
+    _log.info(
+        f"Final classified_fields count: {len(classification_result.get('classified_fields', []))}, "
+        f"first 3: {classification_result.get('classified_fields', [])[:3]}"
     )
 
     # Include metadata about what was sent
@@ -279,9 +368,11 @@ async def save_classification(
 async def get_document_image(
     test_run_id: str,
     document_id: str,
+    page: int = Query(0, ge=0, description="Page number (0-indexed) for multi-page documents"),
     current_user_id: str = Depends(get_current_user_id),
 ):
-    """Proxy endpoint to serve document image for classification."""
+    """Proxy endpoint to serve document image for classification.
+    For multi-page PDF documents, converts the requested page to PNG."""
     firestore = FirestoreService()
     storage = StorageService()
 
@@ -312,4 +403,21 @@ async def get_document_image(
         )
 
     image_bytes = await storage.download_file(document.storage_path)
+
+    # If it's a PDF, convert the requested page to PNG
+    if document.storage_path.lower().endswith('.pdf') and PYMUPDF_AVAILABLE:
+        pdf_doc = fitz.open(stream=image_bytes, filetype="pdf")
+        if page >= len(pdf_doc):
+            pdf_doc.close()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Page {page} out of range (0-{len(pdf_doc)-1})"
+            )
+        page_obj = pdf_doc[page]
+        mat = fitz.Matrix(2, 2)
+        pix = page_obj.get_pixmap(matrix=mat)
+        png_bytes = pix.tobytes("png")
+        pdf_doc.close()
+        return Response(content=png_bytes, media_type="image/png")
+
     return Response(content=image_bytes, media_type="image/png")

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
-import { formsAPI, syntheticAPI } from '../services/api'
+import { formsAPI, syntheticAPI, referenceAPI } from '../services/api'
 
 const FIELD_TYPES = [
   { value: 'text_short', label: 'Text Short' },
@@ -623,6 +623,12 @@ function SyntheticDataPage() {
         </div>
       )}
 
+      {/* ===== Reference Data Templates ===== */}
+      <ReferenceTemplatesSection />
+
+      {/* ===== Upload Filled Forms with Reference Data ===== */}
+      <UploadWithReferenceSection />
+
       {/* Existing Batches */}
       <div className="mt-8 bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-semibold mb-4">Existing Batches</h3>
@@ -662,5 +668,324 @@ function SyntheticDataPage() {
     </div>
   )
 }
+
+function ReferenceTemplatesSection() {
+  const queryClient = useQueryClient()
+  const [showCreate, setShowCreate] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [templateName, setTemplateName] = useState('')
+  const [templateDescription, setTemplateDescription] = useState('')
+  const [templateFields, setTemplateFields] = useState([])
+  const [newFieldName, setNewFieldName] = useState('')
+  const [newFieldDesc, setNewFieldDesc] = useState('')
+
+  const { data: templatesData } = useQuery({
+    queryKey: ['reference-templates'],
+    queryFn: () => referenceAPI.listTemplates(),
+  })
+  const templates = templatesData?.data || []
+
+  const createMutation = useMutation({
+    mutationFn: (data) => referenceAPI.createTemplate(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['reference-templates'])
+      resetForm()
+    },
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => referenceAPI.updateTemplate(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['reference-templates'])
+      resetForm()
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => referenceAPI.deleteTemplate(id),
+    onSuccess: () => queryClient.invalidateQueries(['reference-templates']),
+  })
+
+  const resetForm = () => {
+    setShowCreate(false)
+    setEditingId(null)
+    setTemplateName('')
+    setTemplateDescription('')
+    setTemplateFields([])
+    setNewFieldName('')
+    setNewFieldDesc('')
+  }
+
+  const addField = () => {
+    if (!newFieldName.trim()) return
+    setTemplateFields([...templateFields, { field_name: newFieldName.trim(), description: newFieldDesc.trim() }])
+    setNewFieldName('')
+    setNewFieldDesc('')
+  }
+
+  const startEdit = (template) => {
+    setEditingId(template.id)
+    setTemplateName(template.name)
+    setTemplateDescription(template.form_type_description || '')
+    setTemplateFields(template.fields || [])
+    setShowCreate(true)
+  }
+
+  const handleSave = () => {
+    const data = {
+      name: templateName,
+      form_type_description: templateDescription,
+      fields: templateFields,
+    }
+    if (editingId) {
+      updateMutation.mutate({ id: editingId, data })
+    } else {
+      createMutation.mutate(data)
+    }
+  }
+
+  return (
+    <div className="mt-8 bg-white rounded-lg shadow p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold">Reference Data Templates</h3>
+        <button
+          onClick={() => { resetForm(); setShowCreate(true) }}
+          className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Create Template
+        </button>
+      </div>
+
+      {/* Template List */}
+      {templates.length > 0 ? (
+        <div className="space-y-2 mb-4">
+          {templates.map((t) => (
+            <div key={t.id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div>
+                <span className="font-medium text-sm">{t.name}</span>
+                {t.form_type_description && (
+                  <span className="ml-2 text-xs text-gray-500">{t.form_type_description}</span>
+                )}
+                <span className="ml-2 text-xs text-gray-400">{t.fields?.length || 0} fields</span>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => startEdit(t)} className="text-xs text-blue-600 hover:underline">Edit</button>
+                <button onClick={() => deleteMutation.mutate(t.id)} className="text-xs text-red-600 hover:underline">Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-gray-500 mb-4">No templates yet.</p>
+      )}
+
+      {/* Create/Edit Form */}
+      {showCreate && (
+        <div className="border rounded-lg p-4 bg-blue-50">
+          <h4 className="font-medium mb-3">{editingId ? 'Edit Template' : 'Create Template'}</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Template Name</label>
+              <input
+                type="text"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                className="w-full px-3 py-2 border rounded text-sm"
+                placeholder="e.g., Prisoner Registration Fields"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Form Type Description</label>
+              <input
+                type="text"
+                value={templateDescription}
+                onChange={(e) => setTemplateDescription(e.target.value)}
+                className="w-full px-3 py-2 border rounded text-sm"
+                placeholder="e.g., Prison intake form"
+              />
+            </div>
+          </div>
+
+          {/* Fields */}
+          <div className="mb-3">
+            <label className="block text-xs font-medium text-gray-600 mb-1">Fields ({templateFields.length})</label>
+            {templateFields.length > 0 && (
+              <div className="space-y-1 mb-2 max-h-40 overflow-y-auto">
+                {templateFields.map((f, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs bg-white px-2 py-1 rounded">
+                    <span className="font-medium flex-1">{f.field_name}</span>
+                    <span className="text-gray-400 flex-1 truncate">{f.description}</span>
+                    <button onClick={() => setTemplateFields(prev => prev.filter((_, i) => i !== idx))} className="text-red-500">x</button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newFieldName}
+                onChange={(e) => setNewFieldName(e.target.value)}
+                className="flex-1 px-2 py-1 border rounded text-sm"
+                placeholder="Field name"
+                onKeyDown={(e) => { if (e.key === 'Enter') addField() }}
+              />
+              <input
+                type="text"
+                value={newFieldDesc}
+                onChange={(e) => setNewFieldDesc(e.target.value)}
+                className="flex-1 px-2 py-1 border rounded text-sm"
+                placeholder="Description (optional)"
+                onKeyDown={(e) => { if (e.key === 'Enter') addField() }}
+              />
+              <button onClick={addField} className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Add</button>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={!templateName || templateFields.length === 0 || createMutation.isPending || updateMutation.isPending}
+              className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+            >
+              {createMutation.isPending || updateMutation.isPending ? 'Saving...' : 'Save'}
+            </button>
+            <button onClick={resetForm} className="px-4 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200">Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+function UploadWithReferenceSection() {
+  const queryClient = useQueryClient()
+  const [selectedFormId, setSelectedFormId] = useState('')
+  const [selectedTemplateId, setSelectedTemplateId] = useState('')
+  const [docFiles, setDocFiles] = useState(null)
+  const [referenceFile, setReferenceFile] = useState(null)
+
+  const { data: formsData } = useQuery({
+    queryKey: ['forms'],
+    queryFn: () => formsAPI.list(),
+  })
+
+  const { data: templatesData } = useQuery({
+    queryKey: ['reference-templates'],
+    queryFn: () => referenceAPI.listTemplates(),
+  })
+  const templates = templatesData?.data || []
+
+  const uploadMutation = useMutation({
+    mutationFn: (formData) => syntheticAPI.uploadWithReference(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['batches'])
+      setDocFiles(null)
+      setReferenceFile(null)
+      setSelectedFormId('')
+      setSelectedTemplateId('')
+    },
+  })
+
+  const handleUpload = () => {
+    if (!docFiles || docFiles.length === 0 || !selectedFormId) return
+    const formData = new FormData()
+    for (const file of docFiles) {
+      formData.append('files', file)
+    }
+    if (referenceFile) {
+      formData.append('reference_file', referenceFile)
+    }
+    formData.append('form_id', selectedFormId)
+    if (selectedTemplateId) {
+      formData.append('reference_template_id', selectedTemplateId)
+    }
+    uploadMutation.mutate(formData)
+  }
+
+  return (
+    <div className="mt-8 bg-white rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold mb-4">Upload Filled Forms with Reference Data</h3>
+      <p className="text-sm text-gray-500 mb-4">
+        Upload handwritten/filled form images alongside an Excel (.xlsx) or CSV file with the expected field values.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Form</label>
+          <select
+            value={selectedFormId}
+            onChange={(e) => setSelectedFormId(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md text-sm"
+          >
+            <option value="">-- Select a form --</option>
+            {formsData?.data?.forms?.map((form) => (
+              <option key={form.id} value={form.id}>{form.name}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Reference Template (optional)</label>
+          <select
+            value={selectedTemplateId}
+            onChange={(e) => setSelectedTemplateId(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md text-sm"
+          >
+            <option value="">-- None --</option>
+            {templates.map((t) => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Document Files (PDF/PNG)</label>
+          <input
+            type="file"
+            multiple
+            accept=".pdf,.png,.jpg,.jpeg,.tiff,.tif"
+            onChange={(e) => setDocFiles(e.target.files)}
+            className="w-full px-3 py-2 border rounded-md text-sm"
+          />
+          {docFiles && (
+            <p className="text-xs text-gray-500 mt-1">{docFiles.length} file(s) selected</p>
+          )}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Reference Data (Excel/CSV)</label>
+          <input
+            type="file"
+            accept=".xlsx,.csv"
+            onChange={(e) => setReferenceFile(e.target.files?.[0] || null)}
+            className="w-full px-3 py-2 border rounded-md text-sm"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Columns: field_name | raw_value | resolved_value
+          </p>
+        </div>
+      </div>
+
+      <button
+        onClick={handleUpload}
+        disabled={!docFiles || docFiles.length === 0 || !selectedFormId || uploadMutation.isPending}
+        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+      >
+        {uploadMutation.isPending ? 'Uploading...' : 'Upload'}
+      </button>
+
+      {uploadMutation.isError && (
+        <p className="text-red-600 text-sm mt-2">
+          {uploadMutation.error?.response?.data?.detail || 'Upload failed'}
+        </p>
+      )}
+      {uploadMutation.isSuccess && (
+        <p className="text-green-600 text-sm mt-2">Upload successful!</p>
+      )}
+    </div>
+  )
+}
+
 
 export default SyntheticDataPage

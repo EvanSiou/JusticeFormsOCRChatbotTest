@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, verificationAPI } from '../services/api'
 import MagnifyImage from '../components/MagnifyImage'
+import PageNavigator from '../components/PageNavigator'
 
 function VerifyPage() {
   const { testRunId: paramTestRunId } = useParams()
@@ -15,6 +16,8 @@ function VerifyPage() {
   const [fieldVerifications, setFieldVerifications] = useState({})
   const [regionVerifications, setRegionVerifications] = useState({})
   const [addedRegions, setAddedRegions] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageCount, setPageCount] = useState(1)
   const [userFilter, setUserFilter] = useState('')
 
   // Fetch completed test runs
@@ -61,22 +64,28 @@ function VerifyPage() {
     enabled: !!selectedTestRunId && !!selectedDocumentId,
   })
 
+  // Reset to first page when document changes
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [selectedDocumentId])
+
   // Load document image
   useEffect(() => {
     if (selectedTestRunId && selectedDocumentId) {
-      verificationAPI.getDocumentImage(selectedTestRunId, selectedDocumentId)
+      verificationAPI.getDocumentImage(selectedTestRunId, selectedDocumentId, currentPage)
         .then((url) => setDocumentImageUrl(url))
         .catch(() => setDocumentImageUrl(null))
     }
     return () => {
       if (documentImageUrl) URL.revokeObjectURL(documentImageUrl)
     }
-  }, [selectedTestRunId, selectedDocumentId]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedTestRunId, selectedDocumentId, currentPage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Initialize field verifications when document data loads
   useEffect(() => {
     if (documentData?.data) {
       const doc = documentData.data
+      setPageCount(doc.page_count || 1)
       // Synthetic fields
       if (doc.extracted_fields?.length > 0) {
         const initial = {}
@@ -377,6 +386,13 @@ function VerifyPage() {
                 <div className="h-48 bg-gray-100 rounded flex items-center justify-center">
                   <p className="text-gray-500">Loading image...</p>
                 </div>
+              )}
+              {pageCount > 1 && (
+                <PageNavigator
+                  currentPage={currentPage}
+                  pageCount={pageCount}
+                  onPageChange={setCurrentPage}
+                />
               )}
             </div>
 

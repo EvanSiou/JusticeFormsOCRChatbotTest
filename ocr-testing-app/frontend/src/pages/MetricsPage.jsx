@@ -1,6 +1,82 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { metricsAPI } from '../services/api'
+
+// ─── MultiSelect Component ───────────────────────────────
+function MultiSelect({ label, value = [], onChange, options = [], placeholder = 'All', renderOption }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const toggle = (val) => {
+    if (value.includes(val)) onChange(value.filter(v => v !== val))
+    else onChange([...value, val])
+  }
+
+  const displayText = value.length === 0
+    ? placeholder
+    : value.length === 1
+      ? (renderOption ? renderOption(value[0]) : value[0])
+      : `${value.length} selected`
+
+  return (
+    <div ref={ref} className="relative">
+      <label className="block text-xs font-medium text-gray-500 mb-1">{label}</label>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full text-sm border rounded px-2 py-1.5 text-left bg-white flex items-center justify-between hover:border-gray-400"
+      >
+        <span className={`truncate ${value.length === 0 ? 'text-gray-400' : 'text-gray-800'}`}>
+          {displayText}
+        </span>
+        <svg className="w-3 h-3 text-gray-400 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border rounded shadow-lg max-h-48 overflow-y-auto">
+          {value.length > 0 && (
+            <button
+              type="button"
+              onClick={() => { onChange([]); setOpen(false) }}
+              className="w-full text-left px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 border-b"
+            >
+              Clear selection
+            </button>
+          )}
+          {options.map((opt) => {
+            const optVal = typeof opt === 'object' ? opt.id : opt
+            const optLabel = typeof opt === 'object' ? opt.label : (renderOption ? renderOption(opt) : opt)
+            const checked = value.includes(optVal)
+            return (
+              <label
+                key={optVal}
+                className={`flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-gray-50 ${checked ? 'bg-blue-50' : ''}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => toggle(optVal)}
+                  className="rounded text-blue-600"
+                />
+                <span className="truncate">{optLabel}</span>
+              </label>
+            )
+          })}
+          {options.length === 0 && (
+            <div className="px-2 py-1.5 text-xs text-gray-400">No options</div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function formatDuration(startedAt, completedAt) {
   if (!startedAt || !completedAt) return null
@@ -42,38 +118,40 @@ function speedColor(s) {
 // ─── Matrix Section ───────────────────────────────────────
 function MatrixSection({ matrixData, isLoading }) {
   const [filters, setFilters] = useState({
-    user: '',
-    date: '',
-    batch: '',
-    batchJob: '',
-    batchType: '',
+    user: [],
+    date: [],
+    batch: [],
+    batchJob: [],
+    batchType: [],
     field: '',
-    testRun: '',
-    document: '',
-    prompt: '',
+    testRun: [],
+    document: [],
+    prompt: [],
   })
 
   const availableFilters = matrixData?.data?.filters || {}
   const rows = matrixData?.data?.rows || []
 
-  // Apply filters
+  // Apply filters (arrays use .includes, field stays single-select)
   const filteredRows = useMemo(() => {
     return rows.filter((r) => {
-      if (filters.user && r.user !== filters.user) return false
-      if (filters.date && r.date !== filters.date) return false
-      if (filters.batch && r.batch_id !== filters.batch) return false
-      if (filters.batchJob && r.batch_job_id !== filters.batchJob) return false
-      if (filters.batchType && r.batch_type !== filters.batchType) return false
-      if (filters.testRun && r.test_run_id !== filters.testRun) return false
-      if (filters.document && r.document_id !== filters.document) return false
-      if (filters.prompt && (r.ocr_prompt_id || '') !== filters.prompt) return false
+      if (filters.user.length && !filters.user.includes(r.user)) return false
+      if (filters.date.length && !filters.date.includes(r.date)) return false
+      if (filters.batch.length && !filters.batch.includes(r.batch_id)) return false
+      if (filters.batchJob.length && !filters.batchJob.includes(r.batch_job_id)) return false
+      if (filters.batchType.length && !filters.batchType.includes(r.batch_type)) return false
+      if (filters.testRun.length && !filters.testRun.includes(r.test_run_id)) return false
+      if (filters.document.length && !filters.document.includes(r.document_id)) return false
+      if (filters.prompt.length && !filters.prompt.includes(r.ocr_prompt_id || '')) return false
       return true
     })
   }, [rows, filters])
 
   // Build the accuracy matrix: { layout -> { ocr -> { sum, count } } }
-  const { accuracyMatrix, speedMatrix, layoutLibs, ocrLibs } = useMemo(() => {
+  const { accuracyMatrix, classificationMatrix, judgeMatrix, speedMatrix, layoutLibs, ocrLibs } = useMemo(() => {
     const accMap = {}
+    const clsMap = {}
+    const jdgMap = {}
     const spdMap = {}
     const layouts = new Set()
     const ocrs = new Set()
@@ -84,7 +162,7 @@ function MatrixSection({ matrixData, isLoading }) {
       layouts.add(lay)
       ocrs.add(ocr)
 
-      // Accuracy
+      // OCR Accuracy
       if (!accMap[lay]) accMap[lay] = {}
       if (!accMap[lay][ocr]) accMap[lay][ocr] = { sum: 0, count: 0 }
 
@@ -95,6 +173,32 @@ function MatrixSection({ matrixData, isLoading }) {
         const acc = row.verified_accuracy != null ? row.verified_accuracy : row.overall_accuracy
         accMap[lay][ocr].sum += acc
         accMap[lay][ocr].count += 1
+      }
+
+      // Classification Accuracy
+      if (filters.field && row.field_classification_scores?.[filters.field] != null) {
+        if (!clsMap[lay]) clsMap[lay] = {}
+        if (!clsMap[lay][ocr]) clsMap[lay][ocr] = { sum: 0, count: 0 }
+        clsMap[lay][ocr].sum += row.field_classification_scores[filters.field]
+        clsMap[lay][ocr].count += 1
+      } else if (!filters.field && row.classification_accuracy != null) {
+        if (!clsMap[lay]) clsMap[lay] = {}
+        if (!clsMap[lay][ocr]) clsMap[lay][ocr] = { sum: 0, count: 0 }
+        clsMap[lay][ocr].sum += row.classification_accuracy
+        clsMap[lay][ocr].count += 1
+      }
+
+      // Judge Score
+      if (filters.field && row.field_judge_scores?.[filters.field] != null) {
+        if (!jdgMap[lay]) jdgMap[lay] = {}
+        if (!jdgMap[lay][ocr]) jdgMap[lay][ocr] = { sum: 0, count: 0 }
+        jdgMap[lay][ocr].sum += row.field_judge_scores[filters.field]
+        jdgMap[lay][ocr].count += 1
+      } else if (!filters.field && row.judge_overall_score != null) {
+        if (!jdgMap[lay]) jdgMap[lay] = {}
+        if (!jdgMap[lay][ocr]) jdgMap[lay][ocr] = { sum: 0, count: 0 }
+        jdgMap[lay][ocr].sum += row.judge_overall_score
+        jdgMap[lay][ocr].count += 1
       }
 
       // Speed: duration_s is for the whole test run, divide by total_documents
@@ -109,16 +213,22 @@ function MatrixSection({ matrixData, isLoading }) {
 
     return {
       accuracyMatrix: accMap,
+      classificationMatrix: clsMap,
+      judgeMatrix: jdgMap,
       speedMatrix: spdMap,
       layoutLibs: [...layouts].sort(),
       ocrLibs: [...ocrs].sort(),
     }
   }, [filteredRows, filters.field])
 
-  const clearFilters = () =>
-    setFilters({ user: '', date: '', batch: '', batchJob: '', batchType: '', field: '', testRun: '', document: '', prompt: '' })
+  // Check if any rows have classification or judge data
+  const hasClassificationData = filteredRows.some(r => r.classification_accuracy != null)
+  const hasJudgeData = filteredRows.some(r => r.judge_overall_score != null)
 
-  const activeFilterCount = Object.values(filters).filter(Boolean).length
+  const clearFilters = () =>
+    setFilters({ user: [], date: [], batch: [], batchJob: [], batchType: [], field: '', testRun: [], document: [], prompt: [] })
+
+  const activeFilterCount = Object.values(filters).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length
 
   if (isLoading) {
     return (
@@ -154,71 +264,41 @@ function MatrixSection({ matrixData, isLoading }) {
 
       {/* Filters */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-3 mb-6">
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">User</label>
-          <select
-            value={filters.user}
-            onChange={(e) => setFilters((f) => ({ ...f, user: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All users</option>
-            {availableFilters.users?.map((u) => (
-              <option key={u} value={u}>{u}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
-          <select
-            value={filters.date}
-            onChange={(e) => setFilters((f) => ({ ...f, date: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All dates</option>
-            {availableFilters.dates?.map((d) => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Batch Job</label>
-          <select
-            value={filters.batchJob}
-            onChange={(e) => setFilters((f) => ({ ...f, batchJob: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All jobs</option>
-            {availableFilters.batch_jobs?.map((bj) => (
-              <option key={bj.id} value={bj.id}>{bj.label}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Batch</label>
-          <select
-            value={filters.batch}
-            onChange={(e) => setFilters((f) => ({ ...f, batch: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All batches</option>
-            {availableFilters.batches?.map((b) => (
-              <option key={b.id} value={b.id}>{b.label}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Type</label>
-          <select
-            value={filters.batchType}
-            onChange={(e) => setFilters((f) => ({ ...f, batchType: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All types</option>
-            {availableFilters.batch_types?.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-        </div>
+        <MultiSelect
+          label="User"
+          value={filters.user}
+          onChange={(v) => setFilters((f) => ({ ...f, user: v }))}
+          options={availableFilters.users || []}
+          placeholder="All users"
+        />
+        <MultiSelect
+          label="Date"
+          value={filters.date}
+          onChange={(v) => setFilters((f) => ({ ...f, date: v }))}
+          options={availableFilters.dates || []}
+          placeholder="All dates"
+        />
+        <MultiSelect
+          label="Batch Job"
+          value={filters.batchJob}
+          onChange={(v) => setFilters((f) => ({ ...f, batchJob: v }))}
+          options={availableFilters.batch_jobs || []}
+          placeholder="All jobs"
+        />
+        <MultiSelect
+          label="Batch"
+          value={filters.batch}
+          onChange={(v) => setFilters((f) => ({ ...f, batch: v }))}
+          options={availableFilters.batches || []}
+          placeholder="All batches"
+        />
+        <MultiSelect
+          label="Type"
+          value={filters.batchType}
+          onChange={(v) => setFilters((f) => ({ ...f, batchType: v }))}
+          options={availableFilters.batch_types || []}
+          placeholder="All types"
+        />
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Field</label>
           <select
@@ -232,46 +312,28 @@ function MatrixSection({ matrixData, isLoading }) {
             ))}
           </select>
         </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Test Run</label>
-          <select
-            value={filters.testRun}
-            onChange={(e) => setFilters((f) => ({ ...f, testRun: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All runs</option>
-            {availableFilters.test_runs?.map((tr) => (
-              <option key={tr.id} value={tr.id}>{tr.label}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Document</label>
-          <select
-            value={filters.document}
-            onChange={(e) => setFilters((f) => ({ ...f, document: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All docs</option>
-            {availableFilters.documents?.map((d) => (
-              <option key={d} value={d}>{d.slice(0, 12)}...</option>
-            ))}
-          </select>
-        </div>
+        <MultiSelect
+          label="Test Run"
+          value={filters.testRun}
+          onChange={(v) => setFilters((f) => ({ ...f, testRun: v }))}
+          options={availableFilters.test_runs || []}
+          placeholder="All runs"
+        />
+        <MultiSelect
+          label="Document"
+          value={filters.document}
+          onChange={(v) => setFilters((f) => ({ ...f, document: v }))}
+          options={(availableFilters.documents || []).map(d => ({ id: d, label: d.slice(0, 12) + '...' }))}
+          placeholder="All docs"
+        />
         {availableFilters.prompts?.length > 0 && (
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">Prompt</label>
-            <select
-              value={filters.prompt}
-              onChange={(e) => setFilters((f) => ({ ...f, prompt: e.target.value }))}
-              className="w-full text-sm border rounded px-2 py-1.5"
-            >
-              <option value="">All prompts</option>
-              {availableFilters.prompts?.map((p) => (
-                <option key={p.id} value={p.id}>{p.label}</option>
-              ))}
-            </select>
-          </div>
+          <MultiSelect
+            label="Prompt"
+            value={filters.prompt}
+            onChange={(v) => setFilters((f) => ({ ...f, prompt: v }))}
+            options={availableFilters.prompts || []}
+            placeholder="All prompts"
+          />
         )}
       </div>
 
@@ -331,6 +393,108 @@ function MatrixSection({ matrixData, isLoading }) {
             </div>
           </div>
 
+          {/* Classification Accuracy Matrix (only if data exists) */}
+          {hasClassificationData && (
+          <div>
+            <h4 className="text-md font-semibold mb-3">
+              <span className="text-purple-700">Classification Accuracy</span> {filters.field ? `(${filters.field})` : '(Overall)'}
+            </h4>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border px-3 py-2 bg-purple-50 text-left text-xs font-medium text-purple-600">
+                      Layout \ OCR
+                    </th>
+                    {ocrLibs.map((ocr) => (
+                      <th key={ocr} className="border px-3 py-2 bg-purple-50 text-center text-xs font-medium text-purple-700">
+                        {ocr}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {layoutLibs.map((lay) => (
+                    <tr key={lay}>
+                      <td className="border px-3 py-2 font-medium text-gray-700 bg-purple-50 text-xs">
+                        {lay}
+                      </td>
+                      {ocrLibs.map((ocr) => {
+                        const cell = classificationMatrix[lay]?.[ocr]
+                        if (!cell || cell.count === 0) {
+                          return (
+                            <td key={ocr} className="border px-3 py-2 text-center text-gray-300 text-xs">
+                              -
+                            </td>
+                          )
+                        }
+                        const avg = cell.sum / cell.count
+                        return (
+                          <td key={ocr} className={`border px-3 py-2 text-center font-semibold text-sm ${accuracyColor(avg)}`}>
+                            {(avg * 100).toFixed(1)}%
+                            <div className="text-[10px] font-normal opacity-60">n={cell.count}</div>
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          )}
+
+          {/* Judge Score Matrix (only if data exists) */}
+          {hasJudgeData && (
+          <div>
+            <h4 className="text-md font-semibold mb-3">
+              <span className="text-amber-700">Judge Score</span> {filters.field ? `(${filters.field})` : '(Overall)'}
+            </h4>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border px-3 py-2 bg-amber-50 text-left text-xs font-medium text-amber-600">
+                      Layout \ OCR
+                    </th>
+                    {ocrLibs.map((ocr) => (
+                      <th key={ocr} className="border px-3 py-2 bg-amber-50 text-center text-xs font-medium text-amber-700">
+                        {ocr}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {layoutLibs.map((lay) => (
+                    <tr key={lay}>
+                      <td className="border px-3 py-2 font-medium text-gray-700 bg-amber-50 text-xs">
+                        {lay}
+                      </td>
+                      {ocrLibs.map((ocr) => {
+                        const cell = judgeMatrix[lay]?.[ocr]
+                        if (!cell || cell.count === 0) {
+                          return (
+                            <td key={ocr} className="border px-3 py-2 text-center text-gray-300 text-xs">
+                              -
+                            </td>
+                          )
+                        }
+                        const avg = cell.sum / cell.count
+                        return (
+                          <td key={ocr} className={`border px-3 py-2 text-center font-semibold text-sm ${accuracyColor(avg)}`}>
+                            {(avg * 100).toFixed(1)}%
+                            <div className="text-[10px] font-normal opacity-60">n={cell.count}</div>
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          )}
+
           {/* Speed Matrix */}
           <div>
             <h4 className="text-md font-semibold mb-3">Speed (avg per document)</h4>
@@ -387,34 +551,52 @@ function MatrixSection({ matrixData, isLoading }) {
 
 // ─── Classification Matrix Section ────────────────────────
 function ClassificationMatrixSection({ classMatrixData, isLoading }) {
-  const [filters, setFilters] = useState({ user: '', date: '', classifierModel: '', prompt: '' })
+  const [filters, setFilters] = useState({ user: [], date: [], classifierModel: [], prompt: [] })
 
   const availableFilters = classMatrixData?.data?.filters || {}
   const rows = classMatrixData?.data?.rows || []
 
   const filteredRows = useMemo(() => {
     return rows.filter((r) => {
-      if (filters.user && r.user !== filters.user) return false
-      if (filters.date && r.date !== filters.date) return false
-      if (filters.classifierModel && r.classifier_model !== filters.classifierModel) return false
-      if (filters.prompt && (r.prompt_id || '') !== filters.prompt) return false
+      if (filters.user.length && !filters.user.includes(r.user)) return false
+      if (filters.date.length && !filters.date.includes(r.date)) return false
+      if (filters.classifierModel.length && !filters.classifierModel.includes(r.classifier_model)) return false
+      if (filters.prompt.length && !filters.prompt.includes(r.prompt_id || '')) return false
       return true
     })
   }, [rows, filters])
 
-  // Aggregate by classifier model
+  // Aggregate by classifier model — includes OCR accuracy, classification accuracy, and judge scores
   const modelStats = useMemo(() => {
     const stats = {}
     for (const row of filteredRows) {
       const model = row.classifier_model
-      if (!stats[model]) stats[model] = { total: 0, verified: 0, accSum: 0, accCount: 0 }
+      if (!stats[model]) stats[model] = {
+        total: 0, verified: 0,
+        verifiedAccSum: 0, verifiedAccCount: 0,
+        ocrAccSum: 0, ocrAccCount: 0,
+        clsAccSum: 0, clsAccCount: 0,
+        judgeSum: 0, judgeCount: 0,
+      }
       stats[model].total += 1
       if (row.is_verified) {
         stats[model].verified += 1
         if (row.classification_verified_accuracy != null) {
-          stats[model].accSum += row.classification_verified_accuracy
-          stats[model].accCount += 1
+          stats[model].verifiedAccSum += row.classification_verified_accuracy
+          stats[model].verifiedAccCount += 1
         }
+      }
+      if (row.ocr_accuracy != null) {
+        stats[model].ocrAccSum += row.ocr_accuracy
+        stats[model].ocrAccCount += 1
+      }
+      if (row.classification_accuracy != null) {
+        stats[model].clsAccSum += row.classification_accuracy
+        stats[model].clsAccCount += 1
+      }
+      if (row.judge_overall_score != null) {
+        stats[model].judgeSum += row.judge_overall_score
+        stats[model].judgeCount += 1
       }
     }
     return stats
@@ -425,11 +607,11 @@ function ClassificationMatrixSection({ classMatrixData, isLoading }) {
   const MODEL_LABELS = {
     claude_bedrock: 'Claude Sonnet 4.5',
     claude_haiku_bedrock: 'Claude Haiku 4.5',
-    nova_pro: 'Nova Pro',
-    nova_lite: 'Nova Lite',
-    pixtral_large: 'Pixtral Large',
+    nova_pro_bedrock: 'Nova Pro',
+    nova_lite_bedrock: 'Nova Lite',
+    pixtral_large_bedrock: 'Pixtral Large',
     llama4_maverick_bedrock: 'Llama 4 Maverick',
-    llama4_scout: 'Llama 4 Scout',
+    llama4_scout_bedrock: 'Llama 4 Scout',
     gpt5: 'GPT-5',
     gpt5_mini: 'GPT-5 mini',
     // Legacy names for old test runs
@@ -438,8 +620,8 @@ function ClassificationMatrixSection({ classMatrixData, isLoading }) {
     mistral_medium3: 'Mistral Medium 3',
   }
 
-  const clearFilters = () => setFilters({ user: '', date: '', classifierModel: '', prompt: '' })
-  const activeFilterCount = Object.values(filters).filter(Boolean).length
+  const clearFilters = () => setFilters({ user: [], date: [], classifierModel: [], prompt: [] })
+  const activeFilterCount = Object.values(filters).filter(v => Array.isArray(v) ? v.length > 0 : Boolean(v)).length
 
   if (isLoading) {
     return (
@@ -472,59 +654,35 @@ function ClassificationMatrixSection({ classMatrixData, isLoading }) {
 
       {/* Filters */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">User</label>
-          <select
-            value={filters.user}
-            onChange={(e) => setFilters(f => ({ ...f, user: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All users</option>
-            {availableFilters.users?.map(u => (
-              <option key={u} value={u}>{u}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
-          <select
-            value={filters.date}
-            onChange={(e) => setFilters(f => ({ ...f, date: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All dates</option>
-            {availableFilters.dates?.map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Model</label>
-          <select
-            value={filters.classifierModel}
-            onChange={(e) => setFilters(f => ({ ...f, classifierModel: e.target.value }))}
-            className="w-full text-sm border rounded px-2 py-1.5"
-          >
-            <option value="">All models</option>
-            {availableFilters.classifier_models?.map(m => (
-              <option key={m} value={m}>{MODEL_LABELS[m] || m}</option>
-            ))}
-          </select>
-        </div>
+        <MultiSelect
+          label="User"
+          value={filters.user}
+          onChange={(v) => setFilters(f => ({ ...f, user: v }))}
+          options={availableFilters.users || []}
+          placeholder="All users"
+        />
+        <MultiSelect
+          label="Date"
+          value={filters.date}
+          onChange={(v) => setFilters(f => ({ ...f, date: v }))}
+          options={availableFilters.dates || []}
+          placeholder="All dates"
+        />
+        <MultiSelect
+          label="Model"
+          value={filters.classifierModel}
+          onChange={(v) => setFilters(f => ({ ...f, classifierModel: v }))}
+          options={(availableFilters.classifier_models || []).map(m => ({ id: m, label: MODEL_LABELS[m] || m }))}
+          placeholder="All models"
+        />
         {availableFilters.prompts?.length > 0 && (
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">Prompt</label>
-            <select
-              value={filters.prompt}
-              onChange={(e) => setFilters(f => ({ ...f, prompt: e.target.value }))}
-              className="w-full text-sm border rounded px-2 py-1.5"
-            >
-              <option value="">All prompts</option>
-              {availableFilters.prompts?.map(p => (
-                <option key={p.id} value={p.id}>{p.label}</option>
-              ))}
-            </select>
-          </div>
+          <MultiSelect
+            label="Prompt"
+            value={filters.prompt}
+            onChange={(v) => setFilters(f => ({ ...f, prompt: v }))}
+            options={availableFilters.prompts || []}
+            placeholder="All prompts"
+          />
         )}
       </div>
 
@@ -538,27 +696,41 @@ function ClassificationMatrixSection({ classMatrixData, isLoading }) {
             <thead>
               <tr>
                 <th className="border px-3 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500">Classifier Model</th>
-                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Avg Accuracy</th>
-                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Verified</th>
-                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Total Classified</th>
+                <th className="border px-3 py-2 bg-blue-50 text-center text-xs font-medium text-blue-700">OCR Accuracy</th>
+                <th className="border px-3 py-2 bg-purple-50 text-center text-xs font-medium text-purple-700">Classification Accuracy</th>
+                <th className="border px-3 py-2 bg-amber-50 text-center text-xs font-medium text-amber-700">Judge Score</th>
+                <th className="border px-3 py-2 bg-green-50 text-center text-xs font-medium text-green-700">Verified Accuracy</th>
+                <th className="border px-3 py-2 bg-gray-50 text-center text-xs font-medium text-gray-700">Docs</th>
               </tr>
             </thead>
             <tbody>
               {modelNames.map(model => {
                 const s = modelStats[model]
-                const avg = s.accCount > 0 ? s.accSum / s.accCount : null
+                const ocrAvg = s.ocrAccCount > 0 ? s.ocrAccSum / s.ocrAccCount : null
+                const clsAvg = s.clsAccCount > 0 ? s.clsAccSum / s.clsAccCount : null
+                const judgeAvg = s.judgeCount > 0 ? s.judgeSum / s.judgeCount : null
+                const verifiedAvg = s.verifiedAccCount > 0 ? s.verifiedAccSum / s.verifiedAccCount : null
                 return (
                   <tr key={model}>
                     <td className="border px-3 py-2 font-medium text-gray-700 bg-gray-50 text-xs">
                       {MODEL_LABELS[model] || model}
                     </td>
-                    <td className={`border px-3 py-2 text-center font-semibold text-sm ${
-                      avg != null ? accuracyColor(avg) : 'text-gray-300'
-                    }`}>
-                      {avg != null ? `${(avg * 100).toFixed(1)}%` : '-'}
-                      {s.accCount > 0 && <div className="text-[10px] font-normal opacity-60">n={s.accCount}</div>}
+                    <td className={`border px-3 py-2 text-center font-semibold text-sm ${ocrAvg != null ? accuracyColor(ocrAvg) : 'text-gray-300'}`}>
+                      {ocrAvg != null ? `${(ocrAvg * 100).toFixed(1)}%` : '-'}
+                      {s.ocrAccCount > 0 && <div className="text-[10px] font-normal opacity-60">n={s.ocrAccCount}</div>}
                     </td>
-                    <td className="border px-3 py-2 text-center text-sm">{s.verified}</td>
+                    <td className={`border px-3 py-2 text-center font-semibold text-sm ${clsAvg != null ? accuracyColor(clsAvg) : 'text-gray-300'}`}>
+                      {clsAvg != null ? `${(clsAvg * 100).toFixed(1)}%` : '-'}
+                      {s.clsAccCount > 0 && <div className="text-[10px] font-normal opacity-60">n={s.clsAccCount}</div>}
+                    </td>
+                    <td className={`border px-3 py-2 text-center font-semibold text-sm ${judgeAvg != null ? accuracyColor(judgeAvg) : 'text-gray-300'}`}>
+                      {judgeAvg != null ? `${(judgeAvg * 100).toFixed(1)}%` : '-'}
+                      {s.judgeCount > 0 && <div className="text-[10px] font-normal opacity-60">n={s.judgeCount}</div>}
+                    </td>
+                    <td className={`border px-3 py-2 text-center font-semibold text-sm ${verifiedAvg != null ? accuracyColor(verifiedAvg) : 'text-gray-300'}`}>
+                      {verifiedAvg != null ? `${(verifiedAvg * 100).toFixed(1)}%` : '-'}
+                      {s.verifiedAccCount > 0 && <div className="text-[10px] font-normal opacity-60">n={s.verifiedAccCount}</div>}
+                    </td>
                     <td className="border px-3 py-2 text-center text-sm">{s.total}</td>
                   </tr>
                 )

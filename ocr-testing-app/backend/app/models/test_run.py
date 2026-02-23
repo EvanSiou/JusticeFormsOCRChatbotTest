@@ -42,6 +42,14 @@ class TestRunInDB(TestRunBase):
     last_heartbeat: Optional[datetime] = None
     ocr_prompt_id: Optional[str] = None
     ocr_prompt_name: Optional[str] = None
+    classifier_model: Optional[str] = None
+    classification_prompt_id: Optional[str] = None
+    classification_prompt_name: Optional[str] = None
+    field_types: Optional[List[str]] = None
+    is_unified: bool = False
+    judge_model: Optional[str] = None
+    judge_prompt_id: Optional[str] = None
+    judge_prompt_name: Optional[str] = None
 
 
 class TestRunResponse(TestRunInDB):
@@ -61,6 +69,11 @@ class RunTestsRequest(BaseModel):
     layout_library: str = ""
     ocr_library: str
     ocr_prompt_id: Optional[str] = None
+    classifier_model: Optional[str] = None
+    classification_prompt_id: Optional[str] = None
+    field_types: Optional[List[str]] = None
+    judge_model: Optional[str] = None
+    judge_prompt_id: Optional[str] = None
 
 
 class RunBatchJobRequest(BaseModel):
@@ -69,6 +82,11 @@ class RunBatchJobRequest(BaseModel):
     layout_libraries: List[str]
     ocr_libraries: List[str]
     ocr_prompt_id: Optional[str] = None
+    classifier_models: Optional[List[str]] = None
+    classification_prompt_id: Optional[str] = None
+    field_types: Optional[List[str]] = None
+    judge_model: Optional[str] = None
+    judge_prompt_id: Optional[str] = None
 
 
 class BatchJobInDB(BaseModel):

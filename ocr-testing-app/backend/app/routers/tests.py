@@ -1,7 +1,8 @@
 """
 Test execution routes.
 """
-from typing import Optional, Dict
+import logging
+from typing import Optional, Dict, List
 from fastapi import APIRouter, HTTPException, status, Depends, BackgroundTasks
 
 from app.auth.dependencies import get_current_user_id
@@ -19,6 +20,7 @@ from app.services.ocr_pipeline import OCRPipelineService
 from app.processing.layout import list_layout_detectors
 from app.processing.ocr import list_ocr_engines, VLM_ENGINES
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -29,10 +31,16 @@ async def run_test_background(
     ocr_library: str,
     image_cache: Optional[Dict[str, bytes]] = None,
     ocr_prompt: Optional[str] = None,
+    classifier_model: Optional[str] = None,
+    classification_prompt: Optional[str] = None,
+    field_types: Optional[List[str]] = None,
+    judge_model: Optional[str] = None,
+    judge_prompt: Optional[str] = None,
 ):
-    """Background task to run OCR pipeline on batches."""
+    """Background task to run OCR pipeline (and optionally classification + judge) on batches."""
     firestore = FirestoreService()
-    pipeline = OCRPipelineService()
+    # Use unified pipeline whenever a classifier model is set, even without field_types
+    use_unified = bool(classifier_model)
 
     try:
         # Update status to running
@@ -48,20 +56,42 @@ async def run_test_background(
             if not batch:
                 continue
 
-            # Process batch
-            await pipeline.process_batch(
-                batch=batch,
-                layout_library=layout_library,
-                ocr_library=ocr_library,
-                test_run_id=test_run_id,
-                progress_callback=lambda curr, total: firestore.update_test_run_status(
-                    test_run_id,
-                    TestStatus.RUNNING,
-                    processed_documents=total_processed + curr
-                ),
-                image_cache=image_cache,
-                ocr_prompt=ocr_prompt,
-            )
+            if use_unified:
+                from app.services.unified_pipeline import UnifiedPipelineService
+                pipeline = UnifiedPipelineService()
+                await pipeline.process_batch_unified(
+                    batch=batch,
+                    layout_library=layout_library,
+                    ocr_library=ocr_library,
+                    classifier_model=classifier_model,
+                    field_types=field_types,
+                    test_run_id=test_run_id,
+                    ocr_prompt=ocr_prompt,
+                    classification_prompt=classification_prompt,
+                    progress_callback=lambda curr, total: firestore.update_test_run_status(
+                        test_run_id,
+                        TestStatus.RUNNING,
+                        processed_documents=total_processed + curr
+                    ),
+                    image_cache=image_cache,
+                    judge_model=judge_model,
+                    judge_prompt=judge_prompt,
+                )
+            else:
+                pipeline = OCRPipelineService()
+                await pipeline.process_batch(
+                    batch=batch,
+                    layout_library=layout_library,
+                    ocr_library=ocr_library,
+                    test_run_id=test_run_id,
+                    progress_callback=lambda curr, total: firestore.update_test_run_status(
+                        test_run_id,
+                        TestStatus.RUNNING,
+                        processed_documents=total_processed + curr
+                    ),
+                    image_cache=image_cache,
+                    ocr_prompt=ocr_prompt,
+                )
 
             total_processed += len(batch.documents)
 
@@ -73,6 +103,7 @@ async def run_test_background(
         )
 
     except Exception as e:
+        logger.error(f"Test run {test_run_id} failed: {e}", exc_info=True)
         # Update status to failed
         await firestore.update_test_run_status(
             test_run_id,
@@ -92,6 +123,15 @@ async def run_batch_job_background(
     ocr_prompt: Optional[str] = None,
     ocr_prompt_id: Optional[str] = None,
     ocr_prompt_name: Optional[str] = None,
+    classifier_models: Optional[List[str]] = None,
+    classification_prompt: Optional[str] = None,
+    classification_prompt_id: Optional[str] = None,
+    classification_prompt_name: Optional[str] = None,
+    field_types: Optional[List[str]] = None,
+    judge_model: Optional[str] = None,
+    judge_prompt: Optional[str] = None,
+    judge_prompt_id: Optional[str] = None,
+    judge_prompt_name: Optional[str] = None,
 ):
     """Background task to run all layout+OCR combinations sequentially."""
     firestore = FirestoreService()
@@ -107,15 +147,36 @@ async def run_batch_job_background(
         test_run_ids = []
 
         # Build combinations: VLM engines skip layout, traditional engines need layout
+        # If classifier_models is provided, also iterate over those
+        # Special sentinel "__same_as_ocr__" means pair each OCR with itself as classifier
         combinations = []
-        for ocr_lib in ocr_libraries:
-            if ocr_lib in vlm_engines:
-                combinations.append(("none", ocr_lib))
-            else:
-                for layout_lib in layout_libraries:
-                    combinations.append((layout_lib, ocr_lib))
+        same_as_ocr = classifier_models == ["__same_as_ocr__"]
 
-        for layout_lib, ocr_lib in combinations:
+        if same_as_ocr:
+            # Import valid classifier model names
+            from app.services.unified_pipeline import BEDROCK_CLASSIFIERS, VERTEX_CLASSIFIERS
+            valid_classifiers = set(["claude"] + list(BEDROCK_CLASSIFIERS) + list(VERTEX_CLASSIFIERS) + ["gpt5", "gpt5_mini"])
+
+            for ocr_lib in ocr_libraries:
+                if ocr_lib not in valid_classifiers:
+                    continue  # Skip OCR engines that can't act as classifiers
+                if ocr_lib in vlm_engines:
+                    combinations.append(("none", ocr_lib, ocr_lib))
+                else:
+                    for layout_lib in layout_libraries:
+                        combinations.append((layout_lib, ocr_lib, ocr_lib))
+        else:
+            cls_models = classifier_models or [None]
+            for ocr_lib in ocr_libraries:
+                for cls_model in cls_models:
+                    if ocr_lib in vlm_engines:
+                        combinations.append(("none", ocr_lib, cls_model))
+                    else:
+                        for layout_lib in layout_libraries:
+                            combinations.append((layout_lib, ocr_lib, cls_model))
+
+        for layout_lib, ocr_lib, cls_model in combinations:
+            is_unified = bool(cls_model)
             # Create a test run for this combination
             test_run = await firestore.create_test_run(
                 batch_ids=batch_ids,
@@ -127,6 +188,14 @@ async def run_batch_job_background(
                 batch_job_id=job_id,
                 ocr_prompt_id=ocr_prompt_id,
                 ocr_prompt_name=ocr_prompt_name,
+                classifier_model=cls_model,
+                classification_prompt_id=classification_prompt_id,
+                classification_prompt_name=classification_prompt_name,
+                field_types=field_types,
+                is_unified=is_unified,
+                judge_model=judge_model,
+                judge_prompt_id=judge_prompt_id,
+                judge_prompt_name=judge_prompt_name,
             )
             test_run_ids.append(test_run.id)
             await firestore.update_batch_job(
@@ -142,6 +211,11 @@ async def run_batch_job_background(
                     ocr_library=ocr_lib,
                     image_cache=image_cache,
                     ocr_prompt=ocr_prompt,
+                    classifier_model=cls_model,
+                    classification_prompt=classification_prompt,
+                    field_types=field_types,
+                    judge_model=judge_model,
+                    judge_prompt=judge_prompt,
                 )
             except Exception:
                 # Individual combo failure doesn't stop the job
@@ -193,8 +267,11 @@ async def run_tests(
     vlm_engines = VLM_ENGINES
     is_vlm_engine = request.ocr_library in vlm_engines
 
-    # Validate layout library unless using a VLM engine
-    if not is_vlm_engine:
+    # Classification-only mode: no OCR engine needed when classifier is set
+    is_classification_only = request.ocr_library in ("none", "") and request.classifier_model
+
+    # Validate layout library unless using a VLM engine or classification-only
+    if not is_vlm_engine and not is_classification_only:
         available_layouts = list_layout_detectors()
         if request.layout_library not in available_layouts:
             raise HTTPException(
@@ -202,13 +279,14 @@ async def run_tests(
                 detail=f"Invalid layout library. Available: {available_layouts}"
             )
 
-    # Validate OCR library
-    available_ocrs = list_ocr_engines()
-    if request.ocr_library not in available_ocrs:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid OCR library. Available: {available_ocrs}"
-        )
+    # Validate OCR library (skip for classification-only mode)
+    if not is_classification_only:
+        available_ocrs = list_ocr_engines()
+        if request.ocr_library not in available_ocrs:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid OCR library. Available: {available_ocrs}"
+            )
 
     if total_documents == 0:
         raise HTTPException(
@@ -216,9 +294,9 @@ async def run_tests(
             detail="Selected batches contain no documents"
         )
 
-    # Default layout_library for VLM engines
+    # Default layout_library for VLM engines or classification-only mode
     layout_library = request.layout_library
-    if not layout_library and is_vlm_engine:
+    if not layout_library and (is_vlm_engine or is_classification_only):
         layout_library = "none"
 
     # Look up user email
@@ -234,6 +312,26 @@ async def run_tests(
             ocr_prompt_text = prompt_doc.prompt_text
             ocr_prompt_name = prompt_doc.name
 
+    # Resolve classification prompt if provided
+    classification_prompt_text = None
+    classification_prompt_name = None
+    if request.classification_prompt_id and request.classification_prompt_id != "default":
+        cls_prompt_doc = await firestore.get_prompt(request.classification_prompt_id)
+        if cls_prompt_doc:
+            classification_prompt_text = cls_prompt_doc.prompt_text
+            classification_prompt_name = cls_prompt_doc.name
+
+    # Resolve judge prompt if provided
+    judge_prompt_text = None
+    judge_prompt_name = None
+    if request.judge_prompt_id and request.judge_prompt_id != "default":
+        judge_prompt_doc = await firestore.get_prompt(request.judge_prompt_id)
+        if judge_prompt_doc:
+            judge_prompt_text = judge_prompt_doc.prompt_text
+            judge_prompt_name = judge_prompt_doc.name
+
+    is_unified = bool(request.classifier_model)
+
     # Create test run record
     test_run = await firestore.create_test_run(
         batch_ids=request.batch_ids,
@@ -244,6 +342,14 @@ async def run_tests(
         started_by_name=started_by_name,
         ocr_prompt_id=request.ocr_prompt_id if request.ocr_prompt_id and request.ocr_prompt_id != "default" else None,
         ocr_prompt_name=ocr_prompt_name,
+        classifier_model=request.classifier_model,
+        classification_prompt_id=request.classification_prompt_id if request.classification_prompt_id and request.classification_prompt_id != "default" else None,
+        classification_prompt_name=classification_prompt_name,
+        field_types=request.field_types,
+        is_unified=is_unified,
+        judge_model=request.judge_model,
+        judge_prompt_id=request.judge_prompt_id if request.judge_prompt_id and request.judge_prompt_id != "default" else None,
+        judge_prompt_name=judge_prompt_name,
     )
 
     # Start background processing
@@ -254,7 +360,12 @@ async def run_tests(
         layout_library,
         request.ocr_library,
         None,  # image_cache
-        ocr_prompt_text,  # ocr_prompt
+        ocr_prompt_text,
+        request.classifier_model,
+        classification_prompt_text,
+        request.field_types,
+        request.judge_model,
+        judge_prompt_text,
     )
 
     return TestRunResponse(**test_run.model_dump())
@@ -307,11 +418,23 @@ async def run_batch_job(
 
     # Calculate total combinations
     total_combos = 0
-    for ocr_lib in request.ocr_libraries:
-        if ocr_lib in vlm_engines:
-            total_combos += 1
-        else:
-            total_combos += len(request.layout_libraries)
+    same_as_ocr = request.classifier_models == ["__same_as_ocr__"]
+    if same_as_ocr:
+        from app.services.unified_pipeline import BEDROCK_CLASSIFIERS, VERTEX_CLASSIFIERS
+        valid_classifiers = set(["claude"] + list(BEDROCK_CLASSIFIERS) + list(VERTEX_CLASSIFIERS) + ["gpt5", "gpt5_mini"])
+        for ocr_lib in request.ocr_libraries:
+            if ocr_lib not in valid_classifiers:
+                continue
+            if ocr_lib in vlm_engines:
+                total_combos += 1
+            else:
+                total_combos += len(request.layout_libraries)
+    else:
+        for ocr_lib in request.ocr_libraries:
+            if ocr_lib in vlm_engines:
+                total_combos += 1
+            else:
+                total_combos += len(request.layout_libraries)
 
     if total_combos == 0:
         raise HTTPException(
@@ -342,6 +465,24 @@ async def run_batch_job(
             ocr_prompt_text = prompt_doc.prompt_text
             ocr_prompt_name = prompt_doc.name
 
+    # Resolve classification prompt if provided
+    cls_prompt_text = None
+    cls_prompt_name = None
+    if request.classification_prompt_id and request.classification_prompt_id != "default":
+        cls_prompt_doc = await firestore.get_prompt(request.classification_prompt_id)
+        if cls_prompt_doc:
+            cls_prompt_text = cls_prompt_doc.prompt_text
+            cls_prompt_name = cls_prompt_doc.name
+
+    # Resolve judge prompt if provided
+    judge_prompt_text = None
+    judge_prompt_name = None
+    if request.judge_prompt_id and request.judge_prompt_id != "default":
+        judge_prompt_doc = await firestore.get_prompt(request.judge_prompt_id)
+        if judge_prompt_doc:
+            judge_prompt_text = judge_prompt_doc.prompt_text
+            judge_prompt_name = judge_prompt_doc.name
+
     # Start background processing
     background_tasks.add_task(
         run_batch_job_background,
@@ -352,9 +493,18 @@ async def run_batch_job(
         current_user_id,
         started_by_name,
         total_documents,
-        ocr_prompt_text,  # ocr_prompt
-        request.ocr_prompt_id if request.ocr_prompt_id and request.ocr_prompt_id != "default" else None,  # ocr_prompt_id
-        ocr_prompt_name,  # ocr_prompt_name
+        ocr_prompt_text,
+        request.ocr_prompt_id if request.ocr_prompt_id and request.ocr_prompt_id != "default" else None,
+        ocr_prompt_name,
+        request.classifier_models,
+        cls_prompt_text,
+        request.classification_prompt_id if request.classification_prompt_id and request.classification_prompt_id != "default" else None,
+        cls_prompt_name,
+        request.field_types,
+        request.judge_model,
+        judge_prompt_text,
+        request.judge_prompt_id if request.judge_prompt_id and request.judge_prompt_id != "default" else None,
+        judge_prompt_name,
     )
 
     return BatchJobResponse(**batch_job.model_dump())
@@ -440,12 +590,20 @@ async def cancel_batch_job(
 async def get_available_libraries(
     current_user_id: str = Depends(get_current_user_id)
 ):
-    """Get available layout and OCR libraries."""
+    """Get available layout, OCR, classifier, and judge model libraries."""
     from app.processing.ocr import VLM_ENGINES
+    from app.services.unified_pipeline import BEDROCK_CLASSIFIERS, VERTEX_CLASSIFIERS
+
+    classifier_models = sorted(
+        ["claude"] + list(BEDROCK_CLASSIFIERS) + list(VERTEX_CLASSIFIERS) + ["gpt5", "gpt5_mini"]
+    )
+
     return {
         "layout_libraries": list_layout_detectors(),
         "ocr_libraries": list_ocr_engines(),
         "vlm_engines": VLM_ENGINES,
+        "classifier_models": classifier_models,
+        "judge_models": classifier_models,  # Same models available as judges
     }
 
 
