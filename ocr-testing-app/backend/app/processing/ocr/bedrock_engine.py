@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 # Model registry: engine_name -> Bedrock model ID
 BEDROCK_MODELS = {
-    "claude_bedrock": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    "claude_bedrock": "us.anthropic.claude-sonnet-4-6",
     "claude_haiku_bedrock": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
     "nova_pro_bedrock": "us.amazon.nova-pro-v1:0",
     "nova_lite_bedrock": "us.amazon.nova-lite-v1:0",
@@ -29,13 +29,13 @@ BEDROCK_MODELS = {
 
 # Max tokens per model (some models have different limits)
 MODEL_MAX_TOKENS = {
-    "claude_bedrock": 4096,
-    "claude_haiku_bedrock": 4096,
-    "nova_pro_bedrock": 4096,
-    "nova_lite_bedrock": 4096,
-    "pixtral_large_bedrock": 4096,
-    "llama4_maverick_bedrock": 4096,
-    "llama4_scout_bedrock": 4096,
+    "claude_bedrock": 2048,
+    "claude_haiku_bedrock": 2048,
+    "nova_pro_bedrock": 2048,
+    "nova_lite_bedrock": 2048,
+    "pixtral_large_bedrock": 2048,
+    "llama4_maverick_bedrock": 2048,
+    "llama4_scout_bedrock": 2048,
 }
 
 # Default confidence scores per model family

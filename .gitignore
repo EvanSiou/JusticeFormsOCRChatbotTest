@@ -1,61 +1,44 @@
-# Virtual environments
+# Virtual environment
 venv/
 .venv/
-env/
 
-# Python cache
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
+*.egg-info/
+dist/
+build/
 
-# Jupyter notebook checkpoints
-.ipynb_checkpoints/
+# Environment and secrets
+.env
+*.key
+sa-key.json
+*credentials*.json
 
 # IDE
 .vscode/
 .idea/
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Data folders (large files - don't commit)
-filled_documents/
-base_forms/
-layout_results/
-ocr_results/
-/models/
-documents/
-nul
+# Claude Code
+.claude/
 
-# Temporary files
-*.tmp
-*.temp
-*.log
-
-# Environment files with secrets
-.env
-.env.local
-sa-key.json
-*-sa-key.json
-
-# Ignore JSON in root (credentials, service accounts) but allow in subdirectories
-/*.json
-!field_configs/*.json
-
-# Node modules (frontend)
+# Node
 node_modules/
 
-# Build outputs
-dist/
-build/
-*.egg-info/
+# Documents folder (large binary files)
+documents/
 
-# Large model files
-*.pt
-*.pth
-*.onnx
-*.bin
-*.safetensors
+# Notebook outputs and model files
+ocr-testing-notebooks/DiffusionPen/
+ocr-testing-notebooks/diffusionpen_output/
+
+# Temp files
+nul
+*.tmp
+# Large files
+ocr-testing-forms/Hasan/20 copy.pdf

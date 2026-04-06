@@ -167,8 +167,8 @@ class ClaudeFieldClassifier:
 
         try:
             message = client.messages.create(
-                model="claude-sonnet-4-5-20250929",
-                max_tokens=8192,
+                model="claude-sonnet-4-6",
+                max_tokens=16384,
                 messages=[{"role": "user", "content": content}],
             )
 

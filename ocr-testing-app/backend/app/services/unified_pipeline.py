@@ -794,11 +794,43 @@ Example: {{"Officer First Name": "officer_first_name", "SSN": "ssn", "Descriptio
                 mapped_classified_for_judge = classified_fields  # default: full list
                 if classified_fields:
                     ref_names = list(document.field_values.keys())
+                    # Index classifier fields by field_type for lookup
                     cls_by_type = {}
                     for cf in classified_fields:
                         ft = cf.get("field_type", "")
                         if ft and ft not in cls_by_type:
                             cls_by_type[ft] = cf
+
+                    # Also build a normalized lookup (lowercase, no spaces/underscores)
+                    # to handle mismatches like "Home ZIP Code" vs "zip_code"
+                    cls_by_normalized = {}
+                    for ft, cf in cls_by_type.items():
+                        norm_key = ft.lower().replace(" ", "_").replace("-", "_")
+                        cls_by_normalized[norm_key] = cf
+                        # Also index by common short forms
+                        # e.g., "Home ZIP Code" -> "home_zip_code"
+                        # Strip common prefixes for additional matching
+                        for prefix in ("home_", "prisoner_", "officer_"):
+                            if norm_key.startswith(prefix):
+                                cls_by_normalized[norm_key[len(prefix):]] = cf
+
+                    def _find_classifier_field(mapped_name):
+                        """Look up a classifier field by name, with fuzzy matching."""
+                        if not mapped_name:
+                            return None
+                        # Exact match first
+                        if mapped_name in cls_by_type:
+                            return cls_by_type[mapped_name]
+                        # Normalized match
+                        norm = mapped_name.lower().replace(" ", "_").replace("-", "_")
+                        if norm in cls_by_normalized:
+                            return cls_by_normalized[norm]
+                        # Try partial match: find any cls key that contains the mapped name or vice versa
+                        for ft, cf in cls_by_type.items():
+                            ft_norm = ft.lower().replace(" ", "_").replace("-", "_")
+                            if norm in ft_norm or ft_norm in norm:
+                                return cf
+                        return None
 
                     # Check if exact matching is possible
                     cls_type_set = set(cls_by_type.keys())
@@ -822,7 +854,7 @@ Example: {{"Officer First Name": "officer_first_name", "SSN": "ssn", "Descriptio
                             if not expected:
                                 continue
                             mapped_cls_name = field_mapping.get(ref_name, "")
-                            cf = cls_by_type.get(mapped_cls_name) if mapped_cls_name else None
+                            cf = _find_classifier_field(mapped_cls_name) if mapped_cls_name else None
                             mapped_list.append({
                                 "reference_field": ref_name,
                                 "classifier_field": mapped_cls_name or "(no match)",

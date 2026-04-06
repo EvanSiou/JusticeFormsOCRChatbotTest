@@ -81,8 +81,8 @@ rec_boxes: list of [x1,y1,x2,y2] (same length)
 - **Backend**: `ocr-app-backend-debug-v4` (CPU, 4 vCPU, 16Gi RAM) — 100% traffic
 - **Frontend**: `ocr-app-frontend-00024-2h6`
 - **Region**: us-central1
-- **Project**: ecourtdateocr
-- **Storage bucket**: ecourtdateocr-ocr-forms
+- **Project**: ocr-testing-app
+- **Storage bucket**: ocr-testing-app-ocr-forms
 
 ## What's Working
 - All 7 OCR engines load and initialize (PaddleOCR, EasyOCR, Surya, Tesseract, TrOCR, GOT-OCR, MinerU)

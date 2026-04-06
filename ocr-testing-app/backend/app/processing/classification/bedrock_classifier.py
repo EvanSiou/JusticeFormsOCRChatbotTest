@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Model registry: engine_name -> Bedrock model ID
 BEDROCK_MODELS = {
-    "claude_bedrock": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    "claude_bedrock": "us.anthropic.claude-sonnet-4-6",
     "claude_haiku_bedrock": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
     "nova_pro_bedrock": "us.amazon.nova-pro-v1:0",
     "nova_lite_bedrock": "us.amazon.nova-lite-v1:0",
@@ -38,13 +38,13 @@ DEFAULT_FIELD_TYPES = [
 
 # Model-specific max output token limits
 BEDROCK_MAX_TOKENS = {
-    "claude_bedrock": 16384,
-    "claude_haiku_bedrock": 16384,
-    "nova_pro_bedrock": 5120,
-    "nova_lite_bedrock": 5120,
-    "pixtral_large_bedrock": 8192,
-    "llama4_maverick_bedrock": 8192,
-    "llama4_scout_bedrock": 8192,
+    "claude_bedrock": 4096,
+    "claude_haiku_bedrock": 4096,
+    "nova_pro_bedrock": 4096,
+    "nova_lite_bedrock": 4096,
+    "pixtral_large_bedrock": 4096,
+    "llama4_maverick_bedrock": 4096,
+    "llama4_scout_bedrock": 4096,
 }
 
 # Minimum delay (seconds) between consecutive API calls per model.

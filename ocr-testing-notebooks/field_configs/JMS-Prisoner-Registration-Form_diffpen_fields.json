@@ -1,0 +1,49 @@
+{
+  "template": "JMS-Prisoner-Registration-Form.pdf",
+  "render_scale": 2,
+  "pages": 2,
+  "fields": [
+    {
+      "name": "officer_name",
+      "x": 296,
+      "y": 170,
+      "font_size": 28,
+      "page": 0
+    },
+    {
+      "name": "badge_number",
+      "x": 542,
+      "y": 170,
+      "font_size": 28,
+      "page": 0
+    },
+    {
+      "name": "prisoner_name",
+      "x": 65,
+      "y": 249,
+      "font_size": 28,
+      "page": 0
+    },
+    {
+      "name": "dob",
+      "x": 303,
+      "y": 255,
+      "font_size": 24,
+      "page": 0
+    },
+    {
+      "name": "ssn",
+      "x": 58,
+      "y": 323,
+      "font_size": 24,
+      "page": 0
+    },
+    {
+      "name": "address",
+      "x": 195,
+      "y": 323,
+      "font_size": 24,
+      "page": 0
+    }
+  ]
+}
