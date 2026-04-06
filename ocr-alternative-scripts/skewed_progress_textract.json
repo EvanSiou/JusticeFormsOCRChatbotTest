@@ -1,0 +1,15 @@
+{
+  "completed": {
+    "textract|Hasan_Form_02_-_Delgado|original": true,
+    "textract|Hasan_Form_03_-_Sutton|original": true,
+    "textract|Hasan_Form_04_-_Vega|original": true,
+    "textract|Hasan_Form_05_-_Quinn|original": true,
+    "textract|Hasan_Form_07_-_Rios|original": true,
+    "textract|Sadam_Form_17_-_Hollins|original": true,
+    "textract|Quareen_Form_05_-_Langford|heavy_skew": true,
+    "textract|Sadam_Form_01_-_Payne|heavy_skew": true,
+    "textract|Sadam_Form_04_-_Reyes|heavy_skew": true,
+    "textract|Sadam_Form_07_-_Armendariz|heavy_skew": true
+  },
+  "failed": {}
+}

@@ -1,0 +1,756 @@
+{
+  "field_evaluations": [
+    {
+      "field_name": "officer_type",
+      "reference_value": "Arresting",
+      "extracted_value": "Arresting",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "officer_last_name",
+      "reference_value": "Espinoza",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "officer_first_name",
+      "reference_value": "Lucia",
+      "extracted_value": "Lucia",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match, but note it was matched with a different person's first name"
+    },
+    {
+      "field_name": "badge_number",
+      "reference_value": "884 107",
+      "extracted_value": "884 107",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employee_id_number",
+      "reference_value": "667952",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "contact_phone_number",
+      "reference_value": "210-555-0268",
+      "extracted_value": "210-555-0268",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "agency",
+      "reference_value": "Bexar County SO",
+      "extracted_value": "Bexer County so",
+      "extraction_score": 0.5,
+      "reasoning": "Minor case difference"
+    },
+    {
+      "field_name": "first_name",
+      "reference_value": "Alejandro",
+      "extracted_value": "Lucia",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, matched with a different person's first name"
+    },
+    {
+      "field_name": "last_name",
+      "reference_value": "Vega",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "middle_name",
+      "reference_value": "Omar",
+      "extracted_value": "Paz",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, matched with a different person's middle name"
+    },
+    {
+      "field_name": "ssn",
+      "reference_value": "645-05-7734",
+      "extracted_value": "645-05-7734",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "date_of_birth",
+      "reference_value": "03/21/1986",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "age",
+      "reference_value": "39",
+      "extracted_value": "39",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "sex",
+      "reference_value": "M",
+      "extracted_value": "M",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "race",
+      "reference_value": "Hispanic",
+      "extracted_value": "Hispanic",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "ethnicity",
+      "reference_value": "Hispanic",
+      "extracted_value": "Hispanic",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "citizenship",
+      "reference_value": "US",
+      "extracted_value": "US",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "country_of_birth",
+      "reference_value": "Mexico",
+      "extracted_value": "Mexico",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "city_of_birth",
+      "reference_value": "Guadalajara",
+      "extracted_value": "Guadaljara",
+      "extraction_score": 0.5,
+      "reasoning": "Minor typo"
+    },
+    {
+      "field_name": "height",
+      "reference_value": "5'9",
+      "extracted_value": "5'9",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "weight",
+      "reference_value": "172",
+      "extracted_value": "172",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "eyes",
+      "reference_value": "Brown",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "skin",
+      "reference_value": "Medium-Tan",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "hair_type",
+      "reference_value": "Black",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted, but hair color was extracted"
+    },
+    {
+      "field_name": "hair_length",
+      "reference_value": "Medium",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "hair_color",
+      "reference_value": "Black",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "build",
+      "reference_value": "Medium",
+      "extracted_value": "Medium",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "beard",
+      "reference_value": "Goatee",
+      "extracted_value": "Goatee",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "mustache",
+      "reference_value": "Y",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "glasses",
+      "reference_value": "N",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "marital_status",
+      "reference_value": "Married",
+      "extracted_value": "Married",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "religious_preference",
+      "reference_value": "Catholic",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "veteran",
+      "reference_value": "N",
+      "extracted_value": "Y",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value"
+    },
+    {
+      "field_name": "using_drugs",
+      "reference_value": "Y",
+      "extracted_value": "N",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value"
+    },
+    {
+      "field_name": "using_alcohol",
+      "reference_value": "Y",
+      "extracted_value": "N",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value"
+    },
+    {
+      "field_name": "wanted",
+      "reference_value": "Y",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "hcso_spn",
+      "reference_value": "554 67845",
+      "extracted_value": "554 67845",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "state_issued_id_number",
+      "reference_value": "678 4554",
+      "extracted_value": "678 4554",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "issuing_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "drivers_license_number",
+      "reference_value": "624 67554",
+      "extracted_value": "624 67554",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "dl_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "dl_type",
+      "reference_value": "C",
+      "extracted_value": "J",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value"
+    },
+    {
+      "field_name": "sid_number",
+      "reference_value": "626 678 554",
+      "extracted_value": "626.678 554",
+      "extraction_score": 0.5,
+      "reasoning": "Minor formatting difference"
+    },
+    {
+      "field_name": "fbi_number",
+      "reference_value": "626 554",
+      "extracted_value": "626 554",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "afis_number",
+      "reference_value": "554 6784",
+      "extracted_value": "554 6784",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "so_number",
+      "reference_value": "678 554 626",
+      "extracted_value": "678 554 626",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "da_log_number",
+      "reference_value": "554 678",
+      "extracted_value": "554 678",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "assistant_da_name",
+      "reference_value": "Ruben Lara",
+      "extracted_value": "Ruben Lane",
+      "extraction_score": 0.5,
+      "reasoning": "Minor typo in last name"
+    },
+    {
+      "field_name": "smt_1_type",
+      "reference_value": "Tattoo",
+      "extracted_value": "Tattoo",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match, but note the extracted smt fields are not in order"
+    },
+    {
+      "field_name": "smt_1_location",
+      "reference_value": "Neck",
+      "extracted_value": "Right eyebrow",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, smt fields are not in order"
+    },
+    {
+      "field_name": "smt_1_description",
+      "reference_value": "Barbed wire",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted, smt fields are not in order"
+    },
+    {
+      "field_name": "smt_2_type",
+      "reference_value": "Tattoo",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted, smt fields are not in order"
+    },
+    {
+      "field_name": "smt_2_location",
+      "reference_value": "Right hand",
+      "extracted_value": "Neck",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, smt fields are not in order"
+    },
+    {
+      "field_name": "smt_2_description",
+      "reference_value": "Playing card suit",
+      "extracted_value": "Playing card Suit",
+      "extraction_score": 0.5,
+      "reasoning": "Minor case difference, but smt fields are not in order"
+    },
+    {
+      "field_name": "smt_3_type",
+      "reference_value": "Scar",
+      "extracted_value": "Scar",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match, but note the extracted smt fields are not in order"
+    },
+    {
+      "field_name": "smt_3_location",
+      "reference_value": "Right eyebrow",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted directly, but was extracted as smt_0_location"
+    },
+    {
+      "field_name": "smt_3_description",
+      "reference_value": "Small cut scar",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "address_type",
+      "reference_value": "Home",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "address_street",
+      "reference_value": "1900 Culebra Rd",
+      "extracted_value": "1900 Culebra Rd",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "address_city",
+      "reference_value": "San Antonio",
+      "extracted_value": "San Antonia",
+      "extraction_score": 0.5,
+      "reasoning": "Minor typo"
+    },
+    {
+      "field_name": "address_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "address_zip",
+      "reference_value": "78228",
+      "extracted_value": "78228",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "address_source",
+      "reference_value": "Google",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "phone_1_type",
+      "reference_value": "Cell",
+      "extracted_value": "Work",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value"
+    },
+    {
+      "field_name": "phone_1_number",
+      "reference_value": "210-555-0268",
+      "extracted_value": "210-555-0269",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, matched with emergency phone"
+    },
+    {
+      "field_name": "phone_1_source",
+      "reference_value": "Self",
+      "extracted_value": "Self",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "emergency_first_name",
+      "reference_value": "Lucia",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted, but officer_first_name was Lucia"
+    },
+    {
+      "field_name": "emergency_middle_name",
+      "reference_value": "Paz",
+      "extracted_value": "Omar",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, matched with a different person's middle name"
+    },
+    {
+      "field_name": "emergency_last_name",
+      "reference_value": "Vega",
+      "extracted_value": "Vega",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "emergency_relationship",
+      "reference_value": "Wife",
+      "extracted_value": "Wife",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "emergency_phone",
+      "reference_value": "210-555-0269",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted, but phone_1_number was 210-555-0269"
+    },
+    {
+      "field_name": "emergency_source",
+      "reference_value": "Self",
+      "extracted_value": "Google",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value"
+    },
+    {
+      "field_name": "employer_name",
+      "reference_value": "Valero Energy",
+      "extracted_value": "Valero Energy",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "occupation",
+      "reference_value": "Refinery Worker",
+      "extracted_value": "Refinery Worker",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_address",
+      "reference_value": "1 Valero Way",
+      "extracted_value": "1 Valero Way",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_city",
+      "reference_value": "San Antonio",
+      "extracted_value": "San Antonio",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_zip",
+      "reference_value": "78249",
+      "extracted_value": "78249",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_phone_type",
+      "reference_value": "Work",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "employer_phone",
+      "reference_value": "210-555-2300",
+      "extracted_value": "210-555-2300",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "arrest_date",
+      "reference_value": "07/30/2024",
+      "extracted_value": "07/30/2024",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arrest_time",
+      "reference_value": "11:15 PM",
+      "extracted_value": "11:15 PM",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arrest_location",
+      "reference_value": "San Antonio TX",
+      "extracted_value": "San Antonio TX",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arresting_agency",
+      "reference_value": "SAPD",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted, but arr_officer_agency was SAPD"
+    },
+    {
+      "field_name": "prisoner_health_condition",
+      "reference_value": "None",
+      "extracted_value": "None",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "unusual_behavior",
+      "reference_value": "Yes",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "arr_officer_last_name",
+      "reference_value": "Crane",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "arr_officer_first_name",
+      "reference_value": "Dale",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "arr_officer_badge",
+      "reference_value": "391",
+      "extracted_value": "391",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arr_officer_employee_id",
+      "reference_value": "181",
+      "extracted_value": "181",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arr_officer_contact",
+      "reference_value": "210-207-7400",
+      "extracted_value": "210-207-7400",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arr_officer_unit",
+      "reference_value": "G08",
+      "extracted_value": "G08",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arr_officer_agency",
+      "reference_value": "SAPD",
+      "extracted_value": "SAPD",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_last_name",
+      "reference_value": "Flores",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "trans_officer_first_name",
+      "reference_value": "Nora",
+      "extracted_value": "Nora",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_badge",
+      "reference_value": "504",
+      "extracted_value": "504",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_employee_id",
+      "reference_value": "267",
+      "extracted_value": "267",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_contact",
+      "reference_value": "210-207-7401",
+      "extracted_value": "210-207-7401",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_unit",
+      "reference_value": "H17",
+      "extracted_value": "H17",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_agency",
+      "reference_value": "SAPD",
+      "extracted_value": "SAPD",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "valuable_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"iPhone 12\", \"color\": \"Black\"}, {\"quantity\": \"1\", \"description\": \"$200 USD bills\", \"color\": \"N/A\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "clothing_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Red baseball cap\", \"color\": \"Red\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "secure_pack_quantity",
+      "reference_value": "1",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "phone_numbers_opportunity",
+      "reference_value": "Yes",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Not extracted"
+    },
+    {
+      "field_name": "prisoner_signature",
+      "reference_value": "Signed",
+      "extracted_value": "Albrandro",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, not a clear indication of signature"
+    },
+    {
+      "field_name": "officer_signature",
+      "reference_value": "Signed",
+      "extracted_value": "Their",
+      "extraction_score": 0.0,
+      "reasoning": "Incorrect value, not a clear indication of signature"
+    }
+  ],
+  "overall_score": 0.5420560747663551,
+  "summary": "The extraction system performed reasonably well on structured data fields, but struggled with extracting certain personal details and completely missed complex fields like valuable_property and clothing_property.",
+  "judge_overall_score": 0.54
+}

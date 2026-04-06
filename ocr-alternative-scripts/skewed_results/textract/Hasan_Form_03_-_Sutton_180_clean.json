@@ -1,0 +1,777 @@
+{
+  "field_evaluations": [
+    {
+      "field_name": "emergency_last_name",
+      "reference_value": "Sutton",
+      "extracted_value": "Ingram OFFICER:",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value 'Ingram OFFICER:' does not match the reference value 'Sutton'."
+    },
+    {
+      "field_name": "first_name",
+      "reference_value": "Wendell",
+      "extracted_value": "Clint",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value 'Clint' does not match the reference value 'Wendell'."
+    },
+    {
+      "field_name": "trans_officer_agency",
+      "reference_value": "DPD",
+      "extracted_value": "Dallas Bunty so",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value 'Dallas Bunty so' does not match the reference value 'DPD'."
+    },
+    {
+      "field_name": "trans_officer_first_name",
+      "reference_value": "Clint",
+      "extracted_value": "Donna",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value 'Donna' does not match the reference value 'Clint'."
+    },
+    {
+      "field_name": "officer_type",
+      "reference_value": "Both",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "officer_last_name",
+      "reference_value": "Hutchins",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "officer_first_name",
+      "reference_value": "Gerald",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "badge_number",
+      "reference_value": "773 996",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employee_id_number",
+      "reference_value": "556841",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "contact_phone_number",
+      "reference_value": "214-555-0257",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "agency",
+      "reference_value": "Dallas County SO",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "last_name",
+      "reference_value": "Sutton",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "middle_name",
+      "reference_value": "Ray",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "ssn",
+      "reference_value": "536-94-6623",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "date_of_birth",
+      "reference_value": "12/28/1968",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "age",
+      "reference_value": "56",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "sex",
+      "reference_value": "M",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "race",
+      "reference_value": "White",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "ethnicity",
+      "reference_value": "Non-Hispanic",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "citizenship",
+      "reference_value": "US",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "country_of_birth",
+      "reference_value": "USA",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "city_of_birth",
+      "reference_value": "Dallas",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "height",
+      "reference_value": "5'10",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "weight",
+      "reference_value": "205",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "eyes",
+      "reference_value": "Grey",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "skin",
+      "reference_value": "Fair",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "hair_type",
+      "reference_value": "Brown",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "hair_length",
+      "reference_value": "Short",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "hair_color",
+      "reference_value": "Grey",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "build",
+      "reference_value": "Heavy",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "beard",
+      "reference_value": "Heavy",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "mustache",
+      "reference_value": "Y",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "glasses",
+      "reference_value": "Y",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "marital_status",
+      "reference_value": "Divorced",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "religious_preference",
+      "reference_value": "Protestant",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "veteran",
+      "reference_value": "Y",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "using_drugs",
+      "reference_value": "N",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "using_alcohol",
+      "reference_value": "Y",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "wanted",
+      "reference_value": "N",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "hcso_spn",
+      "reference_value": "443 56734",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "state_issued_id_number",
+      "reference_value": "567 3443",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "issuing_state",
+      "reference_value": "TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "drivers_license_number",
+      "reference_value": "513 56443",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "dl_state",
+      "reference_value": "TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "dl_type",
+      "reference_value": "A",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "sid_number",
+      "reference_value": "515 567 443",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "fbi_number",
+      "reference_value": "515 443",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "afis_number",
+      "reference_value": "443 5673",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "so_number",
+      "reference_value": "567 443 515",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "da_log_number",
+      "reference_value": "443 567",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "assistant_da_name",
+      "reference_value": "Phyllis Grant",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_1_type",
+      "reference_value": "Tattoo",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_1_location",
+      "reference_value": "Right bicep",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_1_description",
+      "reference_value": "US Army eagle",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_2_type",
+      "reference_value": "Scar",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_2_location",
+      "reference_value": "Left forearm",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_2_description",
+      "reference_value": "4 inch burn scar",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_3_type",
+      "reference_value": "Tattoo",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_3_location",
+      "reference_value": "Upper back",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "smt_3_description",
+      "reference_value": "Full back piece",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "address_type",
+      "reference_value": "Home",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "address_street",
+      "reference_value": "4400 McKinney Ave",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "address_city",
+      "reference_value": "Dallas",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "address_state",
+      "reference_value": "TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "address_zip",
+      "reference_value": "75205",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "address_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_1_type",
+      "reference_value": "Cell",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_1_number",
+      "reference_value": "214-555-0257",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_1_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_2_type",
+      "reference_value": "Home",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_2_number",
+      "reference_value": "214-555-0258",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_2_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "emergency_first_name",
+      "reference_value": "Donna",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "emergency_middle_name",
+      "reference_value": "Sue",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "emergency_phone",
+      "reference_value": "214-555-0259",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "emergency_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_name",
+      "reference_value": "Home Depot",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "occupation",
+      "reference_value": "Lumber Associate",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_address",
+      "reference_value": "3300 Lemmon Ave",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_city",
+      "reference_value": "Dallas",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_state",
+      "reference_value": "TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_zip",
+      "reference_value": "75219",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_phone_type",
+      "reference_value": "Work",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_phone",
+      "reference_value": "214-555-2200",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "employer_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arrest_date",
+      "reference_value": "11/11/2024",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arrest_time",
+      "reference_value": "7:20 PM",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arrest_location",
+      "reference_value": "Dallas TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arresting_agency",
+      "reference_value": "DPD",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "prisoner_health_condition",
+      "reference_value": "None",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "unusual_behavior",
+      "reference_value": "No",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_last_name",
+      "reference_value": "Ingram",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_first_name",
+      "reference_value": "Paula",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_badge",
+      "reference_value": "166",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_employee_id",
+      "reference_value": "870",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_contact",
+      "reference_value": "214-671-4400",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_unit",
+      "reference_value": "E06",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "arr_officer_agency",
+      "reference_value": "DPD",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "trans_officer_last_name",
+      "reference_value": "Zimmer",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "trans_officer_badge",
+      "reference_value": "279",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "trans_officer_employee_id",
+      "reference_value": "956",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "trans_officer_contact",
+      "reference_value": "214-671-4401",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "trans_officer_unit",
+      "reference_value": "F15",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "valuable_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Brown leather wallet\", \"color\": \"Brown\"}, {\"quantity\": \"1\", \"description\": \"Home keys\", \"color\": \"Silver\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "bulk_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Large duffel\", \"color\": \"Black\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "clothing_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Steel toe\", \"color\": \"Brown\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "secure_pack_quantity",
+      "reference_value": "2",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "phone_numbers_opportunity",
+      "reference_value": "No",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "prisoner_signature",
+      "reference_value": "Signed",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    },
+    {
+      "field_name": "officer_signature",
+      "reference_value": "Signed",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "The field was not extracted."
+    }
+  ],
+  "overall_score": 0.0,
+  "summary": "The extraction system failed to accurately extract any of the reference fields, resulting in a poor overall performance.",
+  "judge_overall_score": 0.0
+}

@@ -1,0 +1,913 @@
+{
+  "extraction": {
+    "arresting_officer": {
+      "officer_type": "Arresting",
+      "last_name": "Nichols",
+      "first_name": "Pamela"
+    },
+    "officer_contact_details": {
+      "id_number_1": "717989",
+      "id_number_2": "322507",
+      "phone_number": "512-555-0671",
+      "agency": "Hays County SO"
+    },
+    "prisoner_personal_information": {
+      "first_name": "Adrian",
+      "last_name": "Patel",
+      "middle_name": "Raj"
+    },
+    "prisoner_demographics": {
+      "social_security_number": "151-39-4478",
+      "date_of_birth": "01/26/1994",
+      "age": "31",
+      "sex": "M"
+    },
+    "prisoner_origin": {
+      "race": "Asian",
+      "ethnicity": "Non-Hispanic",
+      "citizenship": "US",
+      "country_of_birth": "India"
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": "Mumbai"
+    },
+    "prisoner_physical_attributes": {
+      "height": "5'9",
+      "weight": "158",
+      "eyes": "Brown",
+      "skin": "Medium"
+    },
+    "prisoner_hair_details": {
+      "hair_type": "Black",
+      "hair_length": "Short",
+      "hair_color": "Black"
+    },
+    "prisoner_facial_features": {
+      "build": "Medium",
+      "beard": "None",
+      "mustache": "Y",
+      "glasses": "N"
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": "Single",
+      "religious_preference": "Hindu",
+      "veteran": "N",
+      "using_drugs": "N"
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": "N",
+      "wanted": "N",
+      "agency_wanting_person": "",
+      "agency_contact_person": ""
+    },
+    "additional_identifiers": {
+      "hcso_spn": "278 01289",
+      "state_issued_id_number": "012 8278",
+      "issuing_state": "TX",
+      "drivers_license_number": "49201278"
+    },
+    "drivers_license_details": {
+      "dl_state": "TX",
+      "dl_type": "C",
+      "sid_number": "",
+      "fbi_number": ""
+    },
+    "other_identification_numbers": {
+      "afis_number": "494 012 278",
+      "so_number": "494 278",
+      "da_log_number": "278 0128",
+      "assistant_da_name": "Priya Sethi"
+    },
+    "tattoos": [
+      {
+        "location": "N/A",
+        "description": "N/A"
+      }
+    ],
+    "home_address": {
+      "street": "100W Hopkins St",
+      "city": "San Marcos",
+      "state": "TX",
+      "zip_code": "78666"
+    },
+    "home_address_source": {
+      "source": "Google"
+    },
+    "cell_phone": {
+      "number": "512-555-0677",
+      "source": "Self"
+    },
+    "emergency_contact": {
+      "first_name": "Smita",
+      "middle_name": "Devi",
+      "last_name": "Patel",
+      "relationship": "Mother"
+    },
+    "emergency_contact_details": {
+      "phone_number": "512-555-0678",
+      "source": "Self"
+    },
+    "employer_information": {
+      "employer_name": "Texas State University",
+      "occupation": "Research Assistant",
+      "employer_street_address": "601 University Dr"
+    },
+    "employer_contact_details": {
+      "city": "San Marcos",
+      "state": "TX",
+      "zip_code": "78666",
+      "work_phone": "510-555-5500"
+    },
+    "employer_source": {
+      "source": "Self"
+    },
+    "arrest_information": {
+      "date": "09/30/2024",
+      "time": "3:15 PM",
+      "arrest_location": "San Marcos TX",
+      "arresting_agency": "SMPD"
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": "None",
+      "unusual_behavior_or_mental_illness": "No"
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": "Barker",
+      "first_name": "Joel",
+      "badge_number": "684",
+      "employee_id_number": "552"
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": "512-753-2108",
+      "unit_number": "G35",
+      "arresting_agency": "SMPD"
+    },
+    "transporting_officer_details": {
+      "last_name": "Bauer",
+      "first_name": "Kim",
+      "badge_number": "797",
+      "employee_id_number": "638"
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": "512-753-2109",
+      "unit_number": "H44",
+      "agency": "SMPD"
+    },
+    "valuable_property": [
+      {
+        "item": "Laptop",
+        "description": "ASUS laptop",
+        "color": "Silver"
+      },
+      {
+        "item": "Textbooks",
+        "description": "3 hardcover books",
+        "color": "N/A"
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": "1",
+        "item": "Backpack",
+        "description": "School backpack",
+        "color": "Grey"
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": "Yes"
+    },
+    "signatures": {
+      "prisoner_signature": "x (signature)",
+      "officer_signature": "x (signature)"
+    },
+    "ccq_info": {
+      "ccq_run": ""
+    },
+    "processing_flows": [],
+    "prisoner_flags": []
+  },
+  "extraction_metadata": {
+    "arresting_officer": {
+      "officer_type": {
+        "value": "Arresting",
+        "references": [
+          "0-3"
+        ]
+      },
+      "last_name": {
+        "value": "Nichols",
+        "references": [
+          "0-4"
+        ]
+      },
+      "first_name": {
+        "value": "Pamela",
+        "references": [
+          "0-5"
+        ]
+      }
+    },
+    "officer_contact_details": {
+      "id_number_1": {
+        "value": "717989",
+        "references": [
+          "0-7"
+        ]
+      },
+      "id_number_2": {
+        "value": "322507",
+        "references": [
+          "0-8"
+        ]
+      },
+      "phone_number": {
+        "value": "512-555-0671",
+        "references": [
+          "0-9"
+        ]
+      },
+      "agency": {
+        "value": "Hays County SO",
+        "references": [
+          "0-a"
+        ]
+      }
+    },
+    "prisoner_personal_information": {
+      "first_name": {
+        "value": "Adrian",
+        "references": [
+          "0-d"
+        ]
+      },
+      "last_name": {
+        "value": "Patel",
+        "references": [
+          "0-e"
+        ]
+      },
+      "middle_name": {
+        "value": "Raj",
+        "references": [
+          "0-f"
+        ]
+      }
+    },
+    "prisoner_demographics": {
+      "social_security_number": {
+        "value": "151-39-4478",
+        "references": [
+          "0-h"
+        ]
+      },
+      "date_of_birth": {
+        "value": "01/26/1994",
+        "references": [
+          "0-i"
+        ]
+      },
+      "age": {
+        "value": "31",
+        "references": [
+          "0-j"
+        ]
+      },
+      "sex": {
+        "value": "M",
+        "references": [
+          "0-k"
+        ]
+      }
+    },
+    "prisoner_origin": {
+      "race": {
+        "value": "Asian",
+        "references": [
+          "0-l"
+        ]
+      },
+      "ethnicity": {
+        "value": "Non-Hispanic",
+        "references": [
+          "0-m"
+        ]
+      },
+      "citizenship": {
+        "value": "US",
+        "references": [
+          "0-o"
+        ]
+      },
+      "country_of_birth": {
+        "value": "India",
+        "references": [
+          "0-p"
+        ]
+      }
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": {
+        "value": "Mumbai",
+        "references": [
+          "0-q"
+        ]
+      }
+    },
+    "prisoner_physical_attributes": {
+      "height": {
+        "value": "5'9",
+        "references": [
+          "0-s"
+        ]
+      },
+      "weight": {
+        "value": "158",
+        "references": [
+          "0-t"
+        ]
+      },
+      "eyes": {
+        "value": "Brown",
+        "references": [
+          "0-u"
+        ]
+      },
+      "skin": {
+        "value": "Medium",
+        "references": [
+          "0-v"
+        ]
+      }
+    },
+    "prisoner_hair_details": {
+      "hair_type": {
+        "value": "Black",
+        "references": [
+          "0-w"
+        ]
+      },
+      "hair_length": {
+        "value": "Short",
+        "references": [
+          "0-x"
+        ]
+      },
+      "hair_color": {
+        "value": "Black",
+        "references": [
+          "0-z"
+        ]
+      }
+    },
+    "prisoner_facial_features": {
+      "build": {
+        "value": "Medium",
+        "references": [
+          "0-A"
+        ]
+      },
+      "beard": {
+        "value": "None",
+        "references": [
+          "0-B"
+        ]
+      },
+      "mustache": {
+        "value": "Y",
+        "references": [
+          "0-C"
+        ]
+      },
+      "glasses": {
+        "value": "N",
+        "references": [
+          "0-D"
+        ]
+      }
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": {
+        "value": "Single",
+        "references": [
+          "0-F"
+        ]
+      },
+      "religious_preference": {
+        "value": "Hindu",
+        "references": [
+          "0-G"
+        ]
+      },
+      "veteran": {
+        "value": "N",
+        "references": [
+          "0-H"
+        ]
+      },
+      "using_drugs": {
+        "value": "N",
+        "references": [
+          "0-I"
+        ]
+      }
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": {
+        "value": "N",
+        "references": [
+          "0-J"
+        ]
+      },
+      "wanted": {
+        "value": "N",
+        "references": [
+          "0-L"
+        ]
+      },
+      "agency_wanting_person": {
+        "value": "",
+        "references": []
+      },
+      "agency_contact_person": {
+        "value": "",
+        "references": []
+      }
+    },
+    "additional_identifiers": {
+      "hcso_spn": {
+        "value": "278 01289",
+        "references": [
+          "0-Q"
+        ]
+      },
+      "state_issued_id_number": {
+        "value": "012 8278",
+        "references": [
+          "0-R"
+        ]
+      },
+      "issuing_state": {
+        "value": "TX",
+        "references": [
+          "0-S"
+        ]
+      },
+      "drivers_license_number": {
+        "value": "49201278",
+        "references": [
+          "0-T"
+        ]
+      }
+    },
+    "drivers_license_details": {
+      "dl_state": {
+        "value": "TX",
+        "references": [
+          "0-U"
+        ]
+      },
+      "dl_type": {
+        "value": "C",
+        "references": [
+          "0-V"
+        ]
+      },
+      "sid_number": {
+        "value": "",
+        "references": []
+      },
+      "fbi_number": {
+        "value": "",
+        "references": []
+      }
+    },
+    "other_identification_numbers": {
+      "afis_number": {
+        "value": "494 012 278",
+        "references": [
+          "0-X"
+        ]
+      },
+      "so_number": {
+        "value": "494 278",
+        "references": [
+          "0-Y"
+        ]
+      },
+      "da_log_number": {
+        "value": "278 0128",
+        "references": [
+          "0-Z"
+        ]
+      },
+      "assistant_da_name": {
+        "value": "Priya Sethi",
+        "references": [
+          "0-12"
+        ]
+      }
+    },
+    "tattoos": [
+      {
+        "location": {
+          "value": "N/A",
+          "references": [
+            "0-15"
+          ]
+        },
+        "description": {
+          "value": "N/A",
+          "references": [
+            "0-16"
+          ]
+        }
+      }
+    ],
+    "home_address": {
+      "street": {
+        "value": "100W Hopkins St",
+        "references": [
+          "0-1f"
+        ]
+      },
+      "city": {
+        "value": "San Marcos",
+        "references": [
+          "0-1g"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1h"
+        ]
+      },
+      "zip_code": {
+        "value": "78666",
+        "references": [
+          "0-1i"
+        ]
+      }
+    },
+    "home_address_source": {
+      "source": {
+        "value": "Google",
+        "references": [
+          "0-1j"
+        ]
+      }
+    },
+    "cell_phone": {
+      "number": {
+        "value": "512-555-0677",
+        "references": [
+          "0-1m"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1n"
+        ]
+      }
+    },
+    "emergency_contact": {
+      "first_name": {
+        "value": "Smita",
+        "references": [
+          "0-1t"
+        ]
+      },
+      "middle_name": {
+        "value": "Devi",
+        "references": [
+          "0-1u"
+        ]
+      },
+      "last_name": {
+        "value": "Patel",
+        "references": [
+          "0-1v"
+        ]
+      },
+      "relationship": {
+        "value": "Mother",
+        "references": [
+          "0-1w"
+        ]
+      }
+    },
+    "emergency_contact_details": {
+      "phone_number": {
+        "value": "512-555-0678",
+        "references": [
+          "0-1x"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1y"
+        ]
+      }
+    },
+    "employer_information": {
+      "employer_name": {
+        "value": "Texas State University",
+        "references": [
+          "0-1B"
+        ]
+      },
+      "occupation": {
+        "value": "Research Assistant",
+        "references": [
+          "0-1C"
+        ]
+      },
+      "employer_street_address": {
+        "value": "601 University Dr",
+        "references": [
+          "0-1D"
+        ]
+      }
+    },
+    "employer_contact_details": {
+      "city": {
+        "value": "San Marcos",
+        "references": [
+          "0-1F"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1G"
+        ]
+      },
+      "zip_code": {
+        "value": "78666",
+        "references": [
+          "0-1H"
+        ]
+      },
+      "work_phone": {
+        "value": "510-555-5500",
+        "references": [
+          "0-1J"
+        ]
+      }
+    },
+    "employer_source": {
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1K"
+        ]
+      }
+    },
+    "arrest_information": {
+      "date": {
+        "value": "09/30/2024",
+        "references": [
+          "0-3"
+        ]
+      },
+      "time": {
+        "value": "3:15 PM",
+        "references": [
+          "0-4"
+        ]
+      },
+      "arrest_location": {
+        "value": "San Marcos TX",
+        "references": [
+          "0-5"
+        ]
+      },
+      "arresting_agency": {
+        "value": "SMPD",
+        "references": [
+          "0-7"
+        ]
+      }
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": {
+        "value": "None",
+        "references": [
+          "0-8"
+        ]
+      },
+      "unusual_behavior_or_mental_illness": {
+        "value": "No",
+        "references": [
+          "0-9"
+        ]
+      }
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": {
+        "value": "Barker",
+        "references": [
+          "0-b"
+        ]
+      },
+      "first_name": {
+        "value": "Joel",
+        "references": [
+          "0-c"
+        ]
+      },
+      "badge_number": {
+        "value": "684",
+        "references": [
+          "0-d"
+        ]
+      },
+      "employee_id_number": {
+        "value": "552",
+        "references": [
+          "0-e"
+        ]
+      }
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "512-753-2108",
+        "references": [
+          "0-f"
+        ]
+      },
+      "unit_number": {
+        "value": "G35",
+        "references": [
+          "0-g"
+        ]
+      },
+      "arresting_agency": {
+        "value": "SMPD",
+        "references": [
+          "0-h"
+        ]
+      }
+    },
+    "transporting_officer_details": {
+      "last_name": {
+        "value": "Bauer",
+        "references": [
+          "0-i"
+        ]
+      },
+      "first_name": {
+        "value": "Kim",
+        "references": [
+          "0-j"
+        ]
+      },
+      "badge_number": {
+        "value": "797",
+        "references": [
+          "0-k"
+        ]
+      },
+      "employee_id_number": {
+        "value": "638",
+        "references": [
+          "0-l"
+        ]
+      }
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "512-753-2109",
+        "references": [
+          "0-m"
+        ]
+      },
+      "unit_number": {
+        "value": "H44",
+        "references": [
+          "0-n"
+        ]
+      },
+      "agency": {
+        "value": "SMPD",
+        "references": [
+          "0-o"
+        ]
+      }
+    },
+    "valuable_property": [
+      {
+        "item": {
+          "value": "Laptop",
+          "references": [
+            "0-s"
+          ]
+        },
+        "description": {
+          "value": "ASUS laptop",
+          "references": [
+            "0-t"
+          ]
+        },
+        "color": {
+          "value": "Silver",
+          "references": [
+            "0-u"
+          ]
+        }
+      },
+      {
+        "item": {
+          "value": "Textbooks",
+          "references": [
+            "0-w"
+          ]
+        },
+        "description": {
+          "value": "3 hardcover books",
+          "references": [
+            "0-x"
+          ]
+        },
+        "color": {
+          "value": "N/A",
+          "references": [
+            "0-y"
+          ]
+        }
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": {
+          "value": "1",
+          "references": [
+            "0-T"
+          ]
+        },
+        "item": {
+          "value": "Backpack",
+          "references": [
+            "0-U"
+          ]
+        },
+        "description": {
+          "value": "School backpack",
+          "references": [
+            "0-V"
+          ]
+        },
+        "color": {
+          "value": "Grey",
+          "references": [
+            "0-W"
+          ]
+        }
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": {
+        "value": "Yes",
+        "references": [
+          "0-1m"
+        ]
+      }
+    },
+    "signatures": {
+      "prisoner_signature": {
+        "value": "x (signature)",
+        "references": [
+          "0-1p"
+        ]
+      },
+      "officer_signature": {
+        "value": "x (signature)",
+        "references": [
+          "0-1q"
+        ]
+      }
+    },
+    "ccq_info": {
+      "ccq_run": {
+        "value": "",
+        "references": []
+      }
+    },
+    "processing_flows": [],
+    "prisoner_flags": []
+  },
+  "metadata": {
+    "filename": "inline_markdown.md",
+    "org_id": null,
+    "duration_ms": 17967,
+    "credit_usage": 5.7364,
+    "job_id": "363aba13230f46e99ef02515d8947047",
+    "version": "extract-20251024",
+    "schema_violation_error": null,
+    "fallback_model_version": "extract-20250930"
+  }
+}

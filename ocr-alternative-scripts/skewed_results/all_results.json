@@ -1,0 +1,470 @@
+[
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_01_-_Monroe",
+    "skew_type": "original",
+    "judge_score": 0.8846153846153846,
+    "parse_time": 19.006604194641113,
+    "extract_time": 61.999860763549805,
+    "judge_time": 56.36889839172363,
+    "total_time": 137.39592099189758
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_02_-_Delgado",
+    "skew_type": "original",
+    "judge_score": 0.9538461538461539,
+    "parse_time": 12.367380142211914,
+    "extract_time": 22.07671570777893,
+    "judge_time": 53.37014961242676,
+    "total_time": 87.82401657104492
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_04_-_Vega",
+    "skew_type": "original",
+    "judge_score": 0.877570093457944,
+    "parse_time": 16.253525257110596,
+    "extract_time": 23.847107648849487,
+    "judge_time": 58.56620669364929,
+    "total_time": 98.67568850517273
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_05_-_Quinn",
+    "skew_type": "original",
+    "judge_score": 0.8826923076923077,
+    "parse_time": 15.686760187149048,
+    "extract_time": 16.991713762283325,
+    "judge_time": 56.064367055892944,
+    "total_time": 88.75331163406372
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_06_-_Cross",
+    "skew_type": "original",
+    "judge_score": 0.8457943925233645,
+    "parse_time": 13.837834596633911,
+    "extract_time": 49.75358057022095,
+    "judge_time": 119.29666709899902,
+    "total_time": 182.89716053009033
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_01_-_Perkins",
+    "skew_type": "original",
+    "judge_score": 0.925,
+    "parse_time": 32.29543161392212,
+    "extract_time": 49.296011447906494,
+    "judge_time": 57.93707323074341,
+    "total_time": 139.53753995895386
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_02_-_Harmon",
+    "skew_type": "original",
+    "judge_score": 0.8932692307692308,
+    "parse_time": 29.499074935913086,
+    "extract_time": 17.242178916931152,
+    "judge_time": 54.52630257606506,
+    "total_time": 101.27551436424255
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_03_-_Dixon",
+    "skew_type": "original",
+    "judge_score": 0.9620370370370371,
+    "parse_time": 12.355444192886353,
+    "extract_time": 26.18765902519226,
+    "judge_time": 55.13903570175171,
+    "total_time": 93.69292736053467
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_04_-_Mendez",
+    "skew_type": "original",
+    "judge_score": 0.9067307692307692,
+    "parse_time": 13.160659313201904,
+    "extract_time": 57.00216054916382,
+    "judge_time": 58.00949025154114,
+    "total_time": 128.18241930007935
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_05_-_Langford",
+    "skew_type": "original",
+    "judge_score": 0.8144230769230769,
+    "parse_time": 33.61942505836487,
+    "extract_time": 63.80722713470459,
+    "judge_time": 57.368101358413696,
+    "total_time": 154.814147233963
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_07_-_Escobar",
+    "skew_type": "original",
+    "judge_score": 0.9750000000000001,
+    "parse_time": 51.984641313552856,
+    "extract_time": 47.56076908111572,
+    "judge_time": 57.499512672424316,
+    "total_time": 157.05537176132202
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_01_-_Payne",
+    "skew_type": "original",
+    "judge_score": 0.9346153846153846,
+    "parse_time": 33.98582124710083,
+    "extract_time": 41.72065305709839,
+    "judge_time": 54.21305823326111,
+    "total_time": 129.92956686019897
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_02_-_Watkins",
+    "skew_type": "original",
+    "judge_score": 0.8752475247524754,
+    "parse_time": 32.85985708236694,
+    "extract_time": 30.555360317230225,
+    "judge_time": 51.65032744407654,
+    "total_time": 115.07449126243591
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_03_-_Bynum",
+    "skew_type": "original",
+    "judge_score": 0.9093457943925234,
+    "parse_time": 13.712852001190186,
+    "extract_time": 31.581707000732422,
+    "judge_time": 182.63803553581238,
+    "total_time": 227.94857454299927
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_04_-_Reyes",
+    "skew_type": "original",
+    "judge_score": 0.875,
+    "parse_time": 11.539548635482788,
+    "extract_time": 16.803589582443237,
+    "judge_time": 58.766573667526245,
+    "total_time": 87.13735032081604
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_05_-_Norris",
+    "skew_type": "original",
+    "judge_score": 0.9211538461538461,
+    "parse_time": 22.224311590194702,
+    "extract_time": 72.81494474411011,
+    "judge_time": 117.8142900466919,
+    "total_time": 212.87192106246948
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_06_-_Fleming",
+    "skew_type": "original",
+    "judge_score": 0.8221153846153846,
+    "parse_time": 15.93282437324524,
+    "extract_time": 14.858973026275635,
+    "judge_time": 58.73008990287781,
+    "total_time": 89.53981256484985
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_07_-_Armendariz",
+    "skew_type": "original",
+    "judge_score": 0.8442307692307692,
+    "parse_time": 17.442812204360962,
+    "extract_time": 23.55221915245056,
+    "judge_time": 56.043689012527466,
+    "total_time": 97.05708193778992
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_01_-_Monroe",
+    "skew_type": "180_clean",
+    "judge_score": 0.8423076923076922,
+    "parse_time": 23.0886173248291,
+    "extract_time": 23.107248783111572,
+    "judge_time": 55.5097119808197,
+    "total_time": 101.7216546535492
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_02_-_Delgado",
+    "skew_type": "180_clean",
+    "judge_score": 0.8586538461538461,
+    "parse_time": 30.641177654266357,
+    "extract_time": 53.436206102371216,
+    "judge_time": 57.99596190452576,
+    "total_time": 142.09251976013184
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_04_-_Vega",
+    "skew_type": "180_clean",
+    "judge_score": 0.9158878504672897,
+    "parse_time": 38.73608207702637,
+    "extract_time": 65.50104832649231,
+    "judge_time": 59.682289361953735,
+    "total_time": 163.93387579917908
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_05_-_Quinn",
+    "skew_type": "180_clean",
+    "judge_score": 0.8557692307692307,
+    "parse_time": 22.34087324142456,
+    "extract_time": 24.1890606880188,
+    "judge_time": 58.51481223106384,
+    "total_time": 105.06415128707886
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Hasan_Form_06_-_Cross",
+    "skew_type": "180_clean",
+    "judge_score": 0.6588785046728972,
+    "parse_time": 22.825109720230103,
+    "extract_time": 51.08268976211548,
+    "judge_time": 181.89495182037354,
+    "total_time": 255.82245516777039
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_01_-_Perkins",
+    "skew_type": "180_clean",
+    "judge_score": 0.8759615384615385,
+    "parse_time": 28.518736600875854,
+    "extract_time": 61.72596836090088,
+    "judge_time": 58.366862773895264,
+    "total_time": 148.62710642814636
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_02_-_Harmon",
+    "skew_type": "180_clean",
+    "judge_score": 0.9471153846153846,
+    "parse_time": 26.054590463638306,
+    "extract_time": 70.59644865989685,
+    "judge_time": 54.41708159446716,
+    "total_time": 151.07735586166382
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_03_-_Dixon",
+    "skew_type": "180_clean",
+    "judge_score": 0.9055555555555556,
+    "parse_time": 26.63977360725403,
+    "extract_time": 68.62506318092346,
+    "judge_time": 57.04541993141174,
+    "total_time": 152.32758378982544
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_04_-_Mendez",
+    "skew_type": "180_clean",
+    "judge_score": 0.9144230769230769,
+    "parse_time": 25.45892357826233,
+    "extract_time": 19.887067794799805,
+    "judge_time": 117.91027212142944,
+    "total_time": 163.26719522476196
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_05_-_Langford",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.875,
+    "parse_time": 30.41356658935547,
+    "extract_time": 61.40020942687988,
+    "judge_time": 56.07344579696655,
+    "total_time": 147.89667534828186
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Quareen_Form_07_-_Escobar",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.9384615384615385,
+    "parse_time": 30.362778186798096,
+    "extract_time": 24.34542942047119,
+    "judge_time": 51.87395763397217,
+    "total_time": 106.59222888946533
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_01_-_Payne",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.9019230769230769,
+    "parse_time": 38.489752531051636,
+    "extract_time": 88.8358063697815,
+    "judge_time": 50.176746129989624,
+    "total_time": 177.51028037071228
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_02_-_Watkins",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.8752475247524754,
+    "parse_time": 26.93881630897522,
+    "extract_time": 56.40819835662842,
+    "judge_time": 55.26057982444763,
+    "total_time": 138.6154601573944
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_03_-_Bynum",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.891588785046729,
+    "parse_time": 49.04512643814087,
+    "extract_time": 24.450851678848267,
+    "judge_time": 58.02339053153992,
+    "total_time": 131.5412881374359
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_04_-_Reyes",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.8942307692307693,
+    "parse_time": 30.368732213974,
+    "extract_time": 60.92471122741699,
+    "judge_time": 57.22045421600342,
+    "total_time": 148.52173614501953
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_05_-_Norris",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.9317307692307693,
+    "parse_time": 42.030497789382935,
+    "extract_time": 24.44611167907715,
+    "judge_time": 56.5530424118042,
+    "total_time": 123.03804016113281
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_06_-_Fleming",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.8211538461538462,
+    "parse_time": 33.636943340301514,
+    "extract_time": 69.90091300010681,
+    "judge_time": 119.38111090660095,
+    "total_time": 222.9267554283142
+  },
+  {
+    "system": "Landing.ai",
+    "doc_name": "Sadam_Form_07_-_Armendariz",
+    "skew_type": "heavy_skew",
+    "judge_score": 0.8086538461538461,
+    "parse_time": 43.938777923583984,
+    "extract_time": 12.629916906356812,
+    "judge_time": 55.9516863822937,
+    "total_time": 112.53028297424316
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_01_-_Monroe",
+    "skew_type": "original",
+    "judge_score": 0.5336538461538461,
+    "textract_time": 14.368964433670044,
+    "judge_time": 59.398237228393555,
+    "total_time": 74.74681401252747
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_02_-_Delgado",
+    "skew_type": "original",
+    "judge_score": 0.6230769230769231,
+    "textract_time": 12.991591215133667,
+    "judge_time": 56.583532094955444,
+    "total_time": 70.52579712867737
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_03_-_Sutton",
+    "skew_type": "original",
+    "judge_score": 0.0,
+    "textract_time": 11.476099014282227,
+    "judge_time": 53.11367583274841,
+    "total_time": 65.13775539398193
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_04_-_Vega",
+    "skew_type": "original",
+    "judge_score": 0.5420560747663551,
+    "textract_time": 12.970309734344482,
+    "judge_time": 240.9006485939026,
+    "total_time": 254.93348836898804
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_05_-_Quinn",
+    "skew_type": "original",
+    "judge_score": 0.5855769230769231,
+    "textract_time": 13.566948413848877,
+    "judge_time": 59.175589084625244,
+    "total_time": 73.79507303237915
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_07_-_Rios",
+    "skew_type": "original",
+    "judge_score": 0.4326923076923077,
+    "textract_time": 13.558840990066528,
+    "judge_time": 58.80153036117554,
+    "total_time": 74.37745928764343
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_08_-_Garza",
+    "skew_type": "original",
+    "judge_score": 0.6788461538461538,
+    "textract_time": 11.765334606170654,
+    "judge_time": 115.88010430335999,
+    "total_time": 129.78821516036987
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_10_-_Okafor",
+    "skew_type": "original",
+    "judge_score": 0.6105769230769231,
+    "textract_time": 14.549226999282837,
+    "judge_time": 120.06361150741577,
+    "total_time": 135.6746072769165
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_20_-_Webb",
+    "skew_type": "original",
+    "judge_score": 0.5961538461538461,
+    "textract_time": 10.40797209739685,
+    "judge_time": 78.87018823623657,
+    "total_time": 90.14059329032898
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_07_-_Armendariz",
+    "skew_type": "original",
+    "judge_score": 0.5144230769230769,
+    "textract_time": 13.88647747039795,
+    "judge_time": 92.65335822105408,
+    "total_time": 107.67313051223755
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_18_-_Fontenot",
+    "skew_type": "original",
+    "judge_score": 0.5432692307692307,
+    "textract_time": 11.42480182647705,
+    "judge_time": 58.929152488708496,
+    "total_time": 71.48968601226807
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_05_-_Quinn",
+    "skew_type": "180_clean",
+    "judge_score": 0.5721153846153846,
+    "textract_time": 12.2183096408844,
+    "judge_time": 78.95887732505798,
+    "total_time": 91.19850754737854
+  }
+]

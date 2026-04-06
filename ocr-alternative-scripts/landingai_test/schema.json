@@ -1,0 +1,405 @@
+{
+  "type": "object",
+  "properties": {
+    "arresting_officer": {
+      "type": "object",
+      "title": "Arresting Officer Information",
+      "description": "Details about the arresting officer.",
+      "properties": {
+        "officer_type": {
+          "type": "string",
+          "title": "Officer Type",
+          "description": "The role of the officer (Arresting, Transporting, or Both).",
+          "nullable": true
+        },
+        "last_name": {
+          "type": "string",
+          "title": "Officer Last Name",
+          "description": "Last name of the arresting officer.",
+          "nullable": true
+        },
+        "first_name": {
+          "type": "string",
+          "title": "Officer First Name",
+          "description": "First name of the arresting officer.",
+          "nullable": true
+        }
+      },
+      "required": ["officer_type", "last_name", "first_name"]
+    },
+    "officer_contact_details": {
+      "type": "object",
+      "title": "Officer Contact Details",
+      "description": "Contact and identification details for the officer.",
+      "properties": {
+        "id_number_1": { "type": "string", "title": "Officer ID Number 1", "description": "First identification number for the officer.", "nullable": true },
+        "id_number_2": { "type": "string", "title": "Officer ID Number 2", "description": "Second identification number for the officer.", "nullable": true },
+        "phone_number": { "type": "string", "title": "Officer Phone Number", "description": "Phone number of the officer.", "nullable": true },
+        "agency": { "type": "string", "title": "Officer Agency", "description": "Agency the officer belongs to.", "nullable": true }
+      },
+      "required": ["id_number_1", "id_number_2", "phone_number", "agency"]
+    },
+    "prisoner_personal_information": {
+      "type": "object",
+      "title": "Prisoner Personal Information",
+      "properties": {
+        "first_name": { "type": "string", "title": "Prisoner First Name", "description": "First name of the prisoner.", "nullable": true },
+        "last_name": { "type": "string", "title": "Prisoner Last Name", "description": "Last name of the prisoner.", "nullable": true },
+        "middle_name": { "type": "string", "title": "Prisoner Middle Name", "description": "Middle name of the prisoner.", "nullable": true }
+      },
+      "required": ["first_name", "last_name", "middle_name"]
+    },
+    "prisoner_demographics": {
+      "type": "object",
+      "title": "Prisoner Demographics",
+      "properties": {
+        "social_security_number": { "type": "string", "title": "Social Security Number", "description": "Prisoner's Social Security Number.", "nullable": true },
+        "date_of_birth": { "type": "string", "title": "Date of Birth", "description": "Prisoner's date of birth (MM/DD/YYYY).", "nullable": true },
+        "age": { "type": "string", "title": "Age", "description": "Prisoner's current age.", "nullable": true },
+        "sex": { "type": "string", "title": "Sex", "description": "Prisoner's sex (M/F).", "nullable": true }
+      },
+      "required": ["social_security_number", "date_of_birth", "age", "sex"]
+    },
+    "prisoner_origin": {
+      "type": "object",
+      "title": "Prisoner Origin",
+      "properties": {
+        "race": { "type": "string", "title": "Race", "description": "Prisoner's race.", "nullable": true },
+        "ethnicity": { "type": "string", "title": "Ethnicity", "description": "Prisoner's ethnicity (Hispanic/Non-Hispanic).", "nullable": true },
+        "citizenship": { "type": "string", "title": "Citizenship", "description": "Prisoner's country of citizenship.", "nullable": true },
+        "country_of_birth": { "type": "string", "title": "Country of Birth", "description": "Prisoner's country of birth.", "nullable": true }
+      },
+      "required": ["race", "ethnicity", "citizenship", "country_of_birth"]
+    },
+    "prisoner_birth_city": {
+      "type": "object",
+      "properties": {
+        "city_of_birth": { "type": "string", "title": "City of Birth", "description": "Prisoner's city of birth.", "nullable": true }
+      },
+      "required": ["city_of_birth"]
+    },
+    "prisoner_physical_attributes": {
+      "type": "object",
+      "properties": {
+        "height": { "type": "string", "title": "Height", "description": "Prisoner's height.", "nullable": true },
+        "weight": { "type": "string", "title": "Weight", "description": "Prisoner's weight.", "nullable": true },
+        "eyes": { "type": "string", "title": "Eye Color", "description": "Prisoner's eye color.", "nullable": true },
+        "skin": { "type": "string", "title": "Skin Tone", "description": "Prisoner's skin tone.", "nullable": true }
+      },
+      "required": ["height", "weight", "eyes", "skin"]
+    },
+    "prisoner_hair_details": {
+      "type": "object",
+      "properties": {
+        "hair_type": { "type": "string", "title": "Hair Type", "nullable": true },
+        "hair_length": { "type": "string", "title": "Hair Length", "nullable": true },
+        "hair_color": { "type": "string", "title": "Hair Color", "nullable": true }
+      },
+      "required": ["hair_type", "hair_length", "hair_color"]
+    },
+    "prisoner_facial_features": {
+      "type": "object",
+      "properties": {
+        "build": { "type": "string", "title": "Build", "description": "Prisoner's body build (Skinny, Light, Medium, Heavy, Obese).", "nullable": true },
+        "beard": { "type": "string", "title": "Beard", "description": "Prisoner's beard type (Heavy, Medium, Thin, Goatee, None).", "nullable": true },
+        "mustache": { "type": "string", "title": "Mustache", "description": "Indicates if the prisoner has a mustache (Y/N).", "nullable": true },
+        "glasses": { "type": "string", "title": "Glasses", "description": "Indicates if the prisoner wears glasses (Y/N).", "nullable": true }
+      },
+      "required": ["build", "beard", "mustache", "glasses"]
+    },
+    "prisoner_status_and_habits": {
+      "type": "object",
+      "properties": {
+        "marital_status": { "type": "string", "title": "Marital Status", "nullable": true },
+        "religious_preference": { "type": "string", "title": "Religious Preference", "nullable": true },
+        "veteran": { "type": "string", "title": "Veteran Status", "description": "Indicates if the prisoner is a veteran (Y/N).", "nullable": true },
+        "using_drugs": { "type": "string", "title": "Using Drugs", "description": "Indicates if the prisoner is using drugs (Y/N).", "nullable": true }
+      },
+      "required": ["marital_status", "religious_preference", "veteran", "using_drugs"]
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "type": "object",
+      "properties": {
+        "using_alcohol": { "type": "string", "title": "Using Alcohol", "description": "Indicates if the prisoner is using alcohol (Y/N).", "nullable": true },
+        "wanted": { "type": "string", "title": "Wanted Status", "description": "Indicates if the prisoner is wanted (Y/N).", "nullable": true },
+        "agency_wanting_person": { "type": "string", "title": "Agency Wanting Person", "nullable": true },
+        "agency_contact_person": { "type": "string", "title": "Agency Contact Person", "nullable": true }
+      },
+      "required": ["using_alcohol", "wanted", "agency_wanting_person", "agency_contact_person"]
+    },
+    "additional_identifiers": {
+      "type": "object",
+      "properties": {
+        "hcso_spn": { "type": "string", "title": "HCSO SPN", "nullable": true },
+        "state_issued_id_number": { "type": "string", "title": "State-Issued ID Number", "nullable": true },
+        "issuing_state": { "type": "string", "title": "Issuing State", "nullable": true },
+        "drivers_license_number": { "type": "string", "title": "Driver's License Number", "nullable": true }
+      },
+      "required": ["hcso_spn", "state_issued_id_number", "issuing_state", "drivers_license_number"]
+    },
+    "drivers_license_details": {
+      "type": "object",
+      "properties": {
+        "dl_state": { "type": "string", "title": "DL State", "nullable": true },
+        "dl_type": { "type": "string", "title": "DL Type", "nullable": true },
+        "sid_number": { "type": "string", "title": "SID Number", "nullable": true },
+        "fbi_number": { "type": "string", "title": "FBI Number", "nullable": true }
+      },
+      "required": ["dl_state", "dl_type", "sid_number", "fbi_number"]
+    },
+    "other_identification_numbers": {
+      "type": "object",
+      "properties": {
+        "afis_number": { "type": "string", "title": "AFIS Number", "nullable": true },
+        "so_number": { "type": "string", "title": "SO Number", "nullable": true },
+        "da_log_number": { "type": "string", "title": "DA Log Number", "nullable": true },
+        "assistant_da_name": { "type": "string", "title": "Assistant DA Name", "nullable": true }
+      },
+      "required": ["afis_number", "so_number", "da_log_number", "assistant_da_name"]
+    },
+    "scars_marks_tattoos": {
+      "type": "array",
+      "title": "Scars, Marks, and Tattoos",
+      "description": "List of scars, marks, or tattoos on the prisoner. Up to 3 entries.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "title": "Type", "description": "Type of mark (Scar, Mark, or Tattoo).", "nullable": true },
+          "location": { "type": "string", "title": "Location", "description": "Location on body.", "nullable": true },
+          "description": { "type": "string", "title": "Description", "description": "Description of the mark.", "nullable": true }
+        },
+        "required": ["type", "location", "description"]
+      }
+    },
+    "home_address": {
+      "type": "object",
+      "properties": {
+        "address_type": { "type": "string", "title": "Address Type", "description": "Type of address (Home, Work, etc.).", "nullable": true },
+        "street": { "type": "string", "title": "Street", "nullable": true },
+        "city": { "type": "string", "title": "City", "nullable": true },
+        "state": { "type": "string", "title": "State", "nullable": true },
+        "zip_code": { "type": "string", "title": "Zip Code", "nullable": true }
+      },
+      "required": ["address_type", "street", "city", "state", "zip_code"]
+    },
+    "home_address_source": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "title": "Source", "nullable": true }
+      },
+      "required": ["source"]
+    },
+    "cell_phone": {
+      "type": "object",
+      "properties": {
+        "phone_type": { "type": "string", "title": "Phone Type", "description": "Type of phone (Cell, Home, Work, etc.).", "nullable": true },
+        "number": { "type": "string", "title": "Cell Phone Number", "nullable": true },
+        "source": { "type": "string", "title": "Source", "nullable": true }
+      },
+      "required": ["phone_type", "number", "source"]
+    },
+    "secondary_phone": {
+      "type": "object",
+      "title": "Secondary Phone",
+      "description": "Prisoner's secondary phone number.",
+      "properties": {
+        "phone_type": { "type": "string", "title": "Phone Type", "description": "Type of secondary phone.", "nullable": true },
+        "number": { "type": "string", "title": "Phone Number", "nullable": true },
+        "source": { "type": "string", "title": "Source", "nullable": true }
+      },
+      "required": ["phone_type", "number", "source"]
+    },
+    "emergency_contact": {
+      "type": "object",
+      "properties": {
+        "first_name": { "type": "string", "title": "First Name", "nullable": true },
+        "middle_name": { "type": "string", "title": "Middle Name", "nullable": true },
+        "last_name": { "type": "string", "title": "Last Name", "nullable": true },
+        "relationship": { "type": "string", "title": "Relationship", "nullable": true }
+      },
+      "required": ["first_name", "middle_name", "last_name", "relationship"]
+    },
+    "emergency_contact_details": {
+      "type": "object",
+      "properties": {
+        "phone_number": { "type": "string", "title": "Phone Number", "nullable": true },
+        "source": { "type": "string", "title": "Source", "nullable": true }
+      },
+      "required": ["phone_number", "source"]
+    },
+    "employer_information": {
+      "type": "object",
+      "properties": {
+        "employer_name": { "type": "string", "title": "Employer Name", "nullable": true },
+        "occupation": { "type": "string", "title": "Occupation", "nullable": true },
+        "employer_street_address": { "type": "string", "title": "Employer Street Address", "nullable": true }
+      },
+      "required": ["employer_name", "occupation", "employer_street_address"]
+    },
+    "employer_contact_details": {
+      "type": "object",
+      "properties": {
+        "city": { "type": "string", "title": "City", "nullable": true },
+        "state": { "type": "string", "title": "State", "nullable": true },
+        "zip_code": { "type": "string", "title": "Zip Code", "nullable": true },
+        "phone_type": { "type": "string", "title": "Employer Phone Type", "description": "Type of employer phone (Work, Cell, etc.).", "nullable": true },
+        "work_phone": { "type": "string", "title": "Work Phone", "nullable": true }
+      },
+      "required": ["city", "state", "zip_code", "phone_type", "work_phone"]
+    },
+    "employer_source": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "title": "Source", "nullable": true }
+      },
+      "required": ["source"]
+    },
+    "arrest_information": {
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "title": "Arrest Date", "description": "Date of the arrest (MM/DD/YYYY).", "nullable": true },
+        "time": { "type": "string", "title": "Arrest Time", "description": "Time of the arrest (HH:MM AM/PM).", "nullable": true },
+        "arrest_location": { "type": "string", "title": "Arrest Location", "nullable": true },
+        "arresting_agency": { "type": "string", "title": "Arresting Agency", "nullable": true }
+      },
+      "required": ["date", "time", "arrest_location", "arresting_agency"]
+    },
+    "prisoner_health_and_behavior": {
+      "type": "object",
+      "properties": {
+        "prisoner_health_condition": { "type": "string", "title": "Prisoner Health Condition", "nullable": true },
+        "unusual_behavior": { "type": "string", "title": "Unusual Behavior", "description": "Indicates if the prisoner displayed unusual behavior or signs of mental illness (Yes/No).", "nullable": true }
+      },
+      "required": ["prisoner_health_condition", "unusual_behavior"]
+    },
+    "arresting_officer_details_arrest_info": {
+      "type": "object",
+      "properties": {
+        "last_name": { "type": "string", "title": "Arresting Officer Last Name", "nullable": true },
+        "first_name": { "type": "string", "title": "Arresting Officer First Name", "nullable": true },
+        "badge_number": { "type": "string", "title": "Badge Number", "nullable": true },
+        "employee_id_number": { "type": "string", "title": "Employee ID Number", "nullable": true }
+      },
+      "required": ["last_name", "first_name", "badge_number", "employee_id_number"]
+    },
+    "arresting_officer_contact_and_unit": {
+      "type": "object",
+      "properties": {
+        "contact_number": { "type": "string", "title": "Contact Number", "nullable": true },
+        "unit_number": { "type": "string", "title": "Unit Number", "nullable": true },
+        "arresting_agency": { "type": "string", "title": "Arresting Agency", "nullable": true }
+      },
+      "required": ["contact_number", "unit_number", "arresting_agency"]
+    },
+    "transporting_officer_details": {
+      "type": "object",
+      "properties": {
+        "last_name": { "type": "string", "title": "Transporting Officer Last Name", "nullable": true },
+        "first_name": { "type": "string", "title": "Transporting Officer First Name", "nullable": true },
+        "badge_number": { "type": "string", "title": "Badge Number", "nullable": true },
+        "employee_id_number": { "type": "string", "title": "Employee ID Number", "nullable": true }
+      },
+      "required": ["last_name", "first_name", "badge_number", "employee_id_number"]
+    },
+    "transporting_officer_contact_and_unit": {
+      "type": "object",
+      "properties": {
+        "contact_number": { "type": "string", "title": "Contact Number", "nullable": true },
+        "unit_number": { "type": "string", "title": "Unit Number", "nullable": true },
+        "agency": { "type": "string", "title": "Agency", "nullable": true }
+      },
+      "required": ["contact_number", "unit_number", "agency"]
+    },
+    "valuable_property": {
+      "type": "array",
+      "title": "Valuable Property",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "color": { "type": "string", "nullable": true }
+        },
+        "required": ["item", "description", "color"]
+      }
+    },
+    "clothing_property": {
+      "type": "array",
+      "title": "Clothing Property",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quantity": { "type": "string", "nullable": true },
+          "item": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "color": { "type": "string", "nullable": true }
+        },
+        "required": ["quantity", "item", "description", "color"]
+      }
+    },
+    "other_property": {
+      "type": "array",
+      "title": "Other Property",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quantity": { "type": "string", "nullable": true },
+          "item": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "color": { "type": "string", "nullable": true }
+        },
+        "required": ["quantity", "item", "description", "color"]
+      }
+    },
+    "secure_packs": {
+      "type": "object",
+      "title": "Secure Packs",
+      "description": "Secure pack information for prisoner property.",
+      "properties": {
+        "quantity": { "type": "string", "title": "Secure Pack Quantity", "description": "Number of secure packs.", "nullable": true },
+        "prisoner_given_opportunity_for_phone_numbers": { "type": "string", "title": "Prisoner Given Opportunity for Phone Numbers", "description": "Was the prisoner given the opportunity to get phone numbers from a mobile device (Yes/No)?", "nullable": true }
+      },
+      "required": ["quantity", "prisoner_given_opportunity_for_phone_numbers"]
+    },
+    "signatures": {
+      "type": "object",
+      "properties": {
+        "prisoner_signature": { "type": "string", "title": "Prisoner's Signature", "description": "Indicates if the prisoner has signed (x Signed).", "nullable": true },
+        "officer_signature": { "type": "string", "title": "Officer's Signature", "description": "Indicates if the officer has signed (x Signed).", "nullable": true }
+      },
+      "required": ["prisoner_signature", "officer_signature"]
+    },
+    "ccq_info": {
+      "type": "object",
+      "properties": {
+        "ccq_run": { "type": "string", "title": "CCQ Run", "description": "Indicates if a CCQ run was performed (Yes/No).", "nullable": true }
+      },
+      "required": ["ccq_run"]
+    },
+    "processing_flows": {
+      "type": "array",
+      "title": "Processing Flows",
+      "items": { "type": "string", "nullable": true }
+    },
+    "prisoner_flags": {
+      "type": "array",
+      "title": "Prisoner Flags",
+      "items": { "type": "string", "nullable": true }
+    }
+  },
+  "required": [
+    "arresting_officer", "officer_contact_details", "prisoner_personal_information",
+    "prisoner_demographics", "prisoner_origin", "prisoner_birth_city",
+    "prisoner_physical_attributes", "prisoner_hair_details", "prisoner_facial_features",
+    "prisoner_status_and_habits", "prisoner_alcohol_and_wanted_status",
+    "additional_identifiers", "drivers_license_details", "other_identification_numbers",
+    "scars_marks_tattoos", "home_address", "home_address_source", "cell_phone",
+    "secondary_phone", "emergency_contact", "emergency_contact_details",
+    "employer_information", "employer_contact_details", "employer_source",
+    "arrest_information", "prisoner_health_and_behavior",
+    "arresting_officer_details_arrest_info", "arresting_officer_contact_and_unit",
+    "transporting_officer_details", "transporting_officer_contact_and_unit",
+    "valuable_property", "clothing_property", "other_property",
+    "secure_packs", "signatures", "ccq_info", "processing_flows", "prisoner_flags"
+  ]
+}

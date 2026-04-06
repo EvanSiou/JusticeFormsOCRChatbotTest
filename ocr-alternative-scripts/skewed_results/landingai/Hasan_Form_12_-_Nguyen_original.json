@@ -1,0 +1,714 @@
+{
+  "field_evaluations": [
+    {
+      "field_name": "officer_type",
+      "reference_value": "Arresting",
+      "extracted_value": "Arresting",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "officer_last_name",
+      "reference_value": "Whitfield",
+      "extracted_value": "Whitefield",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a minor typo compared to the reference value."
+    },
+    {
+      "field_name": "officer_first_name",
+      "reference_value": "Geneva",
+      "extracted_value": "Geneva",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "badge_number",
+      "reference_value": "762 995",
+      "extracted_value": "762 995",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employee_id_number",
+      "reference_value": "545840",
+      "extracted_value": "545840",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "contact_phone_number",
+      "reference_value": "936-555-0357",
+      "extracted_value": "936-555-0357",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "agency",
+      "reference_value": "Walker County SO",
+      "extracted_value": "Walker County 80",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "first_name",
+      "reference_value": "Priscilla",
+      "extracted_value": "Priscilla",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "last_name",
+      "reference_value": "Nguyen",
+      "extracted_value": "Noguyen",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a minor typo compared to the reference value."
+    },
+    {
+      "field_name": "middle_name",
+      "reference_value": "Thi",
+      "extracted_value": "Thi",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "ssn",
+      "reference_value": "621-83-5512",
+      "extracted_value": "621-83-5512",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "date_of_birth",
+      "reference_value": "10/05/1993",
+      "extracted_value": "10/05/1993",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "age",
+      "reference_value": "31",
+      "extracted_value": "31",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "sex",
+      "reference_value": "F",
+      "extracted_value": "F",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "race",
+      "reference_value": "Asian",
+      "extracted_value": "Asian",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "ethnicity",
+      "reference_value": "Non-Hispanic",
+      "extracted_value": "Non-Hispanic",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "citizenship",
+      "reference_value": "US",
+      "extracted_value": "US",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "country_of_birth",
+      "reference_value": "USA",
+      "extracted_value": "USA",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "city_of_birth",
+      "reference_value": "Huntsville",
+      "extracted_value": "Huntsville",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "height",
+      "reference_value": "5'2",
+      "extracted_value": "5'2",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "weight",
+      "reference_value": "112",
+      "extracted_value": "112",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "eyes",
+      "reference_value": "Brown",
+      "extracted_value": "Brown",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "skin",
+      "reference_value": "Light",
+      "extracted_value": "Light",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "hair_type",
+      "reference_value": "Black",
+      "extracted_value": "Black",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "hair_length",
+      "reference_value": "Medium",
+      "extracted_value": "Medium",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "hair_color",
+      "reference_value": "Black",
+      "extracted_value": "Black",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "build",
+      "reference_value": "Skinny",
+      "extracted_value": "Skinny",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "beard",
+      "reference_value": "None",
+      "extracted_value": "Heavy",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "mustache",
+      "reference_value": "N",
+      "extracted_value": "N",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "glasses",
+      "reference_value": "Y",
+      "extracted_value": "N",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "marital_status",
+      "reference_value": "Married",
+      "extracted_value": "Married",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "religious_preference",
+      "reference_value": "Buddhist",
+      "extracted_value": "Buddhist",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "veteran",
+      "reference_value": "N",
+      "extracted_value": "N",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "using_drugs",
+      "reference_value": "N",
+      "extracted_value": "N",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "using_alcohol",
+      "reference_value": "N",
+      "extracted_value": "N",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "wanted",
+      "reference_value": "N",
+      "extracted_value": "N",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "hcso_spn",
+      "reference_value": "432 45623",
+      "extracted_value": "432 45623",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "state_issued_id_number",
+      "reference_value": "456 2432",
+      "extracted_value": "456 2432",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "issuing_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "drivers_license_number",
+      "reference_value": "502 45432",
+      "extracted_value": "502 45432",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "dl_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "dl_type",
+      "reference_value": "C",
+      "extracted_value": "C",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "sid_number",
+      "reference_value": "504 456 432",
+      "extracted_value": "504 456 432",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "fbi_number",
+      "reference_value": "504 432",
+      "extracted_value": "504 432",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "afis_number",
+      "reference_value": "432 4562",
+      "extracted_value": "432 4562",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "so_number",
+      "reference_value": "456 432 504",
+      "extracted_value": "456 432 504",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "da_log_number",
+      "reference_value": "432 456",
+      "extracted_value": "432 456",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "assistant_da_name",
+      "reference_value": "Ray Dunn",
+      "extracted_value": "Ray Dunn",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "smt_1_type",
+      "reference_value": "None",
+      "extracted_value": "None",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "smt_1_location",
+      "reference_value": "N/A",
+      "extracted_value": "N/A",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "smt_1_description",
+      "reference_value": "N/A",
+      "extracted_value": "N/A",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "address_type",
+      "reference_value": "Home",
+      "extracted_value": "Home",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "address_street",
+      "reference_value": "2100 Sam Houston Ave",
+      "extracted_value": "2100 Sam Houston Ave",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "address_city",
+      "reference_value": "Huntsville",
+      "extracted_value": "Huntsville",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "address_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "address_zip",
+      "reference_value": "77340",
+      "extracted_value": "77340",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "address_source",
+      "reference_value": "Google",
+      "extracted_value": "Google",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "phone_1_type",
+      "reference_value": "Cell",
+      "extracted_value": "Cell",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "phone_1_number",
+      "reference_value": "936-555-0357",
+      "extracted_value": "936-555-0357",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "phone_1_source",
+      "reference_value": "Self",
+      "extracted_value": "Self",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "emergency_first_name",
+      "reference_value": "Van",
+      "extracted_value": "Nan",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "emergency_middle_name",
+      "reference_value": "Duc",
+      "extracted_value": "Due",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "emergency_last_name",
+      "reference_value": "Nguyen",
+      "extracted_value": "Nguyen",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "emergency_relationship",
+      "reference_value": "Husband",
+      "extracted_value": "Husband",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "emergency_phone",
+      "reference_value": "936-555-0358",
+      "extracted_value": "936-555-0355",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "emergency_source",
+      "reference_value": "Self",
+      "extracted_value": "Self",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_name",
+      "reference_value": "Sam Houston State University",
+      "extracted_value": "Sam Huston State University",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a minor typo compared to the reference value."
+    },
+    {
+      "field_name": "occupation",
+      "reference_value": "Administrative Clerk",
+      "extracted_value": "Administrative Clark",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a minor typo compared to the reference value."
+    },
+    {
+      "field_name": "employer_address",
+      "reference_value": "1806 Ave J",
+      "extracted_value": "1806 Ave J",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_city",
+      "reference_value": "Huntsville",
+      "extracted_value": "Huntsville",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_zip",
+      "reference_value": "77340",
+      "extracted_value": "77340",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_phone_type",
+      "reference_value": "Work",
+      "extracted_value": "Work",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_phone",
+      "reference_value": "936-555-3000",
+      "extracted_value": "936-555-3000",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "employer_source",
+      "reference_value": "Self",
+      "extracted_value": "Self",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arrest_date",
+      "reference_value": "11/22/2024",
+      "extracted_value": "11/22/2024",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arrest_time",
+      "reference_value": "2:00 PM",
+      "extracted_value": "2:00 PM",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arrest_location",
+      "reference_value": "Huntsville TX",
+      "extracted_value": "Huntsville TX",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arresting_agency",
+      "reference_value": "HPD",
+      "extracted_value": "HPD",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "prisoner_health_condition",
+      "reference_value": "None",
+      "extracted_value": "None",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "unusual_behavior",
+      "reference_value": "No",
+      "extracted_value": "No",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arr_officer_last_name",
+      "reference_value": "Polk",
+      "extracted_value": "Polk",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arr_officer_first_name",
+      "reference_value": "Wade",
+      "extracted_value": "Wade",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arr_officer_badge",
+      "reference_value": "194",
+      "extracted_value": "194",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arr_officer_employee_id",
+      "reference_value": "969",
+      "extracted_value": "0960",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "arr_officer_contact",
+      "reference_value": "936-291-5480",
+      "extracted_value": "036-291-5480",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "arr_officer_unit",
+      "reference_value": "W24",
+      "extracted_value": "W24",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "arr_officer_agency",
+      "reference_value": "HPD",
+      "extracted_value": "HPD",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "trans_officer_last_name",
+      "reference_value": "Yates",
+      "extracted_value": "Yates",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "trans_officer_first_name",
+      "reference_value": "Alma",
+      "extracted_value": "Alma",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "trans_officer_badge",
+      "reference_value": "307",
+      "extracted_value": "307",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "trans_officer_employee_id",
+      "reference_value": "155",
+      "extracted_value": "155",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "trans_officer_contact",
+      "reference_value": "936-291-5481",
+      "extracted_value": "936-291-9481",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value is significantly different from the reference value."
+    },
+    {
+      "field_name": "trans_officer_unit",
+      "reference_value": "X33",
+      "extracted_value": "X33",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "trans_officer_agency",
+      "reference_value": "HPD",
+      "extracted_value": "HPD",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "valuable_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Samsung A series\", \"color\": \"White\"}]",
+      "extracted_value": "[{\"item\": \"Phone\", \"description\": \"Samsung A series\", \"color\": \"White\"}]",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a different JSON structure and field names, but the content is similar."
+    },
+    {
+      "field_name": "clothing_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Grey cardigan\", \"color\": \"Grey\"}]",
+      "extracted_value": "[{\"quantity\": \"1\", \"item\": \"Cordigan\", \"description\": \"Ghey Cardigan\", \"color\": \"Ghey\"}]",
+      "extraction_score": 0.0,
+      "reasoning": "The extracted value has significant differences in field names and content."
+    },
+    {
+      "field_name": "secure_pack_quantity",
+      "reference_value": "1",
+      "extracted_value": "1",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "phone_numbers_opportunity",
+      "reference_value": "Yes",
+      "extracted_value": "Yes",
+      "extraction_score": 1.0,
+      "reasoning": "The extracted value matches the reference value exactly."
+    },
+    {
+      "field_name": "prisoner_signature",
+      "reference_value": "Signed",
+      "extracted_value": "x Signed",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a minor difference compared to the reference value."
+    },
+    {
+      "field_name": "officer_signature",
+      "reference_value": "Signed",
+      "extracted_value": "x Signed",
+      "extraction_score": 0.5,
+      "reasoning": "The extracted value has a minor difference compared to the reference value."
+    }
+  ],
+  "overall_score": 0.8663366336633663,
+  "summary": "The extraction system performed well on most fields, but had significant errors in a few fields, particularly in the emergency contact and officer details.",
+  "judge_overall_score": 0.84
+}

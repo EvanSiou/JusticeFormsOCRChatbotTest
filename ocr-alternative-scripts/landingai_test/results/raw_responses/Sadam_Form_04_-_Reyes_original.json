@@ -1,0 +1,932 @@
+{
+  "extraction": {
+    "arresting_officer": {
+      "officer_type": "Arresting",
+      "last_name": "Ibarra",
+      "first_name": "Carlos"
+    },
+    "officer_contact_details": {
+      "id_number_1": "274667",
+      "id_number_2": "990386",
+      "phone_number": "210-555-0734",
+      "agency": "Bexar County SO"
+    },
+    "prisoner_personal_information": {
+      "first_name": "Natalia",
+      "last_name": "Reyes",
+      "middle_name": "Carmen"
+    },
+    "prisoner_demographics": {
+      "social_security_number": "643-07-2256",
+      "date_of_birth": "12/09/1994",
+      "age": "30",
+      "sex": "F"
+    },
+    "prisoner_origin": {
+      "race": "Hispank",
+      "ethnicity": "",
+      "citizenship": "US",
+      "country_of_birth": "USA"
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": "San Antonio"
+    },
+    "prisoner_physical_attributes": {
+      "height": "5'3",
+      "weight": "120",
+      "eyes": "Brown",
+      "skin": "Tan"
+    },
+    "prisoner_hair_details": {
+      "hair_type": "Black",
+      "hair_length": "Long",
+      "hair_color": "Black"
+    },
+    "prisoner_facial_features": {
+      "build": "Skinny",
+      "beard": "None",
+      "mustache": "N",
+      "glasses": "N"
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": "Single",
+      "religious_preference": "Catholic",
+      "veteran": "N",
+      "using_drugs": "Y"
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": "N",
+      "wanted": "",
+      "agency_wanting_person": "",
+      "agency_contact_person": ""
+    },
+    "additional_identifiers": {
+      "hcso_spn": "746 89067",
+      "state_issued_id_number": "8906746",
+      "issuing_state": "TX",
+      "drivers_license_number": "960 89746"
+    },
+    "drivers_license_details": {
+      "dl_state": "TX",
+      "dl_type": "C",
+      "sid_number": "962 890 746",
+      "fbi_number": "962 746"
+    },
+    "other_identification_numbers": {
+      "afis_number": "746 8906",
+      "so_number": "890 746 962",
+      "da_log_number": "746 890",
+      "assistant_da_name": "Nina Soto"
+    },
+    "tattoos": [
+      {
+        "location": "Right forearm",
+        "description": "Peacock feather"
+      }
+    ],
+    "home_address": {
+      "street": "2200 Pleasanton Rd",
+      "city": "San Antonio",
+      "state": "Tx",
+      "zip_code": "78221"
+    },
+    "home_address_source": {
+      "source": "Google"
+    },
+    "cell_phone": {
+      "number": "210-555-0734",
+      "source": "self"
+    },
+    "emergency_contact": {
+      "first_name": "Consuela",
+      "middle_name": "Maria",
+      "last_name": "Reyes",
+      "relationship": "Mother"
+    },
+    "emergency_contact_details": {
+      "phone_number": "210-555-0735",
+      "source": "Self"
+    },
+    "employer_information": {
+      "employer_name": "Whata burger HQ",
+      "occupation": "Customer Service",
+      "employer_street_address": "300 Concord Plaza Dr."
+    },
+    "employer_contact_details": {
+      "city": "San Antonio",
+      "state": "TX",
+      "zip_code": "78216",
+      "work_phone": "210-555-6300"
+    },
+    "employer_source": {
+      "source": "self (handwritten)"
+    },
+    "arrest_information": {
+      "date": "09/02/2024",
+      "time": "5:45PM",
+      "arrest_location": "San Antonio TX",
+      "arresting_agency": "SAPD"
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": "None",
+      "unusual_behavior_or_mental_illness": ""
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": "Trevino",
+      "first_name": "Rudy",
+      "badge_number": "718",
+      "employee_id_number": "406"
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": "210-207-7500",
+      "unit_number": "GIO",
+      "arresting_agency": "SAPP"
+    },
+    "transporting_officer_details": {
+      "last_name": "Mora",
+      "first_name": "Lupe",
+      "badge_number": "831",
+      "employee_id_number": "492"
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": "210-207-7501",
+      "unit_number": "H19",
+      "agency": "SAPD"
+    },
+    "valuable_property": [
+      {
+        "item": "Phone",
+        "description": "iPhone 12",
+        "color": "Yellow"
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": "1",
+        "item": "Dress",
+        "description": "Floral dress",
+        "color": "Multi color"
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": "Yes"
+    },
+    "signatures": {
+      "prisoner_signature": "x Signed",
+      "officer_signature": "x Signed"
+    },
+    "ccq_info": {
+      "ccq_run": ""
+    },
+    "processing_flows": [
+      "Class B+ New Charge (Warrant Pending) In and Out Bonding",
+      "Class B+ Warrant (Open) Investigative Hold"
+    ],
+    "prisoner_flags": [
+      "B Bench Warrant M MRP / MAG / MAJ C Civil O Open Case",
+      "D Fugitive P Parole Violator",
+      "F Capias Pro Fine Q CoH Municipal Only",
+      "H Bond Forfeiture R TDCJ Ready"
+    ]
+  },
+  "extraction_metadata": {
+    "arresting_officer": {
+      "officer_type": {
+        "value": "Arresting",
+        "references": [
+          "0-3"
+        ]
+      },
+      "last_name": {
+        "value": "Ibarra",
+        "references": [
+          "0-4"
+        ]
+      },
+      "first_name": {
+        "value": "Carlos",
+        "references": [
+          "0-5"
+        ]
+      }
+    },
+    "officer_contact_details": {
+      "id_number_1": {
+        "value": "274667",
+        "references": [
+          "0-7"
+        ]
+      },
+      "id_number_2": {
+        "value": "990386",
+        "references": [
+          "0-8"
+        ]
+      },
+      "phone_number": {
+        "value": "210-555-0734",
+        "references": [
+          "0-9"
+        ]
+      },
+      "agency": {
+        "value": "Bexar County SO",
+        "references": [
+          "0-a"
+        ]
+      }
+    },
+    "prisoner_personal_information": {
+      "first_name": {
+        "value": "Natalia",
+        "references": [
+          "0-d"
+        ]
+      },
+      "last_name": {
+        "value": "Reyes",
+        "references": [
+          "0-e"
+        ]
+      },
+      "middle_name": {
+        "value": "Carmen",
+        "references": [
+          "0-f"
+        ]
+      }
+    },
+    "prisoner_demographics": {
+      "social_security_number": {
+        "value": "643-07-2256",
+        "references": [
+          "0-h"
+        ]
+      },
+      "date_of_birth": {
+        "value": "12/09/1994",
+        "references": [
+          "0-i"
+        ]
+      },
+      "age": {
+        "value": "30",
+        "references": [
+          "0-j"
+        ]
+      },
+      "sex": {
+        "value": "F",
+        "references": [
+          "0-k"
+        ]
+      }
+    },
+    "prisoner_origin": {
+      "race": {
+        "value": "Hispank",
+        "references": [
+          "0-l"
+        ]
+      },
+      "ethnicity": {
+        "value": "",
+        "references": []
+      },
+      "citizenship": {
+        "value": "US",
+        "references": [
+          "0-o"
+        ]
+      },
+      "country_of_birth": {
+        "value": "USA",
+        "references": [
+          "0-p"
+        ]
+      }
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": {
+        "value": "San Antonio",
+        "references": [
+          "0-q"
+        ]
+      }
+    },
+    "prisoner_physical_attributes": {
+      "height": {
+        "value": "5'3",
+        "references": [
+          "0-s"
+        ]
+      },
+      "weight": {
+        "value": "120",
+        "references": [
+          "0-t"
+        ]
+      },
+      "eyes": {
+        "value": "Brown",
+        "references": [
+          "0-u"
+        ]
+      },
+      "skin": {
+        "value": "Tan",
+        "references": [
+          "0-v"
+        ]
+      }
+    },
+    "prisoner_hair_details": {
+      "hair_type": {
+        "value": "Black",
+        "references": [
+          "0-w"
+        ]
+      },
+      "hair_length": {
+        "value": "Long",
+        "references": [
+          "0-x"
+        ]
+      },
+      "hair_color": {
+        "value": "Black",
+        "references": [
+          "0-z"
+        ]
+      }
+    },
+    "prisoner_facial_features": {
+      "build": {
+        "value": "Skinny",
+        "references": [
+          "0-A"
+        ]
+      },
+      "beard": {
+        "value": "None",
+        "references": [
+          "0-B"
+        ]
+      },
+      "mustache": {
+        "value": "N",
+        "references": [
+          "0-C"
+        ]
+      },
+      "glasses": {
+        "value": "N",
+        "references": [
+          "0-D"
+        ]
+      }
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": {
+        "value": "Single",
+        "references": [
+          "0-F"
+        ]
+      },
+      "religious_preference": {
+        "value": "Catholic",
+        "references": [
+          "0-G"
+        ]
+      },
+      "veteran": {
+        "value": "N",
+        "references": [
+          "0-H"
+        ]
+      },
+      "using_drugs": {
+        "value": "Y",
+        "references": [
+          "0-I"
+        ]
+      }
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": {
+        "value": "N",
+        "references": [
+          "0-J"
+        ]
+      },
+      "wanted": {
+        "value": "",
+        "references": []
+      },
+      "agency_wanting_person": {
+        "value": "",
+        "references": []
+      },
+      "agency_contact_person": {
+        "value": "",
+        "references": []
+      }
+    },
+    "additional_identifiers": {
+      "hcso_spn": {
+        "value": "746 89067",
+        "references": [
+          "0-Q"
+        ]
+      },
+      "state_issued_id_number": {
+        "value": "8906746",
+        "references": [
+          "0-R"
+        ]
+      },
+      "issuing_state": {
+        "value": "TX",
+        "references": [
+          "0-S"
+        ]
+      },
+      "drivers_license_number": {
+        "value": "960 89746",
+        "references": [
+          "0-T"
+        ]
+      }
+    },
+    "drivers_license_details": {
+      "dl_state": {
+        "value": "TX",
+        "references": [
+          "0-U"
+        ]
+      },
+      "dl_type": {
+        "value": "C",
+        "references": [
+          "0-V"
+        ]
+      },
+      "sid_number": {
+        "value": "962 890 746",
+        "references": [
+          "0-X"
+        ]
+      },
+      "fbi_number": {
+        "value": "962 746",
+        "references": [
+          "0-Y"
+        ]
+      }
+    },
+    "other_identification_numbers": {
+      "afis_number": {
+        "value": "746 8906",
+        "references": [
+          "0-Z"
+        ]
+      },
+      "so_number": {
+        "value": "890 746 962",
+        "references": [
+          "0-10"
+        ]
+      },
+      "da_log_number": {
+        "value": "746 890",
+        "references": [
+          "0-11"
+        ]
+      },
+      "assistant_da_name": {
+        "value": "Nina Soto",
+        "references": [
+          "0-12"
+        ]
+      }
+    },
+    "tattoos": [
+      {
+        "location": {
+          "value": "Right forearm",
+          "references": [
+            "0-15"
+          ]
+        },
+        "description": {
+          "value": "Peacock feather",
+          "references": [
+            "0-16"
+          ]
+        }
+      }
+    ],
+    "home_address": {
+      "street": {
+        "value": "2200 Pleasanton Rd",
+        "references": [
+          "0-1f"
+        ]
+      },
+      "city": {
+        "value": "San Antonio",
+        "references": [
+          "0-1g"
+        ]
+      },
+      "state": {
+        "value": "Tx",
+        "references": [
+          "0-1h"
+        ]
+      },
+      "zip_code": {
+        "value": "78221",
+        "references": [
+          "0-1i"
+        ]
+      }
+    },
+    "home_address_source": {
+      "source": {
+        "value": "Google",
+        "references": [
+          "0-1j"
+        ]
+      }
+    },
+    "cell_phone": {
+      "number": {
+        "value": "210-555-0734",
+        "references": [
+          "0-1m"
+        ]
+      },
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1n"
+        ]
+      }
+    },
+    "emergency_contact": {
+      "first_name": {
+        "value": "Consuela",
+        "references": [
+          "0-1t"
+        ]
+      },
+      "middle_name": {
+        "value": "Maria",
+        "references": [
+          "0-1u"
+        ]
+      },
+      "last_name": {
+        "value": "Reyes",
+        "references": [
+          "0-1v"
+        ]
+      },
+      "relationship": {
+        "value": "Mother",
+        "references": [
+          "0-1w"
+        ]
+      }
+    },
+    "emergency_contact_details": {
+      "phone_number": {
+        "value": "210-555-0735",
+        "references": [
+          "0-1x"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1y"
+        ]
+      }
+    },
+    "employer_information": {
+      "employer_name": {
+        "value": "Whata burger HQ",
+        "references": [
+          "0-1B"
+        ]
+      },
+      "occupation": {
+        "value": "Customer Service",
+        "references": [
+          "0-1C"
+        ]
+      },
+      "employer_street_address": {
+        "value": "300 Concord Plaza Dr.",
+        "references": [
+          "0-1D"
+        ]
+      }
+    },
+    "employer_contact_details": {
+      "city": {
+        "value": "San Antonio",
+        "references": [
+          "0-1F"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1G"
+        ]
+      },
+      "zip_code": {
+        "value": "78216",
+        "references": [
+          "0-1H"
+        ]
+      },
+      "work_phone": {
+        "value": "210-555-6300",
+        "references": [
+          "0-1J"
+        ]
+      }
+    },
+    "employer_source": {
+      "source": {
+        "value": "self (handwritten)",
+        "references": [
+          "0-1K"
+        ]
+      }
+    },
+    "arrest_information": {
+      "date": {
+        "value": "09/02/2024",
+        "references": [
+          "0-3"
+        ]
+      },
+      "time": {
+        "value": "5:45PM",
+        "references": [
+          "0-4"
+        ]
+      },
+      "arrest_location": {
+        "value": "San Antonio TX",
+        "references": [
+          "0-5"
+        ]
+      },
+      "arresting_agency": {
+        "value": "SAPD",
+        "references": [
+          "0-7"
+        ]
+      }
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": {
+        "value": "None",
+        "references": [
+          "0-8"
+        ]
+      },
+      "unusual_behavior_or_mental_illness": {
+        "value": "",
+        "references": []
+      }
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": {
+        "value": "Trevino",
+        "references": [
+          "0-b"
+        ]
+      },
+      "first_name": {
+        "value": "Rudy",
+        "references": [
+          "0-c"
+        ]
+      },
+      "badge_number": {
+        "value": "718",
+        "references": [
+          "0-d"
+        ]
+      },
+      "employee_id_number": {
+        "value": "406",
+        "references": [
+          "0-e"
+        ]
+      }
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "210-207-7500",
+        "references": [
+          "0-f"
+        ]
+      },
+      "unit_number": {
+        "value": "GIO",
+        "references": [
+          "0-g"
+        ]
+      },
+      "arresting_agency": {
+        "value": "SAPP",
+        "references": [
+          "0-h"
+        ]
+      }
+    },
+    "transporting_officer_details": {
+      "last_name": {
+        "value": "Mora",
+        "references": [
+          "0-i"
+        ]
+      },
+      "first_name": {
+        "value": "Lupe",
+        "references": [
+          "0-j"
+        ]
+      },
+      "badge_number": {
+        "value": "831",
+        "references": [
+          "0-k"
+        ]
+      },
+      "employee_id_number": {
+        "value": "492",
+        "references": [
+          "0-l"
+        ]
+      }
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "210-207-7501",
+        "references": [
+          "0-m"
+        ]
+      },
+      "unit_number": {
+        "value": "H19",
+        "references": [
+          "0-n"
+        ]
+      },
+      "agency": {
+        "value": "SAPD",
+        "references": [
+          "0-o"
+        ]
+      }
+    },
+    "valuable_property": [
+      {
+        "item": {
+          "value": "Phone",
+          "references": [
+            "0-s"
+          ]
+        },
+        "description": {
+          "value": "iPhone 12",
+          "references": [
+            "0-t"
+          ]
+        },
+        "color": {
+          "value": "Yellow",
+          "references": [
+            "0-u"
+          ]
+        }
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": {
+          "value": "1",
+          "references": [
+            "0-T"
+          ]
+        },
+        "item": {
+          "value": "Dress",
+          "references": [
+            "0-U"
+          ]
+        },
+        "description": {
+          "value": "Floral dress",
+          "references": [
+            "0-V"
+          ]
+        },
+        "color": {
+          "value": "Multi color",
+          "references": [
+            "0-W"
+          ]
+        }
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": {
+        "value": "Yes",
+        "references": [
+          "0-1m"
+        ]
+      }
+    },
+    "signatures": {
+      "prisoner_signature": {
+        "value": "x Signed",
+        "references": [
+          "0-1p"
+        ]
+      },
+      "officer_signature": {
+        "value": "x Signed",
+        "references": [
+          "0-1q"
+        ]
+      }
+    },
+    "ccq_info": {
+      "ccq_run": {
+        "value": "",
+        "references": []
+      }
+    },
+    "processing_flows": [
+      {
+        "value": "Class B+ New Charge (Warrant Pending) In and Out Bonding",
+        "references": [
+          "0-1E"
+        ]
+      },
+      {
+        "value": "Class B+ Warrant (Open) Investigative Hold",
+        "references": [
+          "0-1G"
+        ]
+      }
+    ],
+    "prisoner_flags": [
+      {
+        "value": "B Bench Warrant M MRP / MAG / MAJ C Civil O Open Case",
+        "references": [
+          "0-1F"
+        ]
+      },
+      {
+        "value": "D Fugitive P Parole Violator",
+        "references": [
+          "0-1H"
+        ]
+      },
+      {
+        "value": "F Capias Pro Fine Q CoH Municipal Only",
+        "references": [
+          "0-1I"
+        ]
+      },
+      {
+        "value": "H Bond Forfeiture R TDCJ Ready",
+        "references": [
+          "0-1K"
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "filename": "inline_markdown.md",
+    "org_id": null,
+    "duration_ms": 51301,
+    "credit_usage": 5.9552,
+    "job_id": "9c06bfb52d1a45d392b6687280d317c3",
+    "version": "extract-20251024",
+    "schema_violation_error": null,
+    "fallback_model_version": "extract-20250930"
+  }
+}

@@ -1,0 +1,86 @@
+2026-03-31 19:04:16  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:04:18  Found 60 documents
+2026-03-31 19:04:18  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:04:18  PDF conversion failed for Quareen/Form 01 - Perkins: Unable to get page count. Is poppler installed and in PATH?
+2026-03-31 19:04:18  Done. 0 results saved.
+2026-03-31 19:05:57  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:05:58  Found 60 documents
+2026-03-31 19:05:58  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:06:01    Textract failed on page 1: An error occurred (AccessDeniedException) when calling the AnalyzeDocument operation: User: arn:aws:iam::991370225073:user/DemoApp is not authorized to perform: textract:AnalyzeDocument because no identity-based policy allows the textract:AnalyzeDocument action
+2026-03-31 19:06:02    Textract failed on page 2: An error occurred (AccessDeniedException) when calling the AnalyzeDocument operation: User: arn:aws:iam::991370225073:user/DemoApp is not authorized to perform: textract:AnalyzeDocument because no identity-based policy allows the textract:AnalyzeDocument action
+2026-03-31 19:06:02  Judge API failed: TypeError: "Could not resolve authentication method. Expected either api_key or auth_token to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"
+2026-03-31 19:06:02    Judge error: TypeError: "Could not resolve authentication method. Expected either api_key or auth_token to be set
+2026-03-31 19:06:02  Done. 0 results saved.
+2026-03-31 19:09:42  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:09:43  Found 60 documents
+2026-03-31 19:09:43  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:09:49    Page 1: 77 key-value pairs extracted
+2026-03-31 19:09:54    Page 2: 56 key-value pairs extracted
+2026-03-31 19:09:54    60 mapped, 108 unmapped keys
+2026-03-31 19:09:55  Judge API failed: TypeError: "Could not resolve authentication method. Expected either api_key or auth_token to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"
+2026-03-31 19:09:55    Judge error: TypeError: "Could not resolve authentication method. Expected either api_key or auth_token to be set
+2026-03-31 19:09:55  Done. 0 results saved.
+2026-03-31 19:13:26  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:13:27  Found 60 documents
+2026-03-31 19:13:27  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:13:33    Page 1: 77 key-value pairs extracted
+2026-03-31 19:13:38    Page 2: 56 key-value pairs extracted
+2026-03-31 19:13:39    60 mapped, 108 unmapped keys
+2026-03-31 19:14:35    Judge score: 37.0%
+2026-03-31 19:14:35  Done. 1 results saved.
+2026-03-31 19:22:54  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:22:55  Found 60 documents
+2026-03-31 19:22:55  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:23:01    Page 1: 77 key-value pairs extracted
+2026-03-31 19:23:07    Page 2: 56 key-value pairs extracted
+2026-03-31 19:23:07    79 mapped, 50 unmapped keys
+2026-03-31 19:24:02    Judge score: 62.0% | Textract: 12.0s | Judge: 55.1s | Cost: $0.030 | Excel: Quareen_Form_01_-_Perkins_original.xlsx
+2026-03-31 19:24:02  Done. 1 results saved.
+2026-03-31 19:32:14  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:32:14  Found 60 documents
+2026-03-31 19:32:14  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:32:20    Page 1: 106 key-value pairs extracted
+2026-03-31 19:32:25    Page 2: 76 key-value pairs extracted
+2026-03-31 19:32:25    98 mapped, 0 unmapped keys
+2026-03-31 19:33:25    Judge score: 73.0% | Textract: 10.2s | Judge: 59.6s | Cost: $0.030 | Excel: Quareen_Form_01_-_Perkins_original.xlsx
+2026-03-31 19:33:25  Done. 1 results saved.
+2026-03-31 20:58:50  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 20:58:50  Found 60 documents
+2026-03-31 20:58:50  Processing [original]: Sadam/Form 19 - Ponce
+2026-03-31 20:58:59    Page 1: 108 key-value pairs extracted
+2026-03-31 20:59:05    Page 2: 76 key-value pairs extracted
+2026-03-31 20:59:05    80 mapped, 19 unmapped keys
+2026-03-31 21:00:03    Judge score: 58.0% | Textract: 14.2s | Judge: 57.2s | Cost: $0.030 | Excel: Sadam_Form_19_-_Ponce_original.xlsx
+2026-03-31 21:00:03  Done. 1 results saved.
+2026-03-31 21:00:05  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:00:05  Found 60 documents
+2026-03-31 21:00:05  Processing [original]: Sadam/Form 04 - Reyes
+2026-03-31 21:00:11    Page 1: 106 key-value pairs extracted
+2026-03-31 21:00:16    Page 2: 76 key-value pairs extracted
+2026-03-31 21:00:17    79 mapped, 20 unmapped keys
+2026-03-31 21:01:17    Judge score: 47.0% | Textract: 10.4s | Judge: 60.1s | Cost: $0.030 | Excel: Sadam_Form_04_-_Reyes_original.xlsx
+2026-03-31 21:01:17  Done. 2 results saved.
+2026-03-31 21:01:20  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:01:20  Found 60 documents
+2026-03-31 21:01:20  Processing [original]: Hasan/Form 15 - Winters
+2026-03-31 21:01:29    Page 1: 106 key-value pairs extracted
+2026-03-31 21:01:34    Page 2: 77 key-value pairs extracted
+2026-03-31 21:01:35    79 mapped, 13 unmapped keys
+2026-03-31 21:02:35    Judge score: 60.0% | Textract: 12.6s | Judge: 59.7s | Cost: $0.030 | Excel: Hasan_Form_15_-_Winters_original.xlsx
+2026-03-31 21:02:35  Done. 3 results saved.
+2026-03-31 21:02:38  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:02:38  Found 60 documents
+2026-03-31 21:02:38  Processing [original]: Quareen/Form 12 - Horne
+2026-03-31 21:02:44    Page 1: 106 key-value pairs extracted
+2026-03-31 21:02:48    Page 2: 77 key-value pairs extracted
+2026-03-31 21:02:49    86 mapped, 14 unmapped keys
+2026-03-31 21:03:50    Judge score: 62.0% | Textract: 10.1s | Judge: 60.6s | Cost: $0.030 | Excel: Quareen_Form_12_-_Horne_original.xlsx
+2026-03-31 21:03:50  Done. 4 results saved.
+2026-03-31 21:03:52  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:03:53  Found 60 documents
+2026-03-31 21:03:53  Processing [original]: Quareen/Form 17 - Patel
+2026-03-31 21:03:59    Page 1: 105 key-value pairs extracted
+2026-03-31 21:04:03    Page 2: 76 key-value pairs extracted
+2026-03-31 21:04:04    88 mapped, 9 unmapped keys
+2026-03-31 21:04:56    Judge score: 73.0% | Textract: 10.7s | Judge: 52.4s | Cost: $0.030 | Excel: Quareen_Form_17_-_Patel_original.xlsx
+2026-03-31 21:04:56  Done. 5 results saved.

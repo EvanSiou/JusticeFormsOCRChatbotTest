@@ -1,0 +1,1043 @@
+{
+  "extraction": {
+    "arresting_officer": {
+      "officer_type": "Arresting",
+      "last_name": "Strickland",
+      "first_name": "Brent"
+    },
+    "officer_contact_details": {
+      "id_number_1": "741223",
+      "id_number_2": "556831",
+      "phone_number": "713-555-0501",
+      "agency": "HPD"
+    },
+    "prisoner_personal_information": {
+      "first_name": "Lamont",
+      "last_name": "Perkins",
+      "middle_name": "Dwayne"
+    },
+    "prisoner_demographics": {
+      "social_security_number": "214-63-8812",
+      "date_of_birth": "04/08/1985",
+      "age": "40",
+      "sex": "M"
+    },
+    "prisoner_origin": {
+      "race": "Black",
+      "ethnicity": "Non-Hispanic",
+      "citizenship": "US",
+      "country_of_birth": "USA"
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": "Houston"
+    },
+    "prisoner_physical_attributes": {
+      "height": "5' 11\"",
+      "weight": "192",
+      "eyes": "Brown",
+      "skin": "Dark"
+    },
+    "prisoner_hair_details": {
+      "hair_type": "",
+      "hair_length": "short",
+      "hair_color": "Black"
+    },
+    "prisoner_facial_features": {
+      "build": "Medium",
+      "beard": "Goatee",
+      "mustache": "Y",
+      "glasses": "N"
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": "Single",
+      "religious_preference": "Baptist",
+      "veteran": "N",
+      "using_drugs": "Y"
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": "Y",
+      "wanted": "N",
+      "agency_wanting_person": "",
+      "agency_contact_person": ""
+    },
+    "additional_identifiers": {
+      "hcso_spn": "312 456 23",
+      "state_issued_id_number": "456 2312",
+      "issuing_state": "Tx.",
+      "drivers_license_number": "52645312"
+    },
+    "drivers_license_details": {
+      "dl_state": "TX",
+      "dl_type": "C",
+      "sid_number": "528456 312",
+      "fbi_number": "5283/2"
+    },
+    "other_identification_numbers": {
+      "afis_number": "3124562",
+      "so_number": "456 312 528",
+      "da_log_number": "312456",
+      "assistant_da_name": "Tina Howell"
+    },
+    "tattoos": [
+      {
+        "location": "Right Fore-arm",
+        "description": "Crown and Dice"
+      },
+      {
+        "location": "left hand",
+        "description": "Money bag"
+      }
+    ],
+    "home_address": {
+      "street": "5500 Almeda Rd.",
+      "city": "Houston",
+      "state": "TX",
+      "zip_code": "77004"
+    },
+    "home_address_source": {
+      "source": "self"
+    },
+    "cell_phone": {
+      "number": "713-555-0501",
+      "source": "self"
+    },
+    "emergency_contact": {
+      "first_name": "Lorraine",
+      "middle_name": "Mae",
+      "last_name": "Perkins",
+      "relationship": "Mother"
+    },
+    "emergency_contact_details": {
+      "phone_number": "713-555-0502",
+      "source": "self (handwritten)"
+    },
+    "employer_information": {
+      "employer_name": "Amazon fulfillment cent",
+      "occupation": "Picker",
+      "employer_street_address": "20901 Tompkins Rd."
+    },
+    "employer_contact_details": {
+      "city": "Katy",
+      "state": "Tx",
+      "zip_code": "77449",
+      "work_phone": "713-555-4000"
+    },
+    "employer_source": {
+      "source": "self"
+    },
+    "arrest_information": {
+      "date": "03/03/2025",
+      "time": "9:30 PM",
+      "arrest_location": "Houston Tx.",
+      "arresting_agency": "HPD"
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": "None",
+      "unusual_behavior_or_mental_illness": "No"
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": "Dupree",
+      "first_name": "Marcus",
+      "badge_number": "831",
+      "employee_id_number": "562"
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": "713-884-3131",
+      "unit_number": "A03",
+      "arresting_agency": "HPD"
+    },
+    "transporting_officer_details": {
+      "last_name": "Chung",
+      "first_name": "Linda",
+      "badge_number": "944",
+      "employee_id_number": "648"
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": "713-884-3132",
+      "unit_number": "B12",
+      "agency": "HPD"
+    },
+    "valuable_property": [
+      {
+        "item": "Phone",
+        "description": "I-Phone 15",
+        "color": "Black"
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": "1",
+        "item": "Hoodie",
+        "description": "Black hoodie",
+        "color": "Black"
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": "Yes"
+    },
+    "signatures": {
+      "prisoner_signature": "x (signature)",
+      "officer_signature": "x (signature)"
+    },
+    "ccq_info": {
+      "ccq_run": ""
+    },
+    "processing_flows": [
+      "Class B+ New Charge (Warrant Pending)",
+      "In and Out Bonding",
+      "B\nC",
+      "M\nO",
+      "Class B+ Warrant (Open)",
+      "Investigative Hold",
+      "D\nF",
+      "P\nQ",
+      "Class C County\nCoH Municipal Class C",
+      "No Intake Judicial Hearing (BOPP, Civil)\nOut of County",
+      "H",
+      "R",
+      "J",
+      "S",
+      "K Felony Indictment",
+      "T Transient",
+      "ICE",
+      "L Booked on Mandate",
+      "W Weekender"
+    ],
+    "prisoner_flags": []
+  },
+  "extraction_metadata": {
+    "arresting_officer": {
+      "officer_type": {
+        "value": "Arresting",
+        "references": [
+          "0-3"
+        ]
+      },
+      "last_name": {
+        "value": "Strickland",
+        "references": [
+          "0-4"
+        ]
+      },
+      "first_name": {
+        "value": "Brent",
+        "references": [
+          "0-5"
+        ]
+      }
+    },
+    "officer_contact_details": {
+      "id_number_1": {
+        "value": "741223",
+        "references": [
+          "0-b"
+        ]
+      },
+      "id_number_2": {
+        "value": "556831",
+        "references": [
+          "0-c"
+        ]
+      },
+      "phone_number": {
+        "value": "713-555-0501",
+        "references": [
+          "0-d"
+        ]
+      },
+      "agency": {
+        "value": "HPD",
+        "references": [
+          "0-e"
+        ]
+      }
+    },
+    "prisoner_personal_information": {
+      "first_name": {
+        "value": "Lamont",
+        "references": [
+          "0-g"
+        ]
+      },
+      "last_name": {
+        "value": "Perkins",
+        "references": [
+          "0-h"
+        ]
+      },
+      "middle_name": {
+        "value": "Dwayne",
+        "references": [
+          "0-i"
+        ]
+      }
+    },
+    "prisoner_demographics": {
+      "social_security_number": {
+        "value": "214-63-8812",
+        "references": [
+          "0-k"
+        ]
+      },
+      "date_of_birth": {
+        "value": "04/08/1985",
+        "references": [
+          "0-l"
+        ]
+      },
+      "age": {
+        "value": "40",
+        "references": [
+          "0-m"
+        ]
+      },
+      "sex": {
+        "value": "M",
+        "references": [
+          "0-n"
+        ]
+      }
+    },
+    "prisoner_origin": {
+      "race": {
+        "value": "Black",
+        "references": [
+          "0-o"
+        ]
+      },
+      "ethnicity": {
+        "value": "Non-Hispanic",
+        "references": [
+          "0-p"
+        ]
+      },
+      "citizenship": {
+        "value": "US",
+        "references": [
+          "0-r"
+        ]
+      },
+      "country_of_birth": {
+        "value": "USA",
+        "references": [
+          "0-s"
+        ]
+      }
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": {
+        "value": "Houston",
+        "references": [
+          "0-t"
+        ]
+      }
+    },
+    "prisoner_physical_attributes": {
+      "height": {
+        "value": "5' 11\"",
+        "references": [
+          "0-v"
+        ]
+      },
+      "weight": {
+        "value": "192",
+        "references": [
+          "0-w"
+        ]
+      },
+      "eyes": {
+        "value": "Brown",
+        "references": [
+          "0-x"
+        ]
+      },
+      "skin": {
+        "value": "Dark",
+        "references": [
+          "0-y"
+        ]
+      }
+    },
+    "prisoner_hair_details": {
+      "hair_type": {
+        "value": "",
+        "references": []
+      },
+      "hair_length": {
+        "value": "short",
+        "references": [
+          "0-A"
+        ]
+      },
+      "hair_color": {
+        "value": "Black",
+        "references": [
+          "0-z"
+        ]
+      }
+    },
+    "prisoner_facial_features": {
+      "build": {
+        "value": "Medium",
+        "references": [
+          "0-D"
+        ]
+      },
+      "beard": {
+        "value": "Goatee",
+        "references": [
+          "0-E"
+        ]
+      },
+      "mustache": {
+        "value": "Y",
+        "references": [
+          "0-F"
+        ]
+      },
+      "glasses": {
+        "value": "N",
+        "references": [
+          "0-G"
+        ]
+      }
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": {
+        "value": "Single",
+        "references": [
+          "0-I"
+        ]
+      },
+      "religious_preference": {
+        "value": "Baptist",
+        "references": [
+          "0-J"
+        ]
+      },
+      "veteran": {
+        "value": "N",
+        "references": [
+          "0-K"
+        ]
+      },
+      "using_drugs": {
+        "value": "Y",
+        "references": [
+          "0-L"
+        ]
+      }
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": {
+        "value": "Y",
+        "references": [
+          "0-M"
+        ]
+      },
+      "wanted": {
+        "value": "N",
+        "references": [
+          "0-O"
+        ]
+      },
+      "agency_wanting_person": {
+        "value": "",
+        "references": []
+      },
+      "agency_contact_person": {
+        "value": "",
+        "references": []
+      }
+    },
+    "additional_identifiers": {
+      "hcso_spn": {
+        "value": "312 456 23",
+        "references": [
+          "0-T"
+        ]
+      },
+      "state_issued_id_number": {
+        "value": "456 2312",
+        "references": [
+          "0-U"
+        ]
+      },
+      "issuing_state": {
+        "value": "Tx.",
+        "references": [
+          "0-V"
+        ]
+      },
+      "drivers_license_number": {
+        "value": "52645312",
+        "references": [
+          "0-W"
+        ]
+      }
+    },
+    "drivers_license_details": {
+      "dl_state": {
+        "value": "TX",
+        "references": [
+          "0-X"
+        ]
+      },
+      "dl_type": {
+        "value": "C",
+        "references": [
+          "0-Y"
+        ]
+      },
+      "sid_number": {
+        "value": "528456 312",
+        "references": [
+          "0-10"
+        ]
+      },
+      "fbi_number": {
+        "value": "5283/2",
+        "references": [
+          "0-11"
+        ]
+      }
+    },
+    "other_identification_numbers": {
+      "afis_number": {
+        "value": "3124562",
+        "references": [
+          "0-12"
+        ]
+      },
+      "so_number": {
+        "value": "456 312 528",
+        "references": [
+          "0-13"
+        ]
+      },
+      "da_log_number": {
+        "value": "312456",
+        "references": [
+          "0-14"
+        ]
+      },
+      "assistant_da_name": {
+        "value": "Tina Howell",
+        "references": [
+          "0-15"
+        ]
+      }
+    },
+    "tattoos": [
+      {
+        "location": {
+          "value": "Right Fore-arm",
+          "references": [
+            "0-18"
+          ]
+        },
+        "description": {
+          "value": "Crown and Dice",
+          "references": [
+            "0-19"
+          ]
+        }
+      },
+      {
+        "location": {
+          "value": "left hand",
+          "references": [
+            "0-1b"
+          ]
+        },
+        "description": {
+          "value": "Money bag",
+          "references": [
+            "0-1c"
+          ]
+        }
+      }
+    ],
+    "home_address": {
+      "street": {
+        "value": "5500 Almeda Rd.",
+        "references": [
+          "0-1i"
+        ]
+      },
+      "city": {
+        "value": "Houston",
+        "references": [
+          "0-1j"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1k"
+        ]
+      },
+      "zip_code": {
+        "value": "77004",
+        "references": [
+          "0-1l"
+        ]
+      }
+    },
+    "home_address_source": {
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1m"
+        ]
+      }
+    },
+    "cell_phone": {
+      "number": {
+        "value": "713-555-0501",
+        "references": [
+          "0-1p"
+        ]
+      },
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1q"
+        ]
+      }
+    },
+    "emergency_contact": {
+      "first_name": {
+        "value": "Lorraine",
+        "references": [
+          "0-1w"
+        ]
+      },
+      "middle_name": {
+        "value": "Mae",
+        "references": [
+          "0-1x"
+        ]
+      },
+      "last_name": {
+        "value": "Perkins",
+        "references": [
+          "0-1y"
+        ]
+      },
+      "relationship": {
+        "value": "Mother",
+        "references": [
+          "0-1z"
+        ]
+      }
+    },
+    "emergency_contact_details": {
+      "phone_number": {
+        "value": "713-555-0502",
+        "references": [
+          "0-1A"
+        ]
+      },
+      "source": {
+        "value": "self (handwritten)",
+        "references": [
+          "0-1B"
+        ]
+      }
+    },
+    "employer_information": {
+      "employer_name": {
+        "value": "Amazon fulfillment cent",
+        "references": [
+          "0-1D"
+        ]
+      },
+      "occupation": {
+        "value": "Picker",
+        "references": [
+          "0-1E"
+        ]
+      },
+      "employer_street_address": {
+        "value": "20901 Tompkins Rd.",
+        "references": [
+          "0-1F"
+        ]
+      }
+    },
+    "employer_contact_details": {
+      "city": {
+        "value": "Katy",
+        "references": [
+          "0-1H"
+        ]
+      },
+      "state": {
+        "value": "Tx",
+        "references": [
+          "0-1I"
+        ]
+      },
+      "zip_code": {
+        "value": "77449",
+        "references": [
+          "0-1J"
+        ]
+      },
+      "work_phone": {
+        "value": "713-555-4000",
+        "references": [
+          "0-1L"
+        ]
+      }
+    },
+    "employer_source": {
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1M"
+        ]
+      }
+    },
+    "arrest_information": {
+      "date": {
+        "value": "03/03/2025",
+        "references": [
+          "0-3"
+        ]
+      },
+      "time": {
+        "value": "9:30 PM",
+        "references": [
+          "0-4"
+        ]
+      },
+      "arrest_location": {
+        "value": "Houston Tx.",
+        "references": [
+          "0-5"
+        ]
+      },
+      "arresting_agency": {
+        "value": "HPD",
+        "references": [
+          "0-7"
+        ]
+      }
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": {
+        "value": "None",
+        "references": [
+          "0-8"
+        ]
+      },
+      "unusual_behavior_or_mental_illness": {
+        "value": "No",
+        "references": [
+          "0-9"
+        ]
+      }
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": {
+        "value": "Dupree",
+        "references": [
+          "0-b"
+        ]
+      },
+      "first_name": {
+        "value": "Marcus",
+        "references": [
+          "0-c"
+        ]
+      },
+      "badge_number": {
+        "value": "831",
+        "references": [
+          "0-d"
+        ]
+      },
+      "employee_id_number": {
+        "value": "562",
+        "references": [
+          "0-e"
+        ]
+      }
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "713-884-3131",
+        "references": [
+          "0-f"
+        ]
+      },
+      "unit_number": {
+        "value": "A03",
+        "references": [
+          "0-g"
+        ]
+      },
+      "arresting_agency": {
+        "value": "HPD",
+        "references": [
+          "0-h"
+        ]
+      }
+    },
+    "transporting_officer_details": {
+      "last_name": {
+        "value": "Chung",
+        "references": [
+          "0-i"
+        ]
+      },
+      "first_name": {
+        "value": "Linda",
+        "references": [
+          "0-j"
+        ]
+      },
+      "badge_number": {
+        "value": "944",
+        "references": [
+          "0-k"
+        ]
+      },
+      "employee_id_number": {
+        "value": "648",
+        "references": [
+          "0-l"
+        ]
+      }
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "713-884-3132",
+        "references": [
+          "0-m"
+        ]
+      },
+      "unit_number": {
+        "value": "B12",
+        "references": [
+          "0-n"
+        ]
+      },
+      "agency": {
+        "value": "HPD",
+        "references": [
+          "0-o"
+        ]
+      }
+    },
+    "valuable_property": [
+      {
+        "item": {
+          "value": "Phone",
+          "references": [
+            "0-s"
+          ]
+        },
+        "description": {
+          "value": "I-Phone 15",
+          "references": [
+            "0-t"
+          ]
+        },
+        "color": {
+          "value": "Black",
+          "references": [
+            "0-u"
+          ]
+        }
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": {
+          "value": "1",
+          "references": [
+            "0-T"
+          ]
+        },
+        "item": {
+          "value": "Hoodie",
+          "references": [
+            "0-U"
+          ]
+        },
+        "description": {
+          "value": "Black hoodie",
+          "references": [
+            "0-V"
+          ]
+        },
+        "color": {
+          "value": "Black",
+          "references": [
+            "0-W"
+          ]
+        }
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": {
+        "value": "Yes",
+        "references": [
+          "0-1m"
+        ]
+      }
+    },
+    "signatures": {
+      "prisoner_signature": {
+        "value": "x (signature)",
+        "references": [
+          "0-1p"
+        ]
+      },
+      "officer_signature": {
+        "value": "x (signature)",
+        "references": [
+          "0-1q"
+        ]
+      }
+    },
+    "ccq_info": {
+      "ccq_run": {
+        "value": "",
+        "references": []
+      }
+    },
+    "processing_flows": [
+      {
+        "value": "Class B+ New Charge (Warrant Pending)",
+        "references": [
+          "0-1B"
+        ]
+      },
+      {
+        "value": "In and Out Bonding",
+        "references": [
+          "0-1C"
+        ]
+      },
+      {
+        "value": "B\nC",
+        "references": [
+          "0-1D"
+        ]
+      },
+      {
+        "value": "M\nO",
+        "references": [
+          "0-1E"
+        ]
+      },
+      {
+        "value": "Class B+ Warrant (Open)",
+        "references": [
+          "0-1F"
+        ]
+      },
+      {
+        "value": "Investigative Hold",
+        "references": [
+          "0-1G"
+        ]
+      },
+      {
+        "value": "D\nF",
+        "references": [
+          "0-1H"
+        ]
+      },
+      {
+        "value": "P\nQ",
+        "references": [
+          "0-1I"
+        ]
+      },
+      {
+        "value": "Class C County\nCoH Municipal Class C",
+        "references": [
+          "0-1J"
+        ]
+      },
+      {
+        "value": "No Intake Judicial Hearing (BOPP, Civil)\nOut of County",
+        "references": [
+          "0-1K"
+        ]
+      },
+      {
+        "value": "H",
+        "references": [
+          "0-1L"
+        ]
+      },
+      {
+        "value": "R",
+        "references": [
+          "0-1M"
+        ]
+      },
+      {
+        "value": "J",
+        "references": [
+          "0-1N"
+        ]
+      },
+      {
+        "value": "S",
+        "references": [
+          "0-1O"
+        ]
+      },
+      {
+        "value": "K Felony Indictment",
+        "references": [
+          "0-1P"
+        ]
+      },
+      {
+        "value": "T Transient",
+        "references": [
+          "0-1Q"
+        ]
+      },
+      {
+        "value": "ICE",
+        "references": [
+          "0-1R"
+        ]
+      },
+      {
+        "value": "L Booked on Mandate",
+        "references": [
+          "0-1T"
+        ]
+      },
+      {
+        "value": "W Weekender",
+        "references": [
+          "0-1U"
+        ]
+      }
+    ],
+    "prisoner_flags": []
+  },
+  "metadata": {
+    "filename": "inline_markdown.md",
+    "org_id": null,
+    "duration_ms": 54492,
+    "credit_usage": 6.1240000000000006,
+    "job_id": "dd99b14545c94dbaab5d2aef663ea6bd",
+    "version": "extract-20251024",
+    "schema_violation_error": null,
+    "fallback_model_version": "extract-20250930"
+  }
+}

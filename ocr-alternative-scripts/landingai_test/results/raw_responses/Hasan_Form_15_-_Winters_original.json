@@ -1,0 +1,1010 @@
+{
+  "extraction": {
+    "arresting_officer": {
+      "officer_type": "Transporting",
+      "last_name": "Deleon",
+      "first_name": "Felix"
+    },
+    "officer_contact_details": {
+      "id_number_1": "195 328",
+      "id_number_2": "878173",
+      "phone_number": "325-555-0390",
+      "agency": "Taylor County SO"
+    },
+    "prisoner_personal_information": {
+      "first_name": "Floyd",
+      "last_name": "Winters",
+      "middle_name": "Hugh"
+    },
+    "prisoner_demographics": {
+      "social_security_number": "947-16-8845",
+      "date_of_birth": "03/24/1960",
+      "age": "65",
+      "sex": "M"
+    },
+    "prisoner_origin": {
+      "race": "White",
+      "ethnicity": "Non-Hispanic",
+      "citizenship": "US",
+      "country_of_birth": "USA"
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": "Abilene"
+    },
+    "prisoner_physical_attributes": {
+      "height": "5'7",
+      "weight": "160",
+      "eyes": "Hazel",
+      "skin": "Fair"
+    },
+    "prisoner_hair_details": {
+      "hair_type": "Brown",
+      "hair_length": "Short",
+      "hair_color": "White"
+    },
+    "prisoner_facial_features": {
+      "build": "",
+      "beard": "",
+      "mustache": "",
+      "glasses": ""
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": "Widowed",
+      "religious_preference": "Methodist",
+      "veteran": "Y",
+      "using_drugs": "N"
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": "N",
+      "wanted": "N",
+      "agency_wanting_person": "",
+      "agency_contact_person": ""
+    },
+    "additional_identifiers": {
+      "hcso_spn": "",
+      "state_issued_id_number": "765 78956",
+      "issuing_state": "TX",
+      "drivers_license_number": "835 78765"
+    },
+    "drivers_license_details": {
+      "dl_state": "TX",
+      "dl_type": "C",
+      "sid_number": "837 789 765",
+      "fbi_number": "837 765"
+    },
+    "other_identification_numbers": {
+      "afis_number": "765 7895",
+      "so_number": "789-765 837",
+      "da_log_number": "765 789",
+      "assistant_da_name": "Bette Morsh"
+    },
+    "tattoos": [
+      {
+        "location": "Right forearm",
+        "description": "Vietnam Vet 1968"
+      }
+    ],
+    "home_address": {
+      "street": "1700 N 1st St",
+      "city": "Abilene",
+      "state": "TX",
+      "zip_code": "79601"
+    },
+    "home_address_source": {
+      "source": "Self"
+    },
+    "cell_phone": {
+      "number": "325-555-0390",
+      "source": "Self"
+    },
+    "emergency_contact": {
+      "first_name": "Eugene",
+      "middle_name": "Dole",
+      "last_name": "Winters",
+      "relationship": "Son"
+    },
+    "emergency_contact_details": {
+      "phone_number": "325-555-0392",
+      "source": "Self"
+    },
+    "employer_information": {
+      "employer_name": "Dyess Air Force Base",
+      "occupation": "Civilian Contractor",
+      "employer_street_address": "7 Arnold Blvd"
+    },
+    "employer_contact_details": {
+      "city": "Abilene",
+      "state": "TX",
+      "zip_code": "79607",
+      "work_phone": "325-555-3300"
+    },
+    "employer_source": {
+      "source": "Self"
+    },
+    "arrest_information": {
+      "date": "04/14/2025",
+      "time": "4:15 PM",
+      "arrest_location": "Abilene TX",
+      "arresting_agency": "APD"
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": "Arthritis",
+      "unusual_behavior_or_mental_illness": "No"
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": "Hale",
+      "first_name": "Roy",
+      "badge_number": "827",
+      "employee_id_number": "702"
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": "325-673-8300",
+      "unit_number": "C30",
+      "arresting_agency": "APD"
+    },
+    "transporting_officer_details": {
+      "last_name": "Lamb",
+      "first_name": "Gheta",
+      "badge_number": "940",
+      "employee_id_number": "788"
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": "325-673-8301",
+      "unit_number": "D39",
+      "agency": "APD"
+    },
+    "valuable_property": [
+      {
+        "item": "Wallet",
+        "description": "Slim wallet",
+        "color": "Black"
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": "1",
+        "item": "Jacke",
+        "description": "Veteran Jacket",
+        "color": "Olive"
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": "Yes"
+    },
+    "signatures": {
+      "prisoner_signature": "x Signed",
+      "officer_signature": "x Signed"
+    },
+    "ccq_info": {
+      "ccq_run": ""
+    },
+    "processing_flows": [
+      "Class B+ New Charge",
+      "In and Out Bonding",
+      "B Bench Warrant MRP/MAG/MAJ",
+      "(Warrant Pending)",
+      "C Civil O Open Case",
+      "Class B+ Warrant",
+      "Investigative Hold",
+      "D Fugitive P Parole Violator",
+      "(Open)",
+      "F Capias Pro Fine CoH Municipal Only",
+      "No Intake Judicial Hearing",
+      "H Bond Forfeiture R TDCJ Ready",
+      "(BOPP, Civil)",
+      "J Bond Surrender S Sentenced",
+      "Out of County",
+      "K Felony Indictment T Transient",
+      "ICE",
+      "L Booked on Mandate W Weekender"
+    ],
+    "prisoner_flags": []
+  },
+  "extraction_metadata": {
+    "arresting_officer": {
+      "officer_type": {
+        "value": "Transporting",
+        "references": [
+          "0-3"
+        ]
+      },
+      "last_name": {
+        "value": "Deleon",
+        "references": [
+          "0-4"
+        ]
+      },
+      "first_name": {
+        "value": "Felix",
+        "references": [
+          "0-5"
+        ]
+      }
+    },
+    "officer_contact_details": {
+      "id_number_1": {
+        "value": "195 328",
+        "references": [
+          "0-7"
+        ]
+      },
+      "id_number_2": {
+        "value": "878173",
+        "references": [
+          "0-8"
+        ]
+      },
+      "phone_number": {
+        "value": "325-555-0390",
+        "references": [
+          "0-9"
+        ]
+      },
+      "agency": {
+        "value": "Taylor County SO",
+        "references": [
+          "0-a"
+        ]
+      }
+    },
+    "prisoner_personal_information": {
+      "first_name": {
+        "value": "Floyd",
+        "references": [
+          "0-d"
+        ]
+      },
+      "last_name": {
+        "value": "Winters",
+        "references": [
+          "0-e"
+        ]
+      },
+      "middle_name": {
+        "value": "Hugh",
+        "references": [
+          "0-f"
+        ]
+      }
+    },
+    "prisoner_demographics": {
+      "social_security_number": {
+        "value": "947-16-8845",
+        "references": [
+          "0-h"
+        ]
+      },
+      "date_of_birth": {
+        "value": "03/24/1960",
+        "references": [
+          "0-i"
+        ]
+      },
+      "age": {
+        "value": "65",
+        "references": [
+          "0-j"
+        ]
+      },
+      "sex": {
+        "value": "M",
+        "references": [
+          "0-k"
+        ]
+      }
+    },
+    "prisoner_origin": {
+      "race": {
+        "value": "White",
+        "references": [
+          "0-l"
+        ]
+      },
+      "ethnicity": {
+        "value": "Non-Hispanic",
+        "references": [
+          "0-m"
+        ]
+      },
+      "citizenship": {
+        "value": "US",
+        "references": [
+          "0-o"
+        ]
+      },
+      "country_of_birth": {
+        "value": "USA",
+        "references": [
+          "0-p"
+        ]
+      }
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": {
+        "value": "Abilene",
+        "references": [
+          "0-q"
+        ]
+      }
+    },
+    "prisoner_physical_attributes": {
+      "height": {
+        "value": "5'7",
+        "references": [
+          "0-s"
+        ]
+      },
+      "weight": {
+        "value": "160",
+        "references": [
+          "0-t"
+        ]
+      },
+      "eyes": {
+        "value": "Hazel",
+        "references": [
+          "0-u"
+        ]
+      },
+      "skin": {
+        "value": "Fair",
+        "references": [
+          "0-v"
+        ]
+      }
+    },
+    "prisoner_hair_details": {
+      "hair_type": {
+        "value": "Brown",
+        "references": [
+          "0-w"
+        ]
+      },
+      "hair_length": {
+        "value": "Short",
+        "references": [
+          "0-x"
+        ]
+      },
+      "hair_color": {
+        "value": "White",
+        "references": [
+          "0-z"
+        ]
+      }
+    },
+    "prisoner_facial_features": {
+      "build": {
+        "value": "",
+        "references": []
+      },
+      "beard": {
+        "value": "",
+        "references": []
+      },
+      "mustache": {
+        "value": "",
+        "references": []
+      },
+      "glasses": {
+        "value": "",
+        "references": []
+      }
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": {
+        "value": "Widowed",
+        "references": [
+          "0-F"
+        ]
+      },
+      "religious_preference": {
+        "value": "Methodist",
+        "references": [
+          "0-G"
+        ]
+      },
+      "veteran": {
+        "value": "Y",
+        "references": [
+          "0-H"
+        ]
+      },
+      "using_drugs": {
+        "value": "N",
+        "references": [
+          "0-I"
+        ]
+      }
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": {
+        "value": "N",
+        "references": [
+          "0-J"
+        ]
+      },
+      "wanted": {
+        "value": "N",
+        "references": [
+          "0-L"
+        ]
+      },
+      "agency_wanting_person": {
+        "value": "",
+        "references": []
+      },
+      "agency_contact_person": {
+        "value": "",
+        "references": []
+      }
+    },
+    "additional_identifiers": {
+      "hcso_spn": {
+        "value": "",
+        "references": []
+      },
+      "state_issued_id_number": {
+        "value": "765 78956",
+        "references": [
+          "0-Q"
+        ]
+      },
+      "issuing_state": {
+        "value": "TX",
+        "references": [
+          "0-S"
+        ]
+      },
+      "drivers_license_number": {
+        "value": "835 78765",
+        "references": [
+          "0-T"
+        ]
+      }
+    },
+    "drivers_license_details": {
+      "dl_state": {
+        "value": "TX",
+        "references": [
+          "0-U"
+        ]
+      },
+      "dl_type": {
+        "value": "C",
+        "references": [
+          "0-V"
+        ]
+      },
+      "sid_number": {
+        "value": "837 789 765",
+        "references": [
+          "0-X"
+        ]
+      },
+      "fbi_number": {
+        "value": "837 765",
+        "references": [
+          "0-Y"
+        ]
+      }
+    },
+    "other_identification_numbers": {
+      "afis_number": {
+        "value": "765 7895",
+        "references": [
+          "0-Z"
+        ]
+      },
+      "so_number": {
+        "value": "789-765 837",
+        "references": [
+          "0-10"
+        ]
+      },
+      "da_log_number": {
+        "value": "765 789",
+        "references": [
+          "0-11"
+        ]
+      },
+      "assistant_da_name": {
+        "value": "Bette Morsh",
+        "references": [
+          "0-12"
+        ]
+      }
+    },
+    "tattoos": [
+      {
+        "location": {
+          "value": "Right forearm",
+          "references": [
+            "0-15"
+          ]
+        },
+        "description": {
+          "value": "Vietnam Vet 1968",
+          "references": [
+            "0-16"
+          ]
+        }
+      }
+    ],
+    "home_address": {
+      "street": {
+        "value": "1700 N 1st St",
+        "references": [
+          "0-1f"
+        ]
+      },
+      "city": {
+        "value": "Abilene",
+        "references": [
+          "0-1g"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1h"
+        ]
+      },
+      "zip_code": {
+        "value": "79601",
+        "references": [
+          "0-1i"
+        ]
+      }
+    },
+    "home_address_source": {
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1j"
+        ]
+      }
+    },
+    "cell_phone": {
+      "number": {
+        "value": "325-555-0390",
+        "references": [
+          "0-1m"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1n"
+        ]
+      }
+    },
+    "emergency_contact": {
+      "first_name": {
+        "value": "Eugene",
+        "references": [
+          "0-1t"
+        ]
+      },
+      "middle_name": {
+        "value": "Dole",
+        "references": [
+          "0-1u"
+        ]
+      },
+      "last_name": {
+        "value": "Winters",
+        "references": [
+          "0-1v"
+        ]
+      },
+      "relationship": {
+        "value": "Son",
+        "references": [
+          "0-1w"
+        ]
+      }
+    },
+    "emergency_contact_details": {
+      "phone_number": {
+        "value": "325-555-0392",
+        "references": [
+          "0-1x"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1y"
+        ]
+      }
+    },
+    "employer_information": {
+      "employer_name": {
+        "value": "Dyess Air Force Base",
+        "references": [
+          "0-1B"
+        ]
+      },
+      "occupation": {
+        "value": "Civilian Contractor",
+        "references": [
+          "0-1C"
+        ]
+      },
+      "employer_street_address": {
+        "value": "7 Arnold Blvd",
+        "references": [
+          "0-1D"
+        ]
+      }
+    },
+    "employer_contact_details": {
+      "city": {
+        "value": "Abilene",
+        "references": [
+          "0-1F"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1G"
+        ]
+      },
+      "zip_code": {
+        "value": "79607",
+        "references": [
+          "0-1H"
+        ]
+      },
+      "work_phone": {
+        "value": "325-555-3300",
+        "references": [
+          "0-1J"
+        ]
+      }
+    },
+    "employer_source": {
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1K"
+        ]
+      }
+    },
+    "arrest_information": {
+      "date": {
+        "value": "04/14/2025",
+        "references": [
+          "0-3"
+        ]
+      },
+      "time": {
+        "value": "4:15 PM",
+        "references": [
+          "0-4"
+        ]
+      },
+      "arrest_location": {
+        "value": "Abilene TX",
+        "references": [
+          "0-5"
+        ]
+      },
+      "arresting_agency": {
+        "value": "APD",
+        "references": [
+          "0-7"
+        ]
+      }
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": {
+        "value": "Arthritis",
+        "references": [
+          "0-8"
+        ]
+      },
+      "unusual_behavior_or_mental_illness": {
+        "value": "No",
+        "references": [
+          "0-9"
+        ]
+      }
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": {
+        "value": "Hale",
+        "references": [
+          "0-b"
+        ]
+      },
+      "first_name": {
+        "value": "Roy",
+        "references": [
+          "0-c"
+        ]
+      },
+      "badge_number": {
+        "value": "827",
+        "references": [
+          "0-d"
+        ]
+      },
+      "employee_id_number": {
+        "value": "702",
+        "references": [
+          "0-e"
+        ]
+      }
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "325-673-8300",
+        "references": [
+          "0-f"
+        ]
+      },
+      "unit_number": {
+        "value": "C30",
+        "references": [
+          "0-g"
+        ]
+      },
+      "arresting_agency": {
+        "value": "APD",
+        "references": [
+          "0-h"
+        ]
+      }
+    },
+    "transporting_officer_details": {
+      "last_name": {
+        "value": "Lamb",
+        "references": [
+          "0-j"
+        ]
+      },
+      "first_name": {
+        "value": "Gheta",
+        "references": [
+          "0-k"
+        ]
+      },
+      "badge_number": {
+        "value": "940",
+        "references": [
+          "0-l"
+        ]
+      },
+      "employee_id_number": {
+        "value": "788",
+        "references": [
+          "0-m"
+        ]
+      }
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "325-673-8301",
+        "references": [
+          "0-n"
+        ]
+      },
+      "unit_number": {
+        "value": "D39",
+        "references": [
+          "0-o"
+        ]
+      },
+      "agency": {
+        "value": "APD",
+        "references": [
+          "0-p"
+        ]
+      }
+    },
+    "valuable_property": [
+      {
+        "item": {
+          "value": "Wallet",
+          "references": [
+            "0-v"
+          ]
+        },
+        "description": {
+          "value": "Slim wallet",
+          "references": [
+            "0-w"
+          ]
+        },
+        "color": {
+          "value": "Black",
+          "references": [
+            "0-x"
+          ]
+        }
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": {
+          "value": "1",
+          "references": [
+            "0-W"
+          ]
+        },
+        "item": {
+          "value": "Jacke",
+          "references": [
+            "0-X"
+          ]
+        },
+        "description": {
+          "value": "Veteran Jacket",
+          "references": [
+            "0-Z"
+          ]
+        },
+        "color": {
+          "value": "Olive",
+          "references": [
+            "0-10"
+          ]
+        }
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": {
+        "value": "Yes",
+        "references": [
+          "0-1q"
+        ]
+      }
+    },
+    "signatures": {
+      "prisoner_signature": {
+        "value": "x Signed",
+        "references": [
+          "0-1t"
+        ]
+      },
+      "officer_signature": {
+        "value": "x Signed",
+        "references": [
+          "0-1u"
+        ]
+      }
+    },
+    "ccq_info": {
+      "ccq_run": {
+        "value": "",
+        "references": []
+      }
+    },
+    "processing_flows": [
+      {
+        "value": "Class B+ New Charge",
+        "references": [
+          "0-1J"
+        ]
+      },
+      {
+        "value": "In and Out Bonding",
+        "references": [
+          "0-1K"
+        ]
+      },
+      {
+        "value": "B Bench Warrant MRP/MAG/MAJ",
+        "references": [
+          "0-1L"
+        ]
+      },
+      {
+        "value": "(Warrant Pending)",
+        "references": [
+          "0-1M"
+        ]
+      },
+      {
+        "value": "C Civil O Open Case",
+        "references": [
+          "0-1O"
+        ]
+      },
+      {
+        "value": "Class B+ Warrant",
+        "references": [
+          "0-1P"
+        ]
+      },
+      {
+        "value": "Investigative Hold",
+        "references": [
+          "0-1Q"
+        ]
+      },
+      {
+        "value": "D Fugitive P Parole Violator",
+        "references": [
+          "0-1R"
+        ]
+      },
+      {
+        "value": "(Open)",
+        "references": [
+          "0-1S"
+        ]
+      },
+      {
+        "value": "F Capias Pro Fine CoH Municipal Only",
+        "references": [
+          "0-1U"
+        ]
+      },
+      {
+        "value": "No Intake Judicial Hearing",
+        "references": [
+          "0-1W"
+        ]
+      },
+      {
+        "value": "H Bond Forfeiture R TDCJ Ready",
+        "references": [
+          "0-1X"
+        ]
+      },
+      {
+        "value": "(BOPP, Civil)",
+        "references": [
+          "0-1Y"
+        ]
+      },
+      {
+        "value": "J Bond Surrender S Sentenced",
+        "references": [
+          "0-1Z"
+        ]
+      },
+      {
+        "value": "Out of County",
+        "references": [
+          "0-20"
+        ]
+      },
+      {
+        "value": "K Felony Indictment T Transient",
+        "references": [
+          "0-21"
+        ]
+      },
+      {
+        "value": "ICE",
+        "references": [
+          "0-22"
+        ]
+      },
+      {
+        "value": "L Booked on Mandate W Weekender",
+        "references": [
+          "0-24"
+        ]
+      }
+    ],
+    "prisoner_flags": []
+  },
+  "metadata": {
+    "filename": "inline_markdown.md",
+    "org_id": null,
+    "duration_ms": 23804,
+    "credit_usage": 6.179600000000001,
+    "job_id": "74f7a175c5e44f54acd2f98ba4d81ee8",
+    "version": "extract-20251024",
+    "schema_violation_error": null,
+    "fallback_model_version": "extract-20250930"
+  }
+}

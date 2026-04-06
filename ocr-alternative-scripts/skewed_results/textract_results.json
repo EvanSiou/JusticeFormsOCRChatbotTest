@@ -1,0 +1,170 @@
+[
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_01_-_Monroe",
+    "skew_type": "180_clean",
+    "judge_score": 0.5480769230769231
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_01_-_Monroe",
+    "skew_type": "original",
+    "judge_score": 0.5336538461538461
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_02_-_Delgado",
+    "skew_type": "180_clean",
+    "judge_score": 0.6596153846153846
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_02_-_Delgado",
+    "skew_type": "original",
+    "judge_score": 0.6326923076923077
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_03_-_Sutton",
+    "skew_type": "180_clean",
+    "judge_score": 0.0
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_03_-_Sutton",
+    "skew_type": "original",
+    "judge_score": 0.0
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_04_-_Vega",
+    "skew_type": "180_clean",
+    "judge_score": 0.5280373831775701
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_04_-_Vega",
+    "skew_type": "original",
+    "judge_score": 0.5467289719626168
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_05_-_Quinn",
+    "skew_type": "180_clean",
+    "judge_score": 0.5817307692307693
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_05_-_Quinn",
+    "skew_type": "original",
+    "judge_score": 0.5865384615384616
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Hasan_Form_06_-_Cross",
+    "skew_type": "180_clean",
+    "judge_score": 0.6149532710280373
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_01_-_Perkins",
+    "skew_type": "180_clean",
+    "judge_score": 0.7134615384615385
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_01_-_Perkins",
+    "skew_type": "original",
+    "judge_score": 0.7576923076923077
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_02_-_Harmon",
+    "skew_type": "180_clean",
+    "judge_score": 0.6432692307692308
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_02_-_Harmon",
+    "skew_type": "original",
+    "judge_score": 0.6490384615384616
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_03_-_Dixon",
+    "skew_type": "180_clean",
+    "judge_score": 0.6731481481481482
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_03_-_Dixon",
+    "skew_type": "original",
+    "judge_score": 0.6546296296296297
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_04_-_Mendez",
+    "skew_type": "180_clean",
+    "judge_score": 0.6307692307692307
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_04_-_Mendez",
+    "skew_type": "original",
+    "judge_score": 0.6067307692307693
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_05_-_Langford",
+    "skew_type": "original",
+    "judge_score": 0.6625000000000001
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Quareen_Form_07_-_Escobar",
+    "skew_type": "original",
+    "judge_score": 0.6875
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_01_-_Payne",
+    "skew_type": "original",
+    "judge_score": 0.5769230769230769
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_02_-_Watkins",
+    "skew_type": "original",
+    "judge_score": 0.5900990099009901
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_03_-_Bynum",
+    "skew_type": "original",
+    "judge_score": 0.5598130841121495
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_04_-_Reyes",
+    "skew_type": "original",
+    "judge_score": 0.5086538461538461
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_05_-_Norris",
+    "skew_type": "original",
+    "judge_score": 0.6576923076923078
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_06_-_Fleming",
+    "skew_type": "original",
+    "judge_score": 0.5480769230769231
+  },
+  {
+    "system": "AWS Textract",
+    "doc_name": "Sadam_Form_07_-_Armendariz",
+    "skew_type": "original",
+    "judge_score": 0.5144230769230769
+  }
+]

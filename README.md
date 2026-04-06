@@ -6,12 +6,14 @@ OCR and document intelligence research for statewide justice court forms. This p
 
 ```
 .
-├── ocr-testing-app/        # Web application for testing OCR pipelines (FastAPI + React)
-├── ocr-testing-notebooks/  # Jupyter notebooks for OCR experimentation and evaluation
-├── ocr-testing-forms/      # Sample court form datasets used for testing
-├── ocr-scripts/            # Standalone Python scripts and environment setup
-├── documents/              # Project documentation, reports, and reference materials
-└── venv/                   # Python virtual environment (not committed)
+├── ocr-testing-app/            # Web app for testing OCR pipelines (FastAPI + React on GCP)
+├── ocr-demo-app/               # Production demo app deployed on AWS (FastAPI + React)
+├── ocr-alternative-scripts/    # Alternative OCR provider tests (Textract, LandingAI)
+├── ocr-testing-notebooks/      # Jupyter notebooks for OCR experimentation and evaluation
+├── ocr-testing-forms/          # Sample court form datasets used for testing
+├── ocr-scripts/                # Standalone Python scripts and environment setup
+├── documents/                  # Project documentation, reports, and reference materials
+└── venv/                       # Python virtual environment (not committed)
 ```
 
 ## Getting Started
@@ -47,6 +49,14 @@ Step-by-step Jupyter notebooks covering the OCR pipeline: document viewing, form
 ### Testing Forms
 
 Curated datasets of court forms with handwritten entries from multiple contributors, plus algorithmically skewed variants for robustness testing. See [ocr-testing-forms/README.md](ocr-testing-forms/README.md).
+
+### OCR Demo App
+
+Production-ready document intelligence prototype deployed on AWS App Runner using Amazon Bedrock vision models. See [ocr-demo-app/README.md](ocr-demo-app/README.md).
+
+### Alternative Scripts
+
+Standalone scripts for testing alternative OCR providers (AWS Textract, LandingAI) against skewed and degraded forms. See [ocr-alternative-scripts/README.md](ocr-alternative-scripts/README.md).
 
 ## License
 

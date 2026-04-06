@@ -1,0 +1,96 @@
+2026-03-31 19:46:03  Loaded schema with 37 top-level sections
+2026-03-31 19:46:03  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:46:03  Found 60 documents
+2026-03-31 19:46:03  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:46:05    Landing.ai parse failed on page 1: 422 Client Error: Unprocessable Entity for url: https://api.va.landing.ai/v1/ade/parse
+2026-03-31 19:46:06    Landing.ai parse failed on page 2: 422 Client Error: Unprocessable Entity for url: https://api.va.landing.ai/v1/ade/parse
+2026-03-31 19:46:07    Landing.ai extract failed: 422 Client Error: Unprocessable Entity for url: https://api.va.landing.ai/v1/ade/extract
+2026-03-31 19:46:07    0 fields extracted
+2026-03-31 19:46:50    Judge score: 0.0% | Parse: 2.5s | Extract: 0.7s | Judge: 43.1s | Cost: $0.100 | Excel: Quareen_Form_01_-_Perkins_original.xlsx
+2026-03-31 19:46:50  Done. 1 results saved.
+2026-03-31 19:54:33  Loaded schema with 37 top-level sections
+2026-03-31 19:54:34  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:54:34  Found 60 documents
+2026-03-31 19:54:34  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:54:44    Page 1: parsed (5081 chars markdown)
+2026-03-31 19:54:54    Page 2: parsed (5302 chars markdown)
+2026-03-31 19:54:56    Landing.ai extract failed: 422 Client Error: Unprocessable Entity for url: https://api.va.landing.ai/v1/ade/extract
+2026-03-31 19:54:56    0 fields extracted
+2026-03-31 19:55:40    Judge score: 0.0% | Parse: 20.6s | Extract: 0.6s | Judge: 44.8s | Cost: $0.100 | Excel: Quareen_Form_01_-_Perkins_original.xlsx
+2026-03-31 19:55:40  Done. 1 results saved.
+2026-03-31 19:58:04  Loaded schema with 37 top-level sections
+2026-03-31 19:58:05  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 19:58:05  Found 60 documents
+2026-03-31 19:58:05  Processing [original]: Quareen/Form 01 - Perkins
+2026-03-31 19:58:20    Page 1: parsed (5081 chars markdown)
+2026-03-31 19:58:35    Page 2: parsed (5302 chars markdown)
+2026-03-31 19:59:32    Extract: got response
+2026-03-31 19:59:32    102 fields extracted
+2026-03-31 20:00:27    Judge score: 89.0% | Parse: 31.0s | Extract: 55.4s | Judge: 55.2s | Cost: $0.100 | Excel: Quareen_Form_01_-_Perkins_original.xlsx
+2026-03-31 20:00:27  Done. 1 results saved.
+2026-03-31 20:58:54  Loaded schema with 37 top-level sections
+2026-03-31 20:58:54  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 20:58:54  Found 60 documents
+2026-03-31 20:58:54  Processing [original]: Sadam/Form 19 - Ponce
+2026-03-31 20:59:04    Page 1: parsed (5166 chars markdown)
+2026-03-31 20:59:13    Page 2: parsed (5252 chars markdown)
+2026-03-31 20:59:45    Extract: got response
+2026-03-31 20:59:45    97 fields extracted
+2026-03-31 21:00:40    Judge score: 76.0% | Parse: 19.1s | Extract: 30.4s | Judge: 55.4s | Cost: $0.100 | Excel: Sadam_Form_19_-_Ponce_original.xlsx
+2026-03-31 21:00:40  Done. 1 results saved.
+2026-03-31 21:00:43  Loaded schema with 37 top-level sections
+2026-03-31 21:00:43  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:00:43  Found 60 documents
+2026-03-31 21:00:43  Processing [original]: Sadam/Form 04 - Reyes
+2026-03-31 21:00:54    Page 1: parsed (4944 chars markdown)
+2026-03-31 21:01:05    Page 2: parsed (5185 chars markdown)
+2026-03-31 21:01:58    Extract: got response
+2026-03-31 21:01:58    97 fields extracted
+2026-03-31 21:02:53    Judge score: 87.0% | Parse: 21.8s | Extract: 52.5s | Judge: 54.4s | Cost: $0.100 | Excel: Sadam_Form_04_-_Reyes_original.xlsx
+2026-03-31 21:02:53  Done. 2 results saved.
+2026-03-31 21:02:55  Loaded schema with 37 top-level sections
+2026-03-31 21:02:55  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:02:56  Found 60 documents
+2026-03-31 21:02:56  Processing [original]: Hasan/Form 15 - Winters
+2026-03-31 21:03:09    Page 1: parsed (4740 chars markdown)
+2026-03-31 21:03:19    Page 2: parsed (5801 chars markdown)
+2026-03-31 21:03:45    Extract: got response
+2026-03-31 21:03:45    95 fields extracted
+2026-03-31 21:04:38    Judge score: 83.0% | Parse: 22.1s | Extract: 24.9s | Judge: 53.8s | Cost: $0.100 | Excel: Hasan_Form_15_-_Winters_original.xlsx
+2026-03-31 21:04:38  Done. 3 results saved.
+2026-03-31 21:04:41  Loaded schema with 37 top-level sections
+2026-03-31 21:04:41  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:04:41  Found 60 documents
+2026-03-31 21:04:41  Processing [original]: Quareen/Form 12 - Horne
+2026-03-31 21:04:52    Page 1: parsed (5025 chars markdown)
+2026-03-31 21:05:02    Page 2: parsed (5647 chars markdown)
+2026-03-31 21:05:16    Extract: got response
+2026-03-31 21:05:16    96 fields extracted
+2026-03-31 21:06:10    Judge score: 84.0% | Parse: 21.1s | Extract: 13.2s | Judge: 53.9s | Cost: $0.100 | Excel: Quareen_Form_12_-_Horne_original.xlsx
+2026-03-31 21:06:10  Done. 4 results saved.
+2026-03-31 21:06:13  Loaded schema with 37 top-level sections
+2026-03-31 21:06:13  Found credentials in shared credentials file: ~/.aws/credentials
+2026-03-31 21:06:13  Found 60 documents
+2026-03-31 21:06:13  Processing [original]: Quareen/Form 17 - Patel
+2026-03-31 21:06:30    Page 1: parsed (4800 chars markdown)
+2026-03-31 21:06:44    Page 2: parsed (5385 chars markdown)
+2026-03-31 21:07:04    Extract: got response
+2026-03-31 21:07:04    98 fields extracted
+2026-03-31 21:07:59    Judge score: 77.0% | Parse: 31.2s | Extract: 19.1s | Judge: 54.6s | Cost: $0.100 | Excel: Quareen_Form_17_-_Patel_original.xlsx
+2026-03-31 21:07:59  Done. 5 results saved.
+2026-04-01 10:09:33  Loaded schema with 38 top-level sections
+2026-04-01 10:09:34  Found credentials in shared credentials file: ~/.aws/credentials
+2026-04-01 10:09:34  Found 60 documents
+2026-04-01 10:09:34  Processing [original]: Sadam/Form 19 - Ponce
+2026-04-01 10:09:48    PDF parsed directly (10099 chars markdown, 2 pages)
+2026-04-01 10:10:10    Extract: got response
+2026-04-01 10:10:10    104 fields extracted
+2026-04-01 10:11:07    Judge score: 83.0% | Parse: 13.8s | Extract: 22.2s | Judge: 56.8s | Cost: $0.100 | Excel: Sadam_Form_19_-_Ponce_original.xlsx
+2026-04-01 10:11:07  Done. 1 results saved.
+2026-04-01 10:19:25  Loaded schema with 38 top-level sections
+2026-04-01 10:19:25  Found credentials in shared credentials file: ~/.aws/credentials
+2026-04-01 10:19:25  Found 60 documents
+2026-04-01 10:19:25  Processing [original]: Sadam/Form 19 - Ponce
+2026-04-01 10:19:40    PDF parsed directly (10099 chars markdown, 2 pages)
+2026-04-01 10:20:45    Extract: got response
+2026-04-01 10:20:45    104 fields extracted

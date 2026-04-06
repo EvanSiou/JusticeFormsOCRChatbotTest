@@ -1,0 +1,228 @@
+{% macro field(name, label=None) %}
+{% set f = fields.get(name, {}) %}
+{% set lvl = f.get('level', 'medium') %}
+<div class="pr-value {{ 'field-low' if lvl == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ lvl }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+{% endmacro %}
+
+<style>
+  .pr-form { font-family: Arial, sans-serif; font-size: 12px; max-width: 850px; border: 2px solid #333; }
+  .pr-header { text-align: center; padding: 8px; border-bottom: 2px solid #1a3c6e; background: #f8f9fa; }
+  .pr-header h2 { margin: 0; font-size: 16px; color: #1a3c6e; }
+  .pr-section { background: #1a3c6e; color: white; padding: 3px 8px; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .pr-row { display: flex; border-bottom: 1px solid #ccc; }
+  .pr-cell { flex: 1; padding: 4px 6px; border-right: 1px solid #ccc; min-height: 28px; }
+  .pr-cell:last-child { border-right: none; }
+  .pr-label { font-size: 9px; color: #666; font-weight: bold; }
+  .pr-value { font-size: 12px; min-height: 16px; cursor: text; }
+  .pr-value[contenteditable]:focus { outline: 2px solid #3b82f6; background: #eff6ff; }
+  .conf-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: bold; color: white; margin-left: 4px; }
+  .conf-high { background: #22c55e; }
+  .conf-medium { background: #eab308; }
+  .conf-low { background: #ef4444; }
+  .field-low { background: #fef2f2; border: 1px solid #fca5a5; }
+</style>
+
+<div class="pr-form">
+  <div class="pr-header">
+    <h2>PRISONER REGISTRATION INFORMATION</h2>
+    <div style="font-size:10px;color:#666">Harris County Sheriff's Office &bull; Justice Management Bureau</div>
+  </div>
+
+  <!-- REGISTRATION: ARRESTING OFFICER -->
+  <div class="pr-section">Registration: Arresting Officer</div>
+  <div class="pr-row">
+    <div class="pr-cell" style="flex:2"><div class="pr-label">* Officer Type</div>{{ field('officer_type') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Officer Last Name</div>{{ field('officer_last_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Officer First Name</div>{{ field('officer_first_name') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">* Badge Number</div>{{ field('badge_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Employee ID Number</div>{{ field('employee_id_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Contact Phone Number</div>{{ field('contact_phone_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Agency</div>{{ field('agency') }}</div>
+  </div>
+
+  <!-- PRISONER INFORMATION -->
+  <div class="pr-section">Prisoner Information</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">* First Name</div>{{ field('first_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Last Name</div>{{ field('last_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">Middle Name</div>{{ field('middle_name') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">SSN</div>{{ field('ssn') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Date of Birth</div>{{ field('date_of_birth') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Age</div>{{ field('age') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Sex</div>{{ field('sex') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Race</div>{{ field('race') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Ethnicity</div>{{ field('ethnicity') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Citizenship</div>{{ field('citizenship') }}</div>
+    <div class="pr-cell"><div class="pr-label">Country of Birth</div>{{ field('country_of_birth') }}</div>
+    <div class="pr-cell"><div class="pr-label">City of Birth</div>{{ field('city_of_birth') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Height</div>{{ field('height') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Weight</div>{{ field('weight') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Eyes</div>{{ field('eyes') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Skin</div>{{ field('skin') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Hair Type</div>{{ field('hair_type') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Hair Length</div>{{ field('hair_length') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">* Hair Color</div>{{ field('hair_color') }}</div>
+    <div class="pr-cell"><div class="pr-label">Build</div>{{ field('build') }}</div>
+    <div class="pr-cell"><div class="pr-label">Beard</div>{{ field('beard') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Mustache</div>{{ field('mustache') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">* Glasses</div>{{ field('glasses') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Marital Status</div>{{ field('marital_status') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Religious Preference</div>{{ field('religious_preference') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Veteran</div>{{ field('veteran') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Using Drugs?</div>{{ field('using_drugs') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Using Alcohol?</div>{{ field('using_alcohol') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell" style="flex:0.3"><div class="pr-label">Wanted?</div>{{ field('wanted') }}</div>
+    <div class="pr-cell"><div class="pr-label">Agency Wanting Person</div>{{ field('agency_wanting_person') }}</div>
+    <div class="pr-cell"><div class="pr-label">Agency Contact Person</div>{{ field('agency_contact_person') }}</div>
+  </div>
+
+  <!-- ADDITIONAL IDENTIFIERS -->
+  <div class="pr-section">Additional Identifiers</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">HCSO SPN</div>{{ field('hcso_spn') }}</div>
+    <div class="pr-cell"><div class="pr-label">State Issued ID Number</div>{{ field('state_issued_id_number') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Issuing State</div>{{ field('issuing_state') }}</div>
+    <div class="pr-cell"><div class="pr-label">Driver's License Number</div>{{ field('drivers_license_number') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">DL State</div>{{ field('dl_state') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">DL Type</div>{{ field('dl_type') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">SID Number</div>{{ field('sid_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">FBI Number</div>{{ field('fbi_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">AFIS Number</div>{{ field('afis_number') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">SO Number</div>{{ field('so_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">DA Log Number</div>{{ field('da_log_number') }}</div>
+    <div class="pr-cell"><div class="pr-label">Assistant DA Name</div>{{ field('assistant_da_name') }}</div>
+  </div>
+
+  <!-- SCARS / MARKS / TATTOOS -->
+  <div class="pr-section">Scars / Marks / Tattoos</div>
+  {% for i in [1, 2, 3] %}
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Type ({{ i }})</div>{{ field('smt_' ~ i ~ '_type') }}</div>
+    <div class="pr-cell"><div class="pr-label">Location ({{ i }})</div>{{ field('smt_' ~ i ~ '_location') }}</div>
+    <div class="pr-cell" style="flex:2"><div class="pr-label">Description ({{ i }})</div>{{ field('smt_' ~ i ~ '_description') }}</div>
+  </div>
+  {% endfor %}
+
+  <!-- ADDRESS -->
+  <div class="pr-section">Address</div>
+  <div class="pr-row">
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Type</div>{{ field('address_type') }}</div>
+    <div class="pr-cell" style="flex:2"><div class="pr-label">Address</div>{{ field('address_street') }}</div>
+    <div class="pr-cell"><div class="pr-label">City</div>{{ field('address_city') }}</div>
+    <div class="pr-cell" style="flex:0.3"><div class="pr-label">State</div>{{ field('address_state') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">ZIP Code</div>{{ field('address_zip') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Source</div>{{ field('address_source') }}</div>
+  </div>
+
+  <!-- TELEPHONE -->
+  <div class="pr-section">Telephone</div>
+  {% for i in [1, 2] %}
+  <div class="pr-row">
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Type ({{ i }})</div>{{ field('phone_' ~ i ~ '_type') }}</div>
+    <div class="pr-cell"><div class="pr-label">Phone Number ({{ i }})</div>{{ field('phone_' ~ i ~ '_number') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Source ({{ i }})</div>{{ field('phone_' ~ i ~ '_source') }}</div>
+  </div>
+  {% endfor %}
+
+  <!-- EMERGENCY CONTACTS -->
+  <div class="pr-section">Important Persons / Emergency Contacts</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">First Name</div>{{ field('emergency_first_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">Middle Name</div>{{ field('emergency_middle_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">Last Name</div>{{ field('emergency_last_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">Relationship</div>{{ field('emergency_relationship') }}</div>
+    <div class="pr-cell"><div class="pr-label">Phone Number</div>{{ field('emergency_phone') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Source</div>{{ field('emergency_source') }}</div>
+  </div>
+
+  <!-- EMPLOYER -->
+  <div class="pr-section">Employer</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Employer Name</div>{{ field('employer_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">Occupation</div>{{ field('occupation') }}</div>
+    <div class="pr-cell" style="flex:2"><div class="pr-label">Employer Street Address</div>{{ field('employer_address') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">City</div>{{ field('employer_city') }}</div>
+    <div class="pr-cell" style="flex:0.3"><div class="pr-label">State</div>{{ field('employer_state') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">ZIP Code</div>{{ field('employer_zip') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Phone Type</div>{{ field('employer_phone_type') }}</div>
+    <div class="pr-cell"><div class="pr-label">Employer Phone</div>{{ field('employer_phone') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Source</div>{{ field('employer_source') }}</div>
+  </div>
+
+  <!-- PAGE 2: ARREST INFORMATION -->
+  <div class="pr-section">Arrest Information</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">* Date</div>{{ field('arrest_date') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Time</div>{{ field('arrest_time') }}</div>
+    <div class="pr-cell" style="flex:2"><div class="pr-label">* Arrest Location</div>{{ field('arrest_location') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">* Arresting Agency</div>{{ field('arresting_agency') }}</div>
+    <div class="pr-cell"><div class="pr-label">* Prisoner Health Condition</div>{{ field('prisoner_health_condition') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Unusual Behavior</div>{{ field('unusual_behavior') }}</div>
+  </div>
+
+  <!-- ARRESTING OFFICER (Page 2) -->
+  <div class="pr-section">Arresting Officer (Page 2)</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Last Name</div>{{ field('arr_officer_last_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">First Name</div>{{ field('arr_officer_first_name') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Badge #</div>{{ field('arr_officer_badge') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Employee ID</div>{{ field('arr_officer_employee_id') }}</div>
+    <div class="pr-cell"><div class="pr-label">Contact #</div>{{ field('arr_officer_contact') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Unit #</div>{{ field('arr_officer_unit') }}</div>
+    <div class="pr-cell"><div class="pr-label">Agency</div>{{ field('arr_officer_agency') }}</div>
+  </div>
+
+  <!-- TRANSPORTING OFFICER -->
+  <div class="pr-section">Transporting Officer</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Last Name</div>{{ field('trans_officer_last_name') }}</div>
+    <div class="pr-cell"><div class="pr-label">First Name</div>{{ field('trans_officer_first_name') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Badge #</div>{{ field('trans_officer_badge') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Employee ID</div>{{ field('trans_officer_employee_id') }}</div>
+    <div class="pr-cell"><div class="pr-label">Contact #</div>{{ field('trans_officer_contact') }}</div>
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Unit #</div>{{ field('trans_officer_unit') }}</div>
+    <div class="pr-cell"><div class="pr-label">Agency</div>{{ field('trans_officer_agency') }}</div>
+  </div>
+
+  <!-- PROPERTY -->
+  <div class="pr-section">Property</div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Valuable Property</div>{{ field('valuable_property') }}</div>
+    <div class="pr-cell"><div class="pr-label">Bulk Property</div>{{ field('bulk_property') }}</div>
+  </div>
+  <div class="pr-row">
+    <div class="pr-cell"><div class="pr-label">Clothing Property</div>{{ field('clothing_property') }}</div>
+    <div class="pr-cell"><div class="pr-label">Other Property</div>{{ field('other_property') }}</div>
+  </div>
+
+  <!-- SECURE PACKS -->
+  <div class="pr-section">Secure Packs</div>
+  <div class="pr-row">
+    <div class="pr-cell" style="flex:0.5"><div class="pr-label">Quantity</div>{{ field('secure_pack_quantity') }}</div>
+    <div class="pr-cell"><div class="pr-label">Phone Numbers Opportunity</div>{{ field('phone_numbers_opportunity') }}</div>
+    <div class="pr-cell"><div class="pr-label">Prisoner Signature</div>{{ field('prisoner_signature') }}</div>
+    <div class="pr-cell"><div class="pr-label">Officer Signature</div>{{ field('officer_signature') }}</div>
+  </div>
+</div>

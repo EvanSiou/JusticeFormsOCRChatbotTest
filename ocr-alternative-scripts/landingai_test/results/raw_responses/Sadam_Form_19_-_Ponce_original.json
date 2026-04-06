@@ -1,0 +1,1064 @@
+{
+  "extraction": {
+    "arresting_officer": {
+      "officer_type": "Arresting",
+      "last_name": "Trevino",
+      "first_name": "Heestor"
+    },
+    "officer_contact_details": {
+      "id_number_1": "939 322",
+      "id_number_2": "655951",
+      "phone_number": "830-555-0899",
+      "agency": "Comal County SO"
+    },
+    "prisoner_personal_information": {
+      "first_name": "Adriana",
+      "last_name": "Ponce",
+      "middle_name": "Isabel"
+    },
+    "prisoner_demographics": {
+      "social_security_number": "467-62-701",
+      "date_of_birth": "06/28/1993",
+      "age": "31",
+      "sex": "F"
+    },
+    "prisoner_origin": {
+      "race": "HiDame",
+      "ethnicity": "",
+      "citizenship": "US",
+      "country_of_birth": "USA"
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": "New Braunfels"
+    },
+    "prisoner_physical_attributes": {
+      "height": "5'3",
+      "weight": "128",
+      "eyes": "Brown",
+      "skin": "Tan"
+    },
+    "prisoner_hair_details": {
+      "hair_type": "Black",
+      "hair_length": "Medium",
+      "hair_color": "Black"
+    },
+    "prisoner_facial_features": {
+      "build": "Light",
+      "beard": "None",
+      "mustache": "N",
+      "glasses": "Y"
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": "Married",
+      "religious_preference": "Catholic",
+      "veteran": "N",
+      "using_drugs": "N"
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": "Y",
+      "wanted": "",
+      "agency_wanting_person": "",
+      "agency_contact_person": ""
+    },
+    "additional_identifiers": {
+      "hcso_spn": "501 34512",
+      "state_issued_id_number": "345 1501",
+      "issuing_state": "TX",
+      "drivers_license_number": "715 34501"
+    },
+    "drivers_license_details": {
+      "dl_state": "TX",
+      "dl_type": "C",
+      "sid_number": "717 345 501",
+      "fbi_number": "717 501"
+    },
+    "other_identification_numbers": {
+      "afis_number": "501 3451",
+      "so_number": "345 501 717",
+      "da_log_number": "501 345",
+      "assistant_da_name": "Rita Beal"
+    },
+    "scars_marks_tattoos": [
+      {
+        "type": "Tattoo",
+        "location": "Right forearm",
+        "description": "Sunflower"
+      },
+      {
+        "type": "Tattoo",
+        "location": "Left Collarbone",
+        "description": "Small Cross"
+      },
+      {
+        "type": "",
+        "location": "",
+        "description": ""
+      }
+    ],
+    "home_address": {
+      "address_type": "Home",
+      "street": "700 S Business 1H-35",
+      "city": "New Braunt",
+      "state": "els Tx",
+      "zip_code": "78130"
+    },
+    "home_address_source": {
+      "source": "Google (handwritten)"
+    },
+    "cell_phone": {
+      "phone_type": "Cell",
+      "number": "830-555-0899",
+      "source": "Self"
+    },
+    "secondary_phone": {
+      "phone_type": "",
+      "number": "",
+      "source": ""
+    },
+    "emergency_contact": {
+      "first_name": "Carlos",
+      "middle_name": "Luis",
+      "last_name": "Ponce",
+      "relationship": "Husband"
+    },
+    "emergency_contact_details": {
+      "phone_number": "830-555-0900",
+      "source": "Self"
+    },
+    "employer_information": {
+      "employer_name": "Resolute Forest Products",
+      "occupation": "Mashine operator",
+      "employer_street_address": "300 Gndestial Bluel"
+    },
+    "employer_contact_details": {
+      "city": "New Braunfels",
+      "state": "TX",
+      "zip_code": "78130",
+      "phone_type": "Work",
+      "work_phone": "830-555-7700"
+    },
+    "employer_source": {
+      "source": "Self"
+    },
+    "arrest_information": {
+      "date": "05/15/2025",
+      "time": "8:30 PM",
+      "arrest_location": "New Braunfels TX",
+      "arresting_agency": "NBPD"
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": "None",
+      "unusual_behavior": ""
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": "Vogt",
+      "first_name": "Hank",
+      "badge_number": "27",
+      "employee_id_number": "185"
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": "830-221-4100",
+      "unit_number": "KHO",
+      "arresting_agency": "NBPD"
+    },
+    "transporting_officer_details": {
+      "last_name": "Wick",
+      "first_name": "May",
+      "badge_number": "330",
+      "employee_id_number": "271"
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": "830-221-4101",
+      "unit_number": "249",
+      "agency": "NBPD"
+    },
+    "valuable_property": [
+      {
+        "item": "Dhone",
+        "description": "iPhone 15",
+        "color": "Pink"
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": "1",
+        "item": "work Shirt",
+        "description": "Uniform Shirt",
+        "color": "Navy"
+      }
+    ],
+    "other_property": [
+      {
+        "quantity": "",
+        "item": "",
+        "description": "",
+        "color": ""
+      }
+    ],
+    "secure_packs": {
+      "quantity": "1",
+      "prisoner_given_opportunity_for_phone_numbers": "Yes"
+    },
+    "signatures": {
+      "prisoner_signature": "X Signed",
+      "officer_signature": "X Signed"
+    },
+    "ccq_info": {
+      "ccq_run": ""
+    },
+    "processing_flows": [
+      "Class B+ New Charge\n(Warrant Pending)\nClass B+ Warrant\n(Open)\nClass C County\nCoH Municipal Class C\nICE\nIn and Out Bonding\nInvestigative Hold\nNo Intake Judicial Hearing\n(BOPP, Civil)\nOut of County"
+    ],
+    "prisoner_flags": [
+      "B Bench Warrant M MRP / MAG / MAJ C Civil O Open Case D Fugitive P Parole Violator",
+      "F Capias Pro Fine Q CoH Municipal Only",
+      "H Bond Forfeiture R TDCJ Ready",
+      "J Bond Surrender S Sentenced",
+      "\u2610K Felony Indictment \u2610T Transient",
+      "\u2610L Booked on Mandate \u2610W Weekender"
+    ]
+  },
+  "extraction_metadata": {
+    "arresting_officer": {
+      "officer_type": {
+        "value": "Arresting",
+        "references": [
+          "0-3"
+        ]
+      },
+      "last_name": {
+        "value": "Trevino",
+        "references": [
+          "0-4"
+        ]
+      },
+      "first_name": {
+        "value": "Heestor",
+        "references": [
+          "0-5"
+        ]
+      }
+    },
+    "officer_contact_details": {
+      "id_number_1": {
+        "value": "939 322",
+        "references": [
+          "0-7"
+        ]
+      },
+      "id_number_2": {
+        "value": "655951",
+        "references": [
+          "0-8"
+        ]
+      },
+      "phone_number": {
+        "value": "830-555-0899",
+        "references": [
+          "0-9"
+        ]
+      },
+      "agency": {
+        "value": "Comal County SO",
+        "references": [
+          "0-a"
+        ]
+      }
+    },
+    "prisoner_personal_information": {
+      "first_name": {
+        "value": "Adriana",
+        "references": [
+          "0-d"
+        ]
+      },
+      "last_name": {
+        "value": "Ponce",
+        "references": [
+          "0-e"
+        ]
+      },
+      "middle_name": {
+        "value": "Isabel",
+        "references": [
+          "0-f"
+        ]
+      }
+    },
+    "prisoner_demographics": {
+      "social_security_number": {
+        "value": "467-62-701",
+        "references": [
+          "0-h"
+        ]
+      },
+      "date_of_birth": {
+        "value": "06/28/1993",
+        "references": [
+          "0-i"
+        ]
+      },
+      "age": {
+        "value": "31",
+        "references": [
+          "0-j"
+        ]
+      },
+      "sex": {
+        "value": "F",
+        "references": [
+          "0-k"
+        ]
+      }
+    },
+    "prisoner_origin": {
+      "race": {
+        "value": "HiDame",
+        "references": [
+          "0-l"
+        ]
+      },
+      "ethnicity": {
+        "value": "",
+        "references": []
+      },
+      "citizenship": {
+        "value": "US",
+        "references": [
+          "0-o"
+        ]
+      },
+      "country_of_birth": {
+        "value": "USA",
+        "references": [
+          "0-p"
+        ]
+      }
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": {
+        "value": "New Braunfels",
+        "references": [
+          "0-q"
+        ]
+      }
+    },
+    "prisoner_physical_attributes": {
+      "height": {
+        "value": "5'3",
+        "references": [
+          "0-s"
+        ]
+      },
+      "weight": {
+        "value": "128",
+        "references": [
+          "0-t"
+        ]
+      },
+      "eyes": {
+        "value": "Brown",
+        "references": [
+          "0-u"
+        ]
+      },
+      "skin": {
+        "value": "Tan",
+        "references": [
+          "0-v"
+        ]
+      }
+    },
+    "prisoner_hair_details": {
+      "hair_type": {
+        "value": "Black",
+        "references": [
+          "0-w"
+        ]
+      },
+      "hair_length": {
+        "value": "Medium",
+        "references": [
+          "0-x"
+        ]
+      },
+      "hair_color": {
+        "value": "Black",
+        "references": [
+          "0-z"
+        ]
+      }
+    },
+    "prisoner_facial_features": {
+      "build": {
+        "value": "Light",
+        "references": [
+          "0-A"
+        ]
+      },
+      "beard": {
+        "value": "None",
+        "references": [
+          "0-B"
+        ]
+      },
+      "mustache": {
+        "value": "N",
+        "references": [
+          "0-C"
+        ]
+      },
+      "glasses": {
+        "value": "Y",
+        "references": [
+          "0-D"
+        ]
+      }
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": {
+        "value": "Married",
+        "references": [
+          "0-F"
+        ]
+      },
+      "religious_preference": {
+        "value": "Catholic",
+        "references": [
+          "0-G"
+        ]
+      },
+      "veteran": {
+        "value": "N",
+        "references": [
+          "0-H"
+        ]
+      },
+      "using_drugs": {
+        "value": "N",
+        "references": [
+          "0-I"
+        ]
+      }
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": {
+        "value": "Y",
+        "references": [
+          "0-J"
+        ]
+      },
+      "wanted": {
+        "value": "",
+        "references": []
+      },
+      "agency_wanting_person": {
+        "value": "",
+        "references": []
+      },
+      "agency_contact_person": {
+        "value": "",
+        "references": []
+      }
+    },
+    "additional_identifiers": {
+      "hcso_spn": {
+        "value": "501 34512",
+        "references": [
+          "0-Q"
+        ]
+      },
+      "state_issued_id_number": {
+        "value": "345 1501",
+        "references": [
+          "0-R"
+        ]
+      },
+      "issuing_state": {
+        "value": "TX",
+        "references": [
+          "0-S"
+        ]
+      },
+      "drivers_license_number": {
+        "value": "715 34501",
+        "references": [
+          "0-T"
+        ]
+      }
+    },
+    "drivers_license_details": {
+      "dl_state": {
+        "value": "TX",
+        "references": [
+          "0-U"
+        ]
+      },
+      "dl_type": {
+        "value": "C",
+        "references": [
+          "0-V"
+        ]
+      },
+      "sid_number": {
+        "value": "717 345 501",
+        "references": [
+          "0-X"
+        ]
+      },
+      "fbi_number": {
+        "value": "717 501",
+        "references": [
+          "0-Y"
+        ]
+      }
+    },
+    "other_identification_numbers": {
+      "afis_number": {
+        "value": "501 3451",
+        "references": [
+          "0-Z"
+        ]
+      },
+      "so_number": {
+        "value": "345 501 717",
+        "references": [
+          "0-10"
+        ]
+      },
+      "da_log_number": {
+        "value": "501 345",
+        "references": [
+          "0-11"
+        ]
+      },
+      "assistant_da_name": {
+        "value": "Rita Beal",
+        "references": [
+          "0-12"
+        ]
+      }
+    },
+    "scars_marks_tattoos": [
+      {
+        "type": {
+          "value": "Tattoo",
+          "references": [
+            "0-14"
+          ]
+        },
+        "location": {
+          "value": "Right forearm",
+          "references": [
+            "0-15"
+          ]
+        },
+        "description": {
+          "value": "Sunflower",
+          "references": [
+            "0-16"
+          ]
+        }
+      },
+      {
+        "type": {
+          "value": "Tattoo",
+          "references": [
+            "0-17"
+          ]
+        },
+        "location": {
+          "value": "Left Collarbone",
+          "references": [
+            "0-18"
+          ]
+        },
+        "description": {
+          "value": "Small Cross",
+          "references": [
+            "0-19"
+          ]
+        }
+      },
+      {
+        "type": {
+          "value": "",
+          "references": []
+        },
+        "location": {
+          "value": "",
+          "references": []
+        },
+        "description": {
+          "value": "",
+          "references": []
+        }
+      }
+    ],
+    "home_address": {
+      "address_type": {
+        "value": "Home",
+        "references": [
+          "0-1e"
+        ]
+      },
+      "street": {
+        "value": "700 S Business 1H-35",
+        "references": [
+          "0-1f"
+        ]
+      },
+      "city": {
+        "value": "New Braunt",
+        "references": [
+          "0-1g"
+        ]
+      },
+      "state": {
+        "value": "els Tx",
+        "references": [
+          "0-1h"
+        ]
+      },
+      "zip_code": {
+        "value": "78130",
+        "references": [
+          "0-1i"
+        ]
+      }
+    },
+    "home_address_source": {
+      "source": {
+        "value": "Google (handwritten)",
+        "references": [
+          "0-1j"
+        ]
+      }
+    },
+    "cell_phone": {
+      "phone_type": {
+        "value": "Cell",
+        "references": [
+          "0-1l"
+        ]
+      },
+      "number": {
+        "value": "830-555-0899",
+        "references": [
+          "0-1m"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1n"
+        ]
+      }
+    },
+    "secondary_phone": {
+      "phone_type": {
+        "value": "",
+        "references": []
+      },
+      "number": {
+        "value": "",
+        "references": []
+      },
+      "source": {
+        "value": "",
+        "references": []
+      }
+    },
+    "emergency_contact": {
+      "first_name": {
+        "value": "Carlos",
+        "references": [
+          "0-1t"
+        ]
+      },
+      "middle_name": {
+        "value": "Luis",
+        "references": [
+          "0-1u"
+        ]
+      },
+      "last_name": {
+        "value": "Ponce",
+        "references": [
+          "0-1v"
+        ]
+      },
+      "relationship": {
+        "value": "Husband",
+        "references": [
+          "0-1w"
+        ]
+      }
+    },
+    "emergency_contact_details": {
+      "phone_number": {
+        "value": "830-555-0900",
+        "references": [
+          "0-1x"
+        ]
+      },
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1y"
+        ]
+      }
+    },
+    "employer_information": {
+      "employer_name": {
+        "value": "Resolute Forest Products",
+        "references": [
+          "0-1B"
+        ]
+      },
+      "occupation": {
+        "value": "Mashine operator",
+        "references": [
+          "0-1C"
+        ]
+      },
+      "employer_street_address": {
+        "value": "300 Gndestial Bluel",
+        "references": [
+          "0-1D"
+        ]
+      }
+    },
+    "employer_contact_details": {
+      "city": {
+        "value": "New Braunfels",
+        "references": [
+          "0-1F"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1G"
+        ]
+      },
+      "zip_code": {
+        "value": "78130",
+        "references": [
+          "0-1H"
+        ]
+      },
+      "phone_type": {
+        "value": "Work",
+        "references": [
+          "0-1I"
+        ]
+      },
+      "work_phone": {
+        "value": "830-555-7700",
+        "references": [
+          "0-1J"
+        ]
+      }
+    },
+    "employer_source": {
+      "source": {
+        "value": "Self",
+        "references": [
+          "0-1K"
+        ]
+      }
+    },
+    "arrest_information": {
+      "date": {
+        "value": "05/15/2025",
+        "references": [
+          "1-3"
+        ]
+      },
+      "time": {
+        "value": "8:30 PM",
+        "references": [
+          "1-4"
+        ]
+      },
+      "arrest_location": {
+        "value": "New Braunfels TX",
+        "references": [
+          "1-5"
+        ]
+      },
+      "arresting_agency": {
+        "value": "NBPD",
+        "references": [
+          "1-7"
+        ]
+      }
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": {
+        "value": "None",
+        "references": [
+          "1-8"
+        ]
+      },
+      "unusual_behavior": {
+        "value": "",
+        "references": []
+      }
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": {
+        "value": "Vogt",
+        "references": [
+          "1-b"
+        ]
+      },
+      "first_name": {
+        "value": "Hank",
+        "references": [
+          "1-c"
+        ]
+      },
+      "badge_number": {
+        "value": "27",
+        "references": [
+          "1-d"
+        ]
+      },
+      "employee_id_number": {
+        "value": "185",
+        "references": [
+          "1-e"
+        ]
+      }
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "830-221-4100",
+        "references": [
+          "1-f"
+        ]
+      },
+      "unit_number": {
+        "value": "KHO",
+        "references": [
+          "1-g"
+        ]
+      },
+      "arresting_agency": {
+        "value": "NBPD",
+        "references": [
+          "1-h"
+        ]
+      }
+    },
+    "transporting_officer_details": {
+      "last_name": {
+        "value": "Wick",
+        "references": [
+          "1-j"
+        ]
+      },
+      "first_name": {
+        "value": "May",
+        "references": [
+          "1-k"
+        ]
+      },
+      "badge_number": {
+        "value": "330",
+        "references": [
+          "1-l"
+        ]
+      },
+      "employee_id_number": {
+        "value": "271",
+        "references": [
+          "1-m"
+        ]
+      }
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "830-221-4101",
+        "references": [
+          "1-n"
+        ]
+      },
+      "unit_number": {
+        "value": "249",
+        "references": [
+          "1-o"
+        ]
+      },
+      "agency": {
+        "value": "NBPD",
+        "references": [
+          "1-p"
+        ]
+      }
+    },
+    "valuable_property": [
+      {
+        "item": {
+          "value": "Dhone",
+          "references": [
+            "1-t"
+          ]
+        },
+        "description": {
+          "value": "iPhone 15",
+          "references": [
+            "1-u"
+          ]
+        },
+        "color": {
+          "value": "Pink",
+          "references": [
+            "1-v"
+          ]
+        }
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": {
+          "value": "1",
+          "references": [
+            "1-U"
+          ]
+        },
+        "item": {
+          "value": "work Shirt",
+          "references": [
+            "1-V"
+          ]
+        },
+        "description": {
+          "value": "Uniform Shirt",
+          "references": [
+            "1-W"
+          ]
+        },
+        "color": {
+          "value": "Navy",
+          "references": [
+            "1-X"
+          ]
+        }
+      }
+    ],
+    "other_property": [
+      {
+        "quantity": {
+          "value": "",
+          "references": []
+        },
+        "item": {
+          "value": "",
+          "references": []
+        },
+        "description": {
+          "value": "",
+          "references": []
+        },
+        "color": {
+          "value": "",
+          "references": []
+        }
+      }
+    ],
+    "secure_packs": {
+      "quantity": {
+        "value": "1",
+        "references": [
+          "1-1m"
+        ]
+      },
+      "prisoner_given_opportunity_for_phone_numbers": {
+        "value": "Yes",
+        "references": [
+          "1-1n"
+        ]
+      }
+    },
+    "signatures": {
+      "prisoner_signature": {
+        "value": "X Signed",
+        "references": [
+          "1-1q"
+        ]
+      },
+      "officer_signature": {
+        "value": "X Signed",
+        "references": [
+          "1-1r"
+        ]
+      }
+    },
+    "ccq_info": {
+      "ccq_run": {
+        "value": "",
+        "references": []
+      }
+    },
+    "processing_flows": [
+      {
+        "value": "Class B+ New Charge\n(Warrant Pending)\nClass B+ Warrant\n(Open)\nClass C County\nCoH Municipal Class C\nICE\nIn and Out Bonding\nInvestigative Hold\nNo Intake Judicial Hearing\n(BOPP, Civil)\nOut of County",
+        "references": [
+          "1-1A"
+        ]
+      }
+    ],
+    "prisoner_flags": [
+      {
+        "value": "B Bench Warrant M MRP / MAG / MAJ C Civil O Open Case D Fugitive P Parole Violator",
+        "references": [
+          "1-1B"
+        ]
+      },
+      {
+        "value": "F Capias Pro Fine Q CoH Municipal Only",
+        "references": [
+          "1-1C"
+        ]
+      },
+      {
+        "value": "H Bond Forfeiture R TDCJ Ready",
+        "references": [
+          "1-1D"
+        ]
+      },
+      {
+        "value": "J Bond Surrender S Sentenced",
+        "references": [
+          "1-1E"
+        ]
+      },
+      {
+        "value": "\u2610K Felony Indictment \u2610T Transient",
+        "references": [
+          "1-1F"
+        ]
+      },
+      {
+        "value": "\u2610L Booked on Mandate \u2610W Weekender",
+        "references": [
+          "1-1G"
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "filename": "inline_markdown.md",
+    "org_id": null,
+    "duration_ms": 63496,
+    "credit_usage": 6.5098,
+    "job_id": "74538ca6eca645c1a2d1dd78fcfababb",
+    "version": "extract-20251024",
+    "schema_violation_error": null,
+    "fallback_model_version": "extract-20250930"
+  },
+  "_parsed_markdown": "<a id='bb4b798e-5a9d-4429-93b3-59526e24b4d7'></a>\n\n<::logo: Harris County Sheriff's Office\nHARRIS COUNTY\nHCSO\nSHERIFF'S OFFICE\nA six-pointed star badge with a circular center featuring text and a symbol::>\n\n<a id='bea94e4e-df0b-4f33-8243-bde6cb46a908'></a>\n\nJUSTICE MANAGEMENT BUREAU\nPrisoner Logistics Division\n---\n\n<a id='0a9d2945-f491-43a4-83b9-d1345decac07'></a>\n\nHarris County Sheriff's Office\n1200 Baker Street\nHouston, TX 77002-1206\n---\n\n\n<a id='98905f07-7bd8-4680-af4a-766b194c37e9'></a>\n\nPRISONER REGISTRATION INFORMATION\n\n<a id='f574a2e9-e67d-4a6e-b813-050f96486dae'></a>\n\n* = Required Fields\n\n<a id='9fe63b29-bb8e-4ba7-8459-8b7f6cdc053d'></a>\n\n<table id=\"0-1\">\n<tr><td id=\"0-2\" colspan=\"3\">REGISTRATION: ARRESTING OFFICER</td></tr>\n<tr><td id=\"0-3\">Officer Type (check or circle) \u2705 Arresting \u2610 Transporting \u2610 Both</td><td id=\"0-4\">* Officer Last Name Trevino</td><td id=\"0-5\">* Officer First Name Heestor</td></tr>\n</table>\n<table id=\"0-6\">\n<tr><td id=\"0-7\">* Badge Number 939 322</td><td id=\"0-8\">* Employee ID Number 655951</td><td id=\"0-9\">* Contact Phone Number 830-555-0899</td><td id=\"0-a\">* Agency Comal County SO</td></tr>\n</table>\n\n<a id='04427b82-9dd5-4d57-b4e2-098ab3f779aa'></a>\n\n<table id=\"0-b\">\n<tr><td id=\"0-c\" colspan=\"3\">PRISONER INFORMATION</td></tr>\n<tr><td id=\"0-d\">* First Name Adriana</td><td id=\"0-e\">* Last Name Ponce</td><td id=\"0-f\">Middle Name Isabel</td></tr>\n</table>\n<table id=\"0-g\">\n<tr><td id=\"0-h\">Social Security Number 467-62-701</td><td id=\"0-i\">* Date of Birth 06/28/1993</td><td id=\"0-j\">Age 31</td><td id=\"0-k\">* Sex \u2610 M \u2611 F</td><td id=\"0-l\">* Race HiDame</td><td id=\"0-m\">* Ethnicity (checkbox for Hispanic, checkbox for Non-Hispanic)</td></tr>\n</table>\n<table id=\"0-n\">\n<tr><td id=\"0-o\">US</td><td id=\"0-p\">USA</td><td id=\"0-q\">New Braunfels</td></tr>\n</table>\n<table id=\"0-r\">\n<tr><td id=\"0-s\">* Height 5&#x27;3</td><td id=\"0-t\">* Weight 128</td><td id=\"0-u\">* Eyes Brown</td><td id=\"0-v\">* Skin Tan</td><td id=\"0-w\">* Hair Type Black</td><td id=\"0-x\">Hair Length Medium</td></tr>\n</table>\n<table id=\"0-y\">\n<tr><td id=\"0-z\">* Hair Color Black</td><td id=\"0-A\">* Build \n\u2610 Skinny \u2612 Light \u2610 Medium \n\u2610 Heavy \u2610 Obese</td><td id=\"0-B\">* Beard \n\u2610 Heavy \u2610 Medium \u2610 Thin \n\u2610 Goatee \u2612 None</td><td id=\"0-C\">* Mustache \n\u2610 Y \u2612 N</td><td id=\"0-D\">* Glasses \n\u2612 Y \u2610 N</td></tr>\n</table>\n<table id=\"0-E\">\n<tr><td id=\"0-F\">Marital Status Married</td><td id=\"0-G\">* Religious Preference Catholic</td><td id=\"0-H\">Veteran? \u2610Y \u2611N</td><td id=\"0-I\">* Using Drugs? \u2610Y \u2611N</td><td id=\"0-J\">* Using Alcohol? \u2611Y \u2610N</td></tr>\n</table>\n<table id=\"0-K\">\n<tr><td id=\"0-L\">Wanted? Y N (checkboxes)</td><td id=\"0-M\">Agency Wanting Person</td><td id=\"0-N\">Agency Contact Person</td></tr>\n</table>\n\n<a id='5233b4d4-00a3-44dd-8eb2-d951e5ac310a'></a>\n\n<table id=\"0-O\">\n<tr><td id=\"0-P\" colspan=\"6\">ADDITIONAL IDENTIFIERS</td></tr>\n<tr><td id=\"0-Q\">501 34512</td><td id=\"0-R\">345 1501</td><td id=\"0-S\">TX</td><td id=\"0-T\">715 34501</td><td id=\"0-U\">TX</td><td id=\"0-V\">DL Type\nC</td></tr>\n</table>\n<table id=\"0-W\">\n<tr><td id=\"0-X\">SID Number\n717 345 501</td><td id=\"0-Y\">FBI Number\n717 501</td><td id=\"0-Z\">AFIS Number\n501 3451</td></tr>\n<tr><td id=\"0-10\">SO Number\n345 501 717</td><td id=\"0-11\">DA Log Number\n501 345</td><td id=\"0-12\">Assistant DA Name\nRita Beal</td></tr>\n</table>\n<table id=\"0-13\">\n<tr><td id=\"0-14\">SCARS MARKS TATTOOS: Type Tattoo</td><td id=\"0-15\">Location Right forearm</td><td id=\"0-16\">Description Sunflower</td></tr>\n<tr><td id=\"0-17\">SCARS MARKS TATTOOS: Type Tattoo</td><td id=\"0-18\">Location Left Collarbone</td><td id=\"0-19\">Description Small Cross</td></tr>\n<tr><td id=\"0-1a\">SCARS MARKS TATTOOS: Type</td><td id=\"0-1b\">Location</td><td id=\"0-1c\">Description</td></tr>\n</table>\n<table id=\"0-1d\">\n<tr><td id=\"0-1e\">Home</td><td id=\"0-1f\">700 S Business 1H-35</td><td id=\"0-1g\">New Braunt</td><td id=\"0-1h\">els Tx</td><td id=\"0-1i\">78130</td><td id=\"0-1j\">Source Google (handwritten)</td></tr>\n</table>\n<table id=\"0-1k\">\n<tr><td id=\"0-1l\">TELEPHONE: Type Cell</td><td id=\"0-1m\">Phone Number 830-555-0899</td><td id=\"0-1n\">Source Self</td><td id=\"0-1o\">TELEPHONE: Type</td><td id=\"0-1p\">Phone Number</td><td id=\"0-1q\">Source</td></tr>\n</table>\n\n<a id='8b41ade1-f60b-4c6f-9ed1-22c47970fd5a'></a>\n\n<table id=\"0-1r\">\n<tr><td id=\"0-1s\" colspan=\"6\">IMPORTANT PERSONS / EMERGENCY CONTACTS</td></tr>\n<tr><td id=\"0-1t\">First Name Carlos</td><td id=\"0-1u\">Middle Name Luis</td><td id=\"0-1v\">Last Name Ponce</td><td id=\"0-1w\">Relationship Husband</td><td id=\"0-1x\">Phone Number 830-555-0900</td><td id=\"0-1y\">Source\nSelf</td></tr>\n</table>\n<table id=\"0-1z\">\n<tr><td id=\"0-1A\" colspan=\"3\">EMPLOYER</td></tr>\n<tr><td id=\"0-1B\">Resolute Forest Products</td><td id=\"0-1C\">Mashine operator</td><td id=\"0-1D\">300 Gndestial Bluel</td></tr>\n</table>\n<table id=\"0-1E\">\n<tr><td id=\"0-1F\">New Braunfels</td><td id=\"0-1G\">TX</td><td id=\"0-1H\">78130</td><td id=\"0-1I\">Work</td><td id=\"0-1J\">830-555-7700</td><td id=\"0-1K\">Source\nSelf</td></tr>\n</table>\n\n<a id='c71dfd60-778b-4708-a11a-25715ee99f85'></a>\n\n(continued)\n\n<a id='a69c1067-efff-46bb-888b-46811960d91b'></a>\n\nRev. 06-2018 ~ 121846\n\n<!-- PAGE BREAK -->\n\n<a id='d5265cec-dd76-48b8-a69f-e3b66d387e10'></a>\n\n<table id=\"1-1\">\n<tr><td id=\"1-2\" colspan=\"3\">ARREST INFORMATION</td></tr>\n<tr><td id=\"1-3\">05/15/2025</td><td id=\"1-4\">8:30 PM</td><td id=\"1-5\">New Braunfels TX</td></tr>\n</table>\n<table id=\"1-6\">\n<tr><td id=\"1-7\">Arresting Agency NBPD</td><td id=\"1-8\">Prisoner Health Condition None</td><td id=\"1-9\">Does the prisoner display any unusual behavior, appear incoherent, disoriented, make any statements regarding suicide, or show any signs of possible mental illness (cannot focus attention, hearing or seeing things that are not there, talking to imaginary persons, etc.)? Yes No</td></tr>\n</table>\n<table id=\"1-a\">\n<tr><td id=\"1-b\">ARRESTING OFFICER: Last Name\nVogt</td><td id=\"1-c\">* First Name\nHank</td><td id=\"1-d\">* Badge #\n27</td><td id=\"1-e\">* Employee ID #\n185</td><td id=\"1-f\">* Contact #\n830-221-4100</td><td id=\"1-g\">Unit # KHO</td><td id=\"1-h\">* Arresting Agency NBPD</td></tr>\n</table>\n<table id=\"1-i\">\n<tr><td id=\"1-j\">TRANSPORTING OFFICER: Last Name Wick</td><td id=\"1-k\">First Name May</td><td id=\"1-l\">Badge # 330</td><td id=\"1-m\">Employee ID # 271</td><td id=\"1-n\">Contact # 830-221-4101</td><td id=\"1-o\">Unit #\n249</td><td id=\"1-p\">Agency\nNBPD</td></tr>\n</table>\n\n<a id='a4721278-4c4a-4615-9e04-8930b171a994'></a>\n\n<table id=\"1-q\">\n<tr><td id=\"1-r\" colspan=\"4\">VALUABLE PROPERTY</td></tr>\n<tr><td id=\"1-s\">Quantity\n1</td><td id=\"1-t\">Item\nDhone</td><td id=\"1-u\">Description\niPhone 15</td><td id=\"1-v\">Color\nPink</td></tr>\n<tr><td id=\"1-w\"></td><td id=\"1-x\"></td><td id=\"1-y\"></td><td id=\"1-z\"></td></tr>\n<tr><td id=\"1-A\"></td><td id=\"1-B\"></td><td id=\"1-C\"></td><td id=\"1-D\"></td></tr>\n<tr><td id=\"1-E\"></td><td id=\"1-F\"></td><td id=\"1-G\"></td><td id=\"1-H\"></td></tr>\n</table>\n\n<a id='65a31ca2-fa78-435d-abba-0df80788d933'></a>\n\n<table id=\"1-I\">\n<tr><td id=\"1-J\" colspan=\"4\">BULK PROPERTY</td></tr>\n<tr><td id=\"1-K\">Quantity NIA</td><td id=\"1-L\">Item</td><td id=\"1-M\">Description</td><td id=\"1-N\">Color</td></tr>\n<tr><td id=\"1-O\">1</td><td id=\"1-P\"></td><td id=\"1-Q\"></td><td id=\"1-R\"></td></tr>\n</table>\n\n<a id='1dd82fec-9c75-47f6-b1fc-a286e0b66ef9'></a>\n\n<table id=\"1-S\">\n<tr><td id=\"1-T\" colspan=\"4\">CLOTHING PROPERTY</td></tr>\n<tr><td id=\"1-U\">Quantity\n1</td><td id=\"1-V\">Item\nwork Shirt</td><td id=\"1-W\">Description\nUniform Shirt</td><td id=\"1-X\">Color\nNavy</td></tr>\n<tr><td id=\"1-Y\"></td><td id=\"1-Z\"></td><td id=\"1-10\"></td><td id=\"1-11\"></td></tr>\n<tr><td id=\"1-12\"></td><td id=\"1-13\"></td><td id=\"1-14\"></td><td id=\"1-15\"></td></tr>\n<tr><td id=\"1-16\"></td><td id=\"1-17\"></td><td id=\"1-18\"></td><td id=\"1-19\"></td></tr>\n</table>\n\n<a id='1fb47c8c-29bb-4595-9dcf-ac65900b1818'></a>\n\n<table id=\"1-1a\">\n<tr><td id=\"1-1b\" colspan=\"4\">OTHER PROPERTY</td></tr>\n<tr><td id=\"1-1c\">Quantity NIA</td><td id=\"1-1d\">Item</td><td id=\"1-1e\">Description</td><td id=\"1-1f\">Color</td></tr>\n<tr><td id=\"1-1g\"></td><td id=\"1-1h\"></td><td id=\"1-1i\"></td><td id=\"1-1j\"></td></tr>\n</table>\n\n<a id='919897d2-4561-4e63-9dee-911816c568c3'></a>\n\n<table id=\"1-1k\">\n<tr><td id=\"1-1l\" colspan=\"2\">SECURE PACKS</td></tr>\n<tr><td id=\"1-1m\">Quantity 1</td><td id=\"1-1n\">* Prisoner given opportunity to get phone numbers from mobile device? \u2611Yes \u2610No</td></tr>\n</table>\n<table id=\"1-1o\">\n<tr><td id=\"1-1p\">My signature indicates the valuable property, cash, clothing, and bulk property listed on this form are complete, true, and accurate.</td><td id=\"1-1q\">Prisoner&#x27;s Signature\nX Signed</td><td id=\"1-1r\">Officer&#x27;s Signature\nX Signed</td></tr>\n</table>\n\\*\\*\\* Do Not Write Below This Line \u2013 HCSO Intake Officer Use Only \\*\\*\\*\n\n<a id='99e23d8c-1b01-47f6-be16-bcca6239dec3'></a>\n\n<table id=\"1-1s\">\n<tr><td id=\"1-1t\">SECURE PACKS</td><td id=\"1-1u\">VALUABLE PROPERTY</td></tr>\n<tr><td id=\"1-1v\">Pack ID Number</td><td id=\"1-1w\">Valuable Property Bags Additional ID</td></tr>\n</table>\n\n<a id='12280f52-8100-4c1b-b861-9db8ef9641c0'></a>\n\nMOBILE DEVICE\nPrisoner given opportunity to get phone numbers from mobile device?\noption Yes: [ ]\noption No: [ ]\n\nCCQ INFO\nCCQ Run?\noption Yes: [ ]\noption No: [ ]\n\n<a id='5a6c93de-85b3-443e-b563-e15dc0917aea'></a>\n\n<table id=\"1-1x\">\n<tr><td id=\"1-1y\">SELECT PROCESSING FLOWS</td><td id=\"1-1z\">SELECT ONLY THE HIGHEST APPLICABLE PRISONER FLAG</td></tr>\n<tr><td id=\"1-1A\" rowspan=\"6\">Class B+ New Charge\n(Warrant Pending)\nClass B+ Warrant\n(Open)\nClass C County\nCoH Municipal Class C\nICE\nIn and Out Bonding\nInvestigative Hold\nNo Intake Judicial Hearing\n(BOPP, Civil)\nOut of County</td><td id=\"1-1B\">B Bench Warrant M MRP / MAG / MAJ C Civil O Open Case D Fugitive P Parole Violator</td></tr>\n<tr><td id=\"1-1C\">F Capias Pro Fine Q CoH Municipal Only</td></tr>\n<tr><td id=\"1-1D\">H Bond Forfeiture R TDCJ Ready</td></tr>\n<tr><td id=\"1-1E\">J Bond Surrender S Sentenced</td></tr>\n<tr><td id=\"1-1F\">\u2610K Felony Indictment \u2610T Transient</td></tr>\n<tr><td id=\"1-1G\">\u2610L Booked on Mandate \u2610W Weekender</td></tr>\n</table>\n\n<a id='ddb55360-f89b-4549-b1b2-26486cda0cb9'></a>\n\nRev. 06-2018 ~ 121846"
+}

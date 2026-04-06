@@ -1,0 +1,174 @@
+<style>
+  .af-form { font-family: 'Times New Roman', serif; font-size: 13px; max-width: 750px; padding: 20px; border: 1px solid #999; }
+  .af-notice { font-weight: bold; font-size: 11px; margin-bottom: 12px; }
+  .af-header { text-align: center; margin-bottom: 16px; }
+  .af-header h2 { margin: 0; font-size: 16px; text-decoration: underline; }
+  .af-row { display: flex; gap: 16px; margin-bottom: 8px; }
+  .af-field { flex: 1; }
+  .af-label { font-size: 10px; color: #555; font-weight: bold; }
+  .af-value { border-bottom: 1px solid #333; min-height: 18px; padding: 2px 4px; cursor: text; font-size: 13px; }
+  .af-value[contenteditable]:focus { outline: 2px solid #3b82f6; background: #eff6ff; }
+  .af-section { font-weight: bold; margin-top: 16px; margin-bottom: 8px; font-size: 13px; }
+  .af-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 12px; }
+  .af-table th, .af-table td { border: 1px solid #999; padding: 3px 6px; }
+  .af-table th { background: #f3f4f6; font-size: 11px; }
+  .conf-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: bold; color: white; margin-left: 4px; }
+  .conf-high { background: #22c55e; }
+  .conf-medium { background: #eab308; }
+  .conf-low { background: #ef4444; }
+  .field-low { background: #fef2f2; border-color: #fca5a5; }
+</style>
+
+<div class="af-form">
+  <div class="af-notice">NOTICE: THIS DOCUMENT CONTAINS SENSITIVE DATA.</div>
+
+  <div class="af-row">
+    <div class="af-field">
+      <div class="af-label">THE STATE OF TEXAS</div>
+    </div>
+    <div class="af-field">
+      <div class="af-label">CAUSE NO.</div>
+      {% set f = fields.get('cause_number', {}) %}
+      <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+    </div>
+  </div>
+  <div class="af-row">
+    <div class="af-field">
+      <div class="af-label">vs.</div>
+    </div>
+    <div class="af-field">
+      <div class="af-label">SPN NO.</div>
+      {% set f = fields.get('spn_number', {}) %}
+      <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+    </div>
+  </div>
+
+  <div class="af-header">
+    <h2>Affidavit of Financial Condition</h2>
+  </div>
+
+  <!-- Personal Information -->
+  <div class="af-row">
+    <div class="af-field" style="flex:2">
+      <div class="af-label">Name</div>
+      {% set f = fields.get('name', fields.get('defendant_name', {})) %}
+      <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+    </div>
+    <div class="af-field">
+      <div class="af-label">Phone No.</div>
+      {% set f = fields.get('phone', fields.get('phone_number', {})) %}
+      <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+    </div>
+  </div>
+  <div class="af-row">
+    <div class="af-field" style="flex:2">
+      <div class="af-label">Address</div>
+      {% set f = fields.get('address', {}) %}
+      <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+    </div>
+    <div class="af-field">
+      <div class="af-label">D.O.B.</div>
+      {% set f = fields.get('dob', fields.get('date_of_birth', {})) %}
+      <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+    </div>
+  </div>
+  <div class="af-row">
+    <div class="af-field">
+      <div class="af-label">City, State</div>
+      {% set f = fields.get('city_state', {}) %}
+      <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+    </div>
+    <div class="af-field">
+      <div class="af-label">Zip Code</div>
+      {% set f = fields.get('zip_code', {}) %}
+      <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+    </div>
+  </div>
+
+  <div class="af-row">
+    <div class="af-field">
+      <div class="af-label">Marital Status / Dependents</div>
+      {% set f = fields.get('marital_status', {}) %}
+      <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+    </div>
+  </div>
+
+  <!-- Financial Sections -->
+  <div class="af-section">Present cash available:</div>
+  <table class="af-table">
+    <tr><th>Type</th><th>Myself</th><th>My Spouse</th><th>Financial Institution</th></tr>
+    {% for acct_type in ['Cash', 'Checking', 'Savings', 'Safety', 'Deposit Box', 'Other'] %}
+    <tr>
+      <td>{{ acct_type }}</td>
+      {% set key = 'cash_' + acct_type.lower().replace(' ', '_') + '_myself' %}
+      {% set f = fields.get(key, {}) %}
+      <td contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</td>
+      {% set key2 = 'cash_' + acct_type.lower().replace(' ', '_') + '_spouse' %}
+      {% set f2 = fields.get(key2, {}) %}
+      <td contenteditable="true" data-field-index="{{ f2.get('index', '') }}">{{ f2.get('value', '') }}</td>
+      <td contenteditable="true"></td>
+    </tr>
+    {% endfor %}
+    <tr><td><b>TOTAL</b></td>
+      {% set f = fields.get('cash_total_myself', {}) %}
+      <td contenteditable="true" data-field-index="{{ f.get('index', '') }}"><b>{{ f.get('value', '') }}</b></td>
+      {% set f2 = fields.get('cash_total_spouse', {}) %}
+      <td contenteditable="true" data-field-index="{{ f2.get('index', '') }}"><b>{{ f2.get('value', '') }}</b></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <div class="af-section">Bond Information:</div>
+  <div class="af-row">
+    <div class="af-field">
+      <div class="af-label">Amount of bond</div>
+      {% set f = fields.get('bond_amount', fields.get('assessed_amount', {})) %}
+      <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+    </div>
+    <div class="af-field">
+      <div class="af-label">Name of person who paid for bond</div>
+      {% set f = fields.get('bond_payer', {}) %}
+      <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+    </div>
+  </div>
+
+  <!-- Signature -->
+  <div style="margin-top: 20px; border-top: 1px solid #999; padding-top: 8px;">
+    <div class="af-row">
+      <div class="af-field">
+        <div class="af-label">Date</div>
+        {% set f = fields.get('signature_date', {}) %}
+        <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+      </div>
+      <div class="af-field" style="flex:2">
+        <div class="af-label">Defendant Signature</div>
+        {% set f = fields.get('defendant_signature', {}) %}
+        <div class="af-value" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remaining fields not explicitly templated -->
+  {% set templated = ['cause_number','spn_number','name','defendant_name','phone','phone_number','address','dob','date_of_birth','city_state','zip_code','marital_status','bond_amount','assessed_amount','bond_payer','signature_date','defendant_signature'] %}
+  {% set remaining = [] %}
+  {% for key, f in fields.items() %}
+    {% if key not in templated and not key.startswith('cash_') %}
+      {% if remaining.append(key) %}{% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if remaining %}
+  <div class="af-section" style="margin-top:16px; border-top: 1px solid #ccc; padding-top: 8px;">Additional Extracted Fields</div>
+  {% for key in remaining %}
+    {% set f = fields[key] %}
+    <div class="af-row">
+      <div class="af-field" style="flex:0.8">
+        <div class="af-label">{{ key.replace('_', ' ').title() }}</div>
+      </div>
+      <div class="af-field" style="flex:2">
+        <div class="af-value {{ 'field-low' if f.get('level') == 'low' }}" contenteditable="true" data-field-index="{{ f.get('index', '') }}">{{ f.get('value', '') }}<span class="conf-badge conf-{{ f.get('level', 'medium') }}">{{ (f.get('confidence', 0)*100)|round }}%</span></div>
+      </div>
+    </div>
+  {% endfor %}
+  {% endif %}
+</div>

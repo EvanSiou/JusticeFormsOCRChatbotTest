@@ -1,0 +1,942 @@
+{
+  "extraction": {
+    "arresting_officer": {
+      "officer_type": "Both",
+      "last_name": "Poole",
+      "first_name": "Vernon"
+    },
+    "officer_contact_details": {
+      "id_number_1": "162434",
+      "id_number_2": "76795 2",
+      "phone_number": "432-555-0622",
+      "agency": "Ector Country SO"
+    },
+    "prisoner_personal_information": {
+      "first_name": "Cecil",
+      "last_name": "Horne",
+      "middle_name": "Wayne"
+    },
+    "prisoner_demographics": {
+      "social_security_number": "509-84-9923",
+      "date_of_birth": "05/05/1963",
+      "age": "62",
+      "sex": "M"
+    },
+    "prisoner_origin": {
+      "race": "white",
+      "ethnicity": "Non-Hispanic",
+      "citizenship": "US",
+      "country_of_birth": "USA"
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": "Odessa"
+    },
+    "prisoner_physical_attributes": {
+      "height": "5'8",
+      "weight": "210",
+      "eyes": "Grey",
+      "skin": "Fair"
+    },
+    "prisoner_hair_details": {
+      "hair_type": "Brown",
+      "hair_length": "Short",
+      "hair_color": "White"
+    },
+    "prisoner_facial_features": {
+      "build": "",
+      "beard": "",
+      "mustache": "",
+      "glasses": ""
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": "Widowed",
+      "religious_preference": "Methodist",
+      "veteran": "Y",
+      "using_drugs": "N"
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": "N",
+      "wanted": "N",
+      "agency_wanting_person": "",
+      "agency_contact_person": ""
+    },
+    "additional_identifiers": {
+      "hcso_spn": "623 56734",
+      "state_issued_id_number": "567 3623",
+      "issuing_state": "TX",
+      "drivers_license_number": "837 56623"
+    },
+    "drivers_license_details": {
+      "dl_state": "TX",
+      "dl_type": "C",
+      "sid_number": "839 567 623",
+      "fbi_number": "839 623"
+    },
+    "other_identification_numbers": {
+      "afis_number": "623 5673",
+      "so_number": "567 623 839",
+      "da_log_number": "623 567",
+      "assistant_da_name": "Vera Quinn"
+    },
+    "tattoos": [
+      {
+        "location": "Left forearm",
+        "description": "Vietnam memorial"
+      }
+    ],
+    "home_address": {
+      "street": "2500 W 42nd St",
+      "city": "Odessa",
+      "state": "TX",
+      "zip_code": "79764"
+    },
+    "home_address_source": {
+      "source": "self"
+    },
+    "cell_phone": {
+      "number": "432-555-0622",
+      "source": "self-"
+    },
+    "emergency_contact": {
+      "first_name": "Gerald",
+      "middle_name": "Lee",
+      "last_name": "Horne",
+      "relationship": "Son"
+    },
+    "emergency_contact_details": {
+      "phone_number": "432-555-0624",
+      "source": "self"
+    },
+    "employer_information": {
+      "employer_name": "Parker Drilling",
+      "occupation": "Rig Manager",
+      "employer_street_address": "5 Greenway Plaza"
+    },
+    "employer_contact_details": {
+      "city": "Houstan",
+      "state": "TX",
+      "zip_code": "77046",
+      "work_phone": "432-555-5000"
+    },
+    "employer_source": {
+      "source": "self"
+    },
+    "arrest_information": {
+      "date": "03/14/2025",
+      "time": "2:00 PM",
+      "arrest_location": "Odessa TX",
+      "arresting_agency": "OPD"
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": "Prostate issue",
+      "unusual_behavior_or_mental_illness": "No"
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": "Cross",
+      "first_name": "wes",
+      "badge_number": "629",
+      "employee_id_number": "397"
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": "432-335-3341",
+      "unit_number": "W25",
+      "arresting_agency": "OPD"
+    },
+    "transporting_officer_details": {
+      "last_name": "Dunn",
+      "first_name": "Nell",
+      "badge_number": "742",
+      "employee_id_number": "483"
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": "432-335-334",
+      "unit_number": "X34",
+      "agency": "OPD"
+    },
+    "valuable_property": [
+      {
+        "item": "Watch",
+        "description": "Fossil watch",
+        "color": "Brown"
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": "1",
+        "item": "Hard hat",
+        "description": "Yellow haid hat",
+        "color": "Yellow"
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": "No"
+    },
+    "signatures": {
+      "prisoner_signature": "x (signature)",
+      "officer_signature": "x (signature)"
+    },
+    "ccq_info": {
+      "ccq_run": ""
+    },
+    "processing_flows": [
+      "Class B+ New Charge (Warrant Pending)",
+      "In and Out Bonding",
+      "B Bench Warrant\nC Civil\nM MRP / MAG / MAJ\nO Open Case",
+      "Class B+ Warrant (Open)",
+      "Investigative Hold",
+      "D Fugitive\nF Capias Pro Fine\nP Parole Violator\nQ CoH Municipal Only",
+      "H Bond Forfeiture\nR TDCJ Ready",
+      "J Bond Surrender\nS Sentenced"
+    ],
+    "prisoner_flags": []
+  },
+  "extraction_metadata": {
+    "arresting_officer": {
+      "officer_type": {
+        "value": "Both",
+        "references": [
+          "0-3"
+        ]
+      },
+      "last_name": {
+        "value": "Poole",
+        "references": [
+          "0-4"
+        ]
+      },
+      "first_name": {
+        "value": "Vernon",
+        "references": [
+          "0-5"
+        ]
+      }
+    },
+    "officer_contact_details": {
+      "id_number_1": {
+        "value": "162434",
+        "references": [
+          "0-7"
+        ]
+      },
+      "id_number_2": {
+        "value": "76795 2",
+        "references": [
+          "0-8"
+        ]
+      },
+      "phone_number": {
+        "value": "432-555-0622",
+        "references": [
+          "0-9"
+        ]
+      },
+      "agency": {
+        "value": "Ector Country SO",
+        "references": [
+          "0-a"
+        ]
+      }
+    },
+    "prisoner_personal_information": {
+      "first_name": {
+        "value": "Cecil",
+        "references": [
+          "0-d"
+        ]
+      },
+      "last_name": {
+        "value": "Horne",
+        "references": [
+          "0-e"
+        ]
+      },
+      "middle_name": {
+        "value": "Wayne",
+        "references": [
+          "0-f"
+        ]
+      }
+    },
+    "prisoner_demographics": {
+      "social_security_number": {
+        "value": "509-84-9923",
+        "references": [
+          "0-h"
+        ]
+      },
+      "date_of_birth": {
+        "value": "05/05/1963",
+        "references": [
+          "0-i"
+        ]
+      },
+      "age": {
+        "value": "62",
+        "references": [
+          "0-j"
+        ]
+      },
+      "sex": {
+        "value": "M",
+        "references": [
+          "0-k"
+        ]
+      }
+    },
+    "prisoner_origin": {
+      "race": {
+        "value": "white",
+        "references": [
+          "0-l"
+        ]
+      },
+      "ethnicity": {
+        "value": "Non-Hispanic",
+        "references": [
+          "0-m"
+        ]
+      },
+      "citizenship": {
+        "value": "US",
+        "references": [
+          "0-o"
+        ]
+      },
+      "country_of_birth": {
+        "value": "USA",
+        "references": [
+          "0-p"
+        ]
+      }
+    },
+    "prisoner_birth_city": {
+      "city_of_birth": {
+        "value": "Odessa",
+        "references": [
+          "0-q"
+        ]
+      }
+    },
+    "prisoner_physical_attributes": {
+      "height": {
+        "value": "5'8",
+        "references": [
+          "0-s"
+        ]
+      },
+      "weight": {
+        "value": "210",
+        "references": [
+          "0-t"
+        ]
+      },
+      "eyes": {
+        "value": "Grey",
+        "references": [
+          "0-u"
+        ]
+      },
+      "skin": {
+        "value": "Fair",
+        "references": [
+          "0-v"
+        ]
+      }
+    },
+    "prisoner_hair_details": {
+      "hair_type": {
+        "value": "Brown",
+        "references": [
+          "0-w"
+        ]
+      },
+      "hair_length": {
+        "value": "Short",
+        "references": [
+          "0-x"
+        ]
+      },
+      "hair_color": {
+        "value": "White",
+        "references": [
+          "0-z"
+        ]
+      }
+    },
+    "prisoner_facial_features": {
+      "build": {
+        "value": "",
+        "references": []
+      },
+      "beard": {
+        "value": "",
+        "references": []
+      },
+      "mustache": {
+        "value": "",
+        "references": []
+      },
+      "glasses": {
+        "value": "",
+        "references": []
+      }
+    },
+    "prisoner_status_and_habits": {
+      "marital_status": {
+        "value": "Widowed",
+        "references": [
+          "0-F"
+        ]
+      },
+      "religious_preference": {
+        "value": "Methodist",
+        "references": [
+          "0-G"
+        ]
+      },
+      "veteran": {
+        "value": "Y",
+        "references": [
+          "0-H"
+        ]
+      },
+      "using_drugs": {
+        "value": "N",
+        "references": [
+          "0-I"
+        ]
+      }
+    },
+    "prisoner_alcohol_and_wanted_status": {
+      "using_alcohol": {
+        "value": "N",
+        "references": [
+          "0-J"
+        ]
+      },
+      "wanted": {
+        "value": "N",
+        "references": [
+          "0-L"
+        ]
+      },
+      "agency_wanting_person": {
+        "value": "",
+        "references": []
+      },
+      "agency_contact_person": {
+        "value": "",
+        "references": []
+      }
+    },
+    "additional_identifiers": {
+      "hcso_spn": {
+        "value": "623 56734",
+        "references": [
+          "0-Q"
+        ]
+      },
+      "state_issued_id_number": {
+        "value": "567 3623",
+        "references": [
+          "0-R"
+        ]
+      },
+      "issuing_state": {
+        "value": "TX",
+        "references": [
+          "0-S"
+        ]
+      },
+      "drivers_license_number": {
+        "value": "837 56623",
+        "references": [
+          "0-T"
+        ]
+      }
+    },
+    "drivers_license_details": {
+      "dl_state": {
+        "value": "TX",
+        "references": [
+          "0-U"
+        ]
+      },
+      "dl_type": {
+        "value": "C",
+        "references": [
+          "0-V"
+        ]
+      },
+      "sid_number": {
+        "value": "839 567 623",
+        "references": [
+          "0-X"
+        ]
+      },
+      "fbi_number": {
+        "value": "839 623",
+        "references": [
+          "0-Y"
+        ]
+      }
+    },
+    "other_identification_numbers": {
+      "afis_number": {
+        "value": "623 5673",
+        "references": [
+          "0-Z"
+        ]
+      },
+      "so_number": {
+        "value": "567 623 839",
+        "references": [
+          "0-10"
+        ]
+      },
+      "da_log_number": {
+        "value": "623 567",
+        "references": [
+          "0-11"
+        ]
+      },
+      "assistant_da_name": {
+        "value": "Vera Quinn",
+        "references": [
+          "0-12"
+        ]
+      }
+    },
+    "tattoos": [
+      {
+        "location": {
+          "value": "Left forearm",
+          "references": [
+            "0-15"
+          ]
+        },
+        "description": {
+          "value": "Vietnam memorial",
+          "references": [
+            "0-16"
+          ]
+        }
+      }
+    ],
+    "home_address": {
+      "street": {
+        "value": "2500 W 42nd St",
+        "references": [
+          "0-1f"
+        ]
+      },
+      "city": {
+        "value": "Odessa",
+        "references": [
+          "0-1g"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1h"
+        ]
+      },
+      "zip_code": {
+        "value": "79764",
+        "references": [
+          "0-1i"
+        ]
+      }
+    },
+    "home_address_source": {
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1j"
+        ]
+      }
+    },
+    "cell_phone": {
+      "number": {
+        "value": "432-555-0622",
+        "references": [
+          "0-1m"
+        ]
+      },
+      "source": {
+        "value": "self-",
+        "references": [
+          "0-1n"
+        ]
+      }
+    },
+    "emergency_contact": {
+      "first_name": {
+        "value": "Gerald",
+        "references": [
+          "0-1u"
+        ]
+      },
+      "middle_name": {
+        "value": "Lee",
+        "references": [
+          "0-1v"
+        ]
+      },
+      "last_name": {
+        "value": "Horne",
+        "references": [
+          "0-1w"
+        ]
+      },
+      "relationship": {
+        "value": "Son",
+        "references": [
+          "0-1x"
+        ]
+      }
+    },
+    "emergency_contact_details": {
+      "phone_number": {
+        "value": "432-555-0624",
+        "references": [
+          "0-1y"
+        ]
+      },
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1z"
+        ]
+      }
+    },
+    "employer_information": {
+      "employer_name": {
+        "value": "Parker Drilling",
+        "references": [
+          "0-1C"
+        ]
+      },
+      "occupation": {
+        "value": "Rig Manager",
+        "references": [
+          "0-1D"
+        ]
+      },
+      "employer_street_address": {
+        "value": "5 Greenway Plaza",
+        "references": [
+          "0-1E"
+        ]
+      }
+    },
+    "employer_contact_details": {
+      "city": {
+        "value": "Houstan",
+        "references": [
+          "0-1G"
+        ]
+      },
+      "state": {
+        "value": "TX",
+        "references": [
+          "0-1H"
+        ]
+      },
+      "zip_code": {
+        "value": "77046",
+        "references": [
+          "0-1I"
+        ]
+      },
+      "work_phone": {
+        "value": "432-555-5000",
+        "references": [
+          "0-1K"
+        ]
+      }
+    },
+    "employer_source": {
+      "source": {
+        "value": "self",
+        "references": [
+          "0-1L"
+        ]
+      }
+    },
+    "arrest_information": {
+      "date": {
+        "value": "03/14/2025",
+        "references": [
+          "0-3"
+        ]
+      },
+      "time": {
+        "value": "2:00 PM",
+        "references": [
+          "0-4"
+        ]
+      },
+      "arrest_location": {
+        "value": "Odessa TX",
+        "references": [
+          "0-5"
+        ]
+      },
+      "arresting_agency": {
+        "value": "OPD",
+        "references": [
+          "0-7"
+        ]
+      }
+    },
+    "prisoner_health_and_behavior": {
+      "prisoner_health_condition": {
+        "value": "Prostate issue",
+        "references": [
+          "0-8"
+        ]
+      },
+      "unusual_behavior_or_mental_illness": {
+        "value": "No",
+        "references": [
+          "0-9"
+        ]
+      }
+    },
+    "arresting_officer_details_arrest_info": {
+      "last_name": {
+        "value": "Cross",
+        "references": [
+          "0-b"
+        ]
+      },
+      "first_name": {
+        "value": "wes",
+        "references": [
+          "0-c"
+        ]
+      },
+      "badge_number": {
+        "value": "629",
+        "references": [
+          "0-d"
+        ]
+      },
+      "employee_id_number": {
+        "value": "397",
+        "references": [
+          "0-e"
+        ]
+      }
+    },
+    "arresting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "432-335-3341",
+        "references": [
+          "0-f"
+        ]
+      },
+      "unit_number": {
+        "value": "W25",
+        "references": [
+          "0-g"
+        ]
+      },
+      "arresting_agency": {
+        "value": "OPD",
+        "references": [
+          "0-h"
+        ]
+      }
+    },
+    "transporting_officer_details": {
+      "last_name": {
+        "value": "Dunn",
+        "references": [
+          "0-i"
+        ]
+      },
+      "first_name": {
+        "value": "Nell",
+        "references": [
+          "0-j"
+        ]
+      },
+      "badge_number": {
+        "value": "742",
+        "references": [
+          "0-k"
+        ]
+      },
+      "employee_id_number": {
+        "value": "483",
+        "references": [
+          "0-l"
+        ]
+      }
+    },
+    "transporting_officer_contact_and_unit": {
+      "contact_number": {
+        "value": "432-335-334",
+        "references": [
+          "0-m"
+        ]
+      },
+      "unit_number": {
+        "value": "X34",
+        "references": [
+          "0-n"
+        ]
+      },
+      "agency": {
+        "value": "OPD",
+        "references": [
+          "0-o"
+        ]
+      }
+    },
+    "valuable_property": [
+      {
+        "item": {
+          "value": "Watch",
+          "references": [
+            "0-w"
+          ]
+        },
+        "description": {
+          "value": "Fossil watch",
+          "references": [
+            "0-x"
+          ]
+        },
+        "color": {
+          "value": "Brown",
+          "references": [
+            "0-y"
+          ]
+        }
+      }
+    ],
+    "clothing_property": [
+      {
+        "quantity": {
+          "value": "1",
+          "references": [
+            "0-V"
+          ]
+        },
+        "item": {
+          "value": "Hard hat",
+          "references": [
+            "0-W"
+          ]
+        },
+        "description": {
+          "value": "Yellow haid hat",
+          "references": [
+            "0-X"
+          ]
+        },
+        "color": {
+          "value": "Yellow",
+          "references": [
+            "0-Y"
+          ]
+        }
+      }
+    ],
+    "other_property": [],
+    "secure_packs_mobile_device_opportunity": {
+      "prisoner_given_opportunity_for_phone_numbers": {
+        "value": "No",
+        "references": [
+          "0-1j"
+        ]
+      }
+    },
+    "signatures": {
+      "prisoner_signature": {
+        "value": "x (signature)",
+        "references": [
+          "0-1m"
+        ]
+      },
+      "officer_signature": {
+        "value": "x (signature)",
+        "references": [
+          "0-1n"
+        ]
+      }
+    },
+    "ccq_info": {
+      "ccq_run": {
+        "value": "",
+        "references": []
+      }
+    },
+    "processing_flows": [
+      {
+        "value": "Class B+ New Charge (Warrant Pending)",
+        "references": [
+          "0-1G"
+        ]
+      },
+      {
+        "value": "In and Out Bonding",
+        "references": [
+          "0-1H"
+        ]
+      },
+      {
+        "value": "B Bench Warrant\nC Civil\nM MRP / MAG / MAJ\nO Open Case",
+        "references": [
+          "0-1I"
+        ]
+      },
+      {
+        "value": "Class B+ Warrant (Open)",
+        "references": [
+          "0-1J"
+        ]
+      },
+      {
+        "value": "Investigative Hold",
+        "references": [
+          "0-1K"
+        ]
+      },
+      {
+        "value": "D Fugitive\nF Capias Pro Fine\nP Parole Violator\nQ CoH Municipal Only",
+        "references": [
+          "0-1L"
+        ]
+      },
+      {
+        "value": "H Bond Forfeiture\nR TDCJ Ready",
+        "references": [
+          "0-1O"
+        ]
+      },
+      {
+        "value": "J Bond Surrender\nS Sentenced",
+        "references": [
+          "0-1P"
+        ]
+      }
+    ],
+    "prisoner_flags": []
+  },
+  "metadata": {
+    "filename": "inline_markdown.md",
+    "org_id": null,
+    "duration_ms": 12046,
+    "credit_usage": 6.0687999999999995,
+    "job_id": "3bd0f264eaad4abab0a4801f83fe0c2d",
+    "version": "extract-20251024",
+    "schema_violation_error": null,
+    "fallback_model_version": "extract-20250930"
+  }
+}

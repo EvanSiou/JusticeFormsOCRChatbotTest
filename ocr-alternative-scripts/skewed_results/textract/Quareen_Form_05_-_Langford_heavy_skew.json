@@ -1,0 +1,735 @@
+{
+  "field_evaluations": [
+    {
+      "field_name": "officer_type",
+      "reference_value": "Transporting",
+      "extracted_value": "Transporting",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "officer_last_name",
+      "reference_value": "Haynes",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "officer_first_name",
+      "reference_value": "Winston",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "badge_number",
+      "reference_value": "285 667",
+      "extracted_value": "285667",
+      "extraction_score": 0.9,
+      "reasoning": "Correct digits but missing space separator"
+    },
+    {
+      "field_name": "employee_id_number",
+      "reference_value": "990275",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "contact_phone_number",
+      "reference_value": "806-555-0545",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "agency",
+      "reference_value": "Amarillo PD",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "first_name",
+      "reference_value": "Bobby",
+      "extracted_value": "Cindu",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted value is completely wrong - appears to be emergency contact first name misassigned"
+    },
+    {
+      "field_name": "last_name",
+      "reference_value": "Langford",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "middle_name",
+      "reference_value": "Dale",
+      "extracted_value": "Lou",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted 'Lou' which is the emergency contact's middle name, not the subject's middle name 'Dale'"
+    },
+    {
+      "field_name": "ssn",
+      "reference_value": "650-07-2256",
+      "extracted_value": "650-07-2256",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "date_of_birth",
+      "reference_value": "02/14/1977",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "age",
+      "reference_value": "48",
+      "extracted_value": "48",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "sex",
+      "reference_value": "M",
+      "extracted_value": "M",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "race",
+      "reference_value": "White",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "ethnicity",
+      "reference_value": "Non-Hispanic",
+      "extracted_value": "Non-Hispanic",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "citizenship",
+      "reference_value": "US",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "country_of_birth",
+      "reference_value": "USA",
+      "extracted_value": "USA",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "city_of_birth",
+      "reference_value": "Amarillo",
+      "extracted_value": "Amarillo",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "height",
+      "reference_value": "6'0",
+      "extracted_value": "6'0",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "weight",
+      "reference_value": "202",
+      "extracted_value": "202",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "eyes",
+      "reference_value": "Blue",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "skin",
+      "reference_value": "Fair",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "hair_type",
+      "reference_value": "Brown",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "hair_length",
+      "reference_value": "Short",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "hair_color",
+      "reference_value": "Brown",
+      "extracted_value": "Brown",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "build",
+      "reference_value": "Medium",
+      "extracted_value": "Medium",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "beard",
+      "reference_value": "None",
+      "extracted_value": "None",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "mustache",
+      "reference_value": "N",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "glasses",
+      "reference_value": "N",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "marital_status",
+      "reference_value": "Married",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "religious_preference",
+      "reference_value": "Methodist",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "veteran",
+      "reference_value": "Y",
+      "extracted_value": "Y",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "using_drugs",
+      "reference_value": "N",
+      "extracted_value": "N",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "using_alcohol",
+      "reference_value": "Y",
+      "extracted_value": "N",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted 'N' but reference is 'Y' - incorrect value"
+    },
+    {
+      "field_name": "wanted",
+      "reference_value": "N",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "hcso_spn",
+      "reference_value": "756 89067",
+      "extracted_value": "756 89067",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "state_issued_id_number",
+      "reference_value": "890 6756",
+      "extracted_value": "8906756",
+      "extraction_score": 0.9,
+      "reasoning": "Correct digits but missing space separator"
+    },
+    {
+      "field_name": "issuing_state",
+      "reference_value": "TX",
+      "extracted_value": "Tx",
+      "extraction_score": 0.9,
+      "reasoning": "Correct value but lowercase 'x' instead of uppercase 'X'"
+    },
+    {
+      "field_name": "drivers_license_number",
+      "reference_value": "970 89756",
+      "extracted_value": "97089756",
+      "extraction_score": 0.9,
+      "reasoning": "Correct digits but missing space separator"
+    },
+    {
+      "field_name": "dl_state",
+      "reference_value": "TX",
+      "extracted_value": "TX",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "dl_type",
+      "reference_value": "A",
+      "extracted_value": "A",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "sid_number",
+      "reference_value": "972 890 756",
+      "extracted_value": "972890756",
+      "extraction_score": 0.9,
+      "reasoning": "Correct digits but missing space separators"
+    },
+    {
+      "field_name": "fbi_number",
+      "reference_value": "972 756",
+      "extracted_value": "972 756",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "afis_number",
+      "reference_value": "756 8906",
+      "extracted_value": "756 8906",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "so_number",
+      "reference_value": "890 756 972",
+      "extracted_value": "890 756 972",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "da_log_number",
+      "reference_value": "756 890",
+      "extracted_value": "756 890",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "assistant_da_name",
+      "reference_value": "June Watts",
+      "extracted_value": "June Watts",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "smt_1_type",
+      "reference_value": "Tattoo",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "smt_1_location",
+      "reference_value": "Right forearm",
+      "extracted_value": "Right fore-arm",
+      "extraction_score": 0.9,
+      "reasoning": "Essentially correct but has a hyphen inserted in 'forearm'"
+    },
+    {
+      "field_name": "smt_1_description",
+      "reference_value": "USA flag",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "address_type",
+      "reference_value": "Home",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "address_street",
+      "reference_value": "4400 Bell St",
+      "extracted_value": "4400 Bell st.",
+      "extraction_score": 0.9,
+      "reasoning": "Essentially correct, minor case difference and trailing period"
+    },
+    {
+      "field_name": "address_city",
+      "reference_value": "Amarillo",
+      "extracted_value": "Amarillo",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "address_state",
+      "reference_value": "TX",
+      "extracted_value": "Tx",
+      "extraction_score": 0.9,
+      "reasoning": "Correct value but lowercase 'x'"
+    },
+    {
+      "field_name": "address_zip",
+      "reference_value": "79109",
+      "extracted_value": "79109",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "address_source",
+      "reference_value": "Self",
+      "extracted_value": "self",
+      "extraction_score": 0.9,
+      "reasoning": "Correct value but lowercase"
+    },
+    {
+      "field_name": "phone_1_type",
+      "reference_value": "Cell",
+      "extracted_value": "work",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted 'work' but reference is 'Cell'"
+    },
+    {
+      "field_name": "phone_1_number",
+      "reference_value": "806-555-0545",
+      "extracted_value": "806-555-0546",
+      "extraction_score": 0.0,
+      "reasoning": "Wrong number extracted - appears phone 1 and phone 2 numbers were swapped"
+    },
+    {
+      "field_name": "phone_1_source",
+      "reference_value": "Self",
+      "extracted_value": "Self",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "phone_2_type",
+      "reference_value": "Home",
+      "extracted_value": "Home",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "phone_2_number",
+      "reference_value": "806-555-0546",
+      "extracted_value": "806-555-0545",
+      "extraction_score": 0.0,
+      "reasoning": "Wrong number extracted - appears phone 1 and phone 2 numbers were swapped"
+    },
+    {
+      "field_name": "phone_2_source",
+      "reference_value": "Self",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "emergency_first_name",
+      "reference_value": "Cindy",
+      "extracted_value": "Bobby",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted 'Bobby' which is the subject's first name, not the emergency contact's first name 'Cindy'"
+    },
+    {
+      "field_name": "emergency_middle_name",
+      "reference_value": "Lou",
+      "extracted_value": "Dale",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted 'Dale' which is the subject's middle name, not the emergency contact's middle name 'Lou'"
+    },
+    {
+      "field_name": "emergency_last_name",
+      "reference_value": "Langford",
+      "extracted_value": "Lanaford",
+      "extraction_score": 0.5,
+      "reasoning": "Close but has OCR error - 'Lanaford' instead of 'Langford'"
+    },
+    {
+      "field_name": "emergency_relationship",
+      "reference_value": "Wife",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "emergency_phone",
+      "reference_value": "806-555-0547",
+      "extracted_value": "806-555-05-n",
+      "extraction_score": 0.0,
+      "reasoning": "OCR error - last digits not correctly extracted, ending in '-n' instead of '47'"
+    },
+    {
+      "field_name": "emergency_source",
+      "reference_value": "Self",
+      "extracted_value": "self",
+      "extraction_score": 0.9,
+      "reasoning": "Correct value but lowercase"
+    },
+    {
+      "field_name": "employer_name",
+      "reference_value": "Tyson Foods",
+      "extracted_value": "Tyson Foods",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "occupation",
+      "reference_value": "Line Supervisor",
+      "extracted_value": "Line Supervisor",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_address",
+      "reference_value": "1500 SE 27th Ave",
+      "extracted_value": "1500 SE 27th Ave.",
+      "extraction_score": 0.95,
+      "reasoning": "Essentially correct with only a trailing period difference"
+    },
+    {
+      "field_name": "employer_city",
+      "reference_value": "Amarillo",
+      "extracted_value": "Amarillo",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_state",
+      "reference_value": "TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted (empty string)"
+    },
+    {
+      "field_name": "employer_zip",
+      "reference_value": "79103",
+      "extracted_value": "79103",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_phone_type",
+      "reference_value": "Work",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "employer_phone",
+      "reference_value": "806-555-4400",
+      "extracted_value": "806-555-4400",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "employer_source",
+      "reference_value": "Self",
+      "extracted_value": "self",
+      "extraction_score": 0.9,
+      "reasoning": "Correct value but lowercase"
+    },
+    {
+      "field_name": "arrest_date",
+      "reference_value": "10/04/2024",
+      "extracted_value": "10/04/2024",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arrest_time",
+      "reference_value": "11:30 PM",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arrest_location",
+      "reference_value": "Amarillo TX",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arresting_agency",
+      "reference_value": "APD",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "prisoner_health_condition",
+      "reference_value": "None",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "unusual_behavior",
+      "reference_value": "No",
+      "extracted_value": "No",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "arr_officer_last_name",
+      "reference_value": "Bowen",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arr_officer_first_name",
+      "reference_value": "Kent",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arr_officer_badge",
+      "reference_value": "830",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arr_officer_employee_id",
+      "reference_value": "506",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arr_officer_contact",
+      "reference_value": "806-378-9310",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "arr_officer_unit",
+      "reference_value": "I11",
+      "extracted_value": "I'l",
+      "extraction_score": 0.0,
+      "reasoning": "OCR error - extracted 'I'l' instead of 'I11'"
+    },
+    {
+      "field_name": "arr_officer_agency",
+      "reference_value": "APD",
+      "extracted_value": "APD",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_last_name",
+      "reference_value": "York",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "trans_officer_first_name",
+      "reference_value": "Faye",
+      "extracted_value": "Kent",
+      "extraction_score": 0.0,
+      "reasoning": "Extracted 'Kent' which is the arresting officer's first name, not 'Faye'"
+    },
+    {
+      "field_name": "trans_officer_badge",
+      "reference_value": "943",
+      "extracted_value": "943",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_employee_id",
+      "reference_value": "592",
+      "extracted_value": "592",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_contact",
+      "reference_value": "806-378-9311",
+      "extracted_value": "806-378-9311",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_unit",
+      "reference_value": "J20",
+      "extracted_value": "J20",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "trans_officer_agency",
+      "reference_value": "APD",
+      "extracted_value": "APD",
+      "extraction_score": 1.0,
+      "reasoning": "Exact match"
+    },
+    {
+      "field_name": "valuable_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Large silver buckle\", \"color\": \"Silver\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "clothing_property",
+      "reference_value": "[{\"quantity\": \"1\", \"description\": \"Western boots\", \"color\": \"Tan\"}]",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "secure_pack_quantity",
+      "reference_value": "1",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "phone_numbers_opportunity",
+      "reference_value": "No",
+      "extracted_value": "",
+      "extraction_score": 0.0,
+      "reasoning": "Field not extracted"
+    },
+    {
+      "field_name": "prisoner_signature",
+      "reference_value": "Signed",
+      "extracted_value": "x Ad",
+      "extraction_score": 0.5,
+      "reasoning": "Detected signature presence but extracted raw OCR text instead of normalizing to 'Signed'"
+    },
+    {
+      "field_name": "officer_signature",
+      "reference_value": "Signed",
+      "extracted_value": "x the",
+      "extraction_score": 0.5,
+      "reasoning": "Detected signature presence but extracted raw OCR text instead of normalizing to 'Signed'"
+    }
+  ],
+  "overall_score": 0.49375,
+  "summary": "The extraction system captured approximately half the fields correctly, with strong performance on numeric identifiers, some personal details, and officer contact information, but significant failures including missing fields, name confusion between subject and emergency contact, swapped phone numbers, and several OCR errors. Many fields were entirely absent from the extraction output, dragging the overall score down considerably.",
+  "judge_overall_score": 0.49
+}
