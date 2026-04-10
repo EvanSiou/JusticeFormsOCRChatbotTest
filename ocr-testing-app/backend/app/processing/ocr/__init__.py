@@ -14,8 +14,6 @@ VLM_ENGINES = [
     'pixtral_large_bedrock',
     # Llama 4 (Bedrock)
     'llama4_maverick_bedrock', 'llama4_scout_bedrock',
-    # Llama 4 (Vertex AI)
-    'llama4_maverick_vertex', 'llama4_scout_vertex',
     # OpenAI
     'gpt5', 'gpt5_mini',
 ]
@@ -28,11 +26,6 @@ BEDROCK_ENGINE_NAMES = {
     'llama4_maverick_bedrock', 'llama4_scout_bedrock',
 }
 
-# Vertex AI engine names (all use VertexOCREngine)
-VERTEX_ENGINE_NAMES = {
-    'llama4_maverick_vertex', 'llama4_scout_vertex',
-}
-
 # Lazy registry - only import implementations when requested
 _OCR_ENGINE_NAMES = [
     "easyocr", "surya", "paddleocr", "tesseract", "trocr", "doctr",
@@ -42,7 +35,6 @@ _OCR_ENGINE_NAMES = [
     "nova_pro_bedrock", "nova_lite_bedrock",
     "pixtral_large_bedrock",
     "llama4_maverick_bedrock", "llama4_scout_bedrock",
-    "llama4_maverick_vertex", "llama4_scout_vertex",
     "gpt5", "gpt5_mini",
 ]
 
@@ -78,9 +70,6 @@ def get_ocr_engine(name: str) -> OCREngineBase:
     elif name in BEDROCK_ENGINE_NAMES:
         from .bedrock_engine import BedrockOCREngine
         return BedrockOCREngine(name)
-    elif name in VERTEX_ENGINE_NAMES:
-        from .vertex_engine import VertexOCREngine
-        return VertexOCREngine(name)
     elif name in ("gpt5", "gpt5_mini"):
         from .openai_engine import OpenAIVisionEngine
         return OpenAIVisionEngine(name)

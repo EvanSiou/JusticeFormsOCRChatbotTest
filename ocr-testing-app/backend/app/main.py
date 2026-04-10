@@ -68,7 +68,7 @@ app.include_router(reference_data_router, prefix="/api/reference", tags=["Refere
 @app.get("/")
 @app.get("/api/health")
 async def health_check():
-    """Health check endpoint (also serves root for Cloud Run health probes)."""
+    """Health check endpoint."""
     return {"status": "healthy", "app": settings.app_name}
 
 

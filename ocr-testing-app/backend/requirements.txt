@@ -17,10 +17,8 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 bcrypt==4.0.1
 
-# GCP
-google-cloud-firestore>=2.13.0
-google-cloud-storage>=2.13.0
-google-auth>=2.23.0
+# AWS
+boto3>=1.39.0
 
 # Image processing
 Pillow>=10.0.0
@@ -46,9 +44,6 @@ anthropic>=0.40.0
 
 # OpenAI API (GPT-5 / GPT-5 mini)
 openai>=1.0.0
-
-# Amazon Bedrock
-boto3>=1.39.0
 
 # Excel parsing
 openpyxl>=3.1.0

@@ -154,8 +154,8 @@ async def run_batch_job_background(
 
         if same_as_ocr:
             # Import valid classifier model names
-            from app.services.unified_pipeline import BEDROCK_CLASSIFIERS, VERTEX_CLASSIFIERS
-            valid_classifiers = set(["claude"] + list(BEDROCK_CLASSIFIERS) + list(VERTEX_CLASSIFIERS) + ["gpt5", "gpt5_mini"])
+            from app.services.unified_pipeline import BEDROCK_CLASSIFIERS
+            valid_classifiers = set(["claude"] + list(BEDROCK_CLASSIFIERS) + ["gpt5", "gpt5_mini"])
 
             for ocr_lib in ocr_libraries:
                 if ocr_lib not in valid_classifiers:
@@ -420,8 +420,8 @@ async def run_batch_job(
     total_combos = 0
     same_as_ocr = request.classifier_models == ["__same_as_ocr__"]
     if same_as_ocr:
-        from app.services.unified_pipeline import BEDROCK_CLASSIFIERS, VERTEX_CLASSIFIERS
-        valid_classifiers = set(["claude"] + list(BEDROCK_CLASSIFIERS) + list(VERTEX_CLASSIFIERS) + ["gpt5", "gpt5_mini"])
+        from app.services.unified_pipeline import BEDROCK_CLASSIFIERS
+        valid_classifiers = set(["claude"] + list(BEDROCK_CLASSIFIERS) + ["gpt5", "gpt5_mini"])
         for ocr_lib in request.ocr_libraries:
             if ocr_lib not in valid_classifiers:
                 continue
@@ -592,10 +592,10 @@ async def get_available_libraries(
 ):
     """Get available layout, OCR, classifier, and judge model libraries."""
     from app.processing.ocr import VLM_ENGINES
-    from app.services.unified_pipeline import BEDROCK_CLASSIFIERS, VERTEX_CLASSIFIERS
+    from app.services.unified_pipeline import BEDROCK_CLASSIFIERS
 
     classifier_models = sorted(
-        ["claude"] + list(BEDROCK_CLASSIFIERS) + list(VERTEX_CLASSIFIERS) + ["gpt5", "gpt5_mini"]
+        ["claude"] + list(BEDROCK_CLASSIFIERS) + ["gpt5", "gpt5_mini"]
     )
 
     return {

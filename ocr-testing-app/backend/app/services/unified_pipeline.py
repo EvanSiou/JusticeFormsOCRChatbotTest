@@ -37,10 +37,6 @@ BEDROCK_CLASSIFIERS = {
     "llama4_maverick_bedrock", "llama4_scout_bedrock",
 }
 
-VERTEX_CLASSIFIERS = {
-    "llama4_maverick_vertex", "llama4_scout_vertex",
-}
-
 # Combined prompt for single-call OCR+Classification
 UNIFIED_PROMPT_TEMPLATE = """You are analyzing a document image. Perform TWO tasks:
 
@@ -75,9 +71,6 @@ def _get_classifier(model_name: str):
     elif model_name in BEDROCK_CLASSIFIERS:
         from app.processing.classification.bedrock_classifier import BedrockFieldClassifier
         return BedrockFieldClassifier(model_name)
-    elif model_name in VERTEX_CLASSIFIERS:
-        from app.processing.classification.vertex_classifier import VertexFieldClassifier
-        return VertexFieldClassifier(model_name)
     elif model_name in ("gpt5", "gpt5_mini"):
         from app.processing.classification.openai_classifier import OpenAIFieldClassifier
         return OpenAIFieldClassifier(model_name)

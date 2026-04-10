@@ -232,19 +232,12 @@ async def run_classification(
         "llama4_maverick_bedrock", "llama4_scout_bedrock",
     }
 
-    VERTEX_CLASSIFIERS = {
-        "llama4_maverick_vertex", "llama4_scout_vertex",
-    }
-
     if request.classifier_model == "claude":
         from app.processing.classification.claude_classifier import ClaudeFieldClassifier
         classifier = ClaudeFieldClassifier()
     elif request.classifier_model in BEDROCK_CLASSIFIERS:
         from app.processing.classification.bedrock_classifier import BedrockFieldClassifier
         classifier = BedrockFieldClassifier(request.classifier_model)
-    elif request.classifier_model in VERTEX_CLASSIFIERS:
-        from app.processing.classification.vertex_classifier import VertexFieldClassifier
-        classifier = VertexFieldClassifier(request.classifier_model)
     elif request.classifier_model in ("gpt5", "gpt5_mini"):
         from app.processing.classification.openai_classifier import OpenAIFieldClassifier
         classifier = OpenAIFieldClassifier(request.classifier_model)

@@ -14,10 +14,12 @@ class Settings(BaseSettings):
     app_name: str = "Court Form OCR Testing App"
     debug: bool = False
 
-    # GCP Settings
-    gcp_project_id: str = ""
-    gcp_storage_bucket: str = ""
-    google_application_credentials: str = ""
+    # AWS Settings
+    aws_default_region: str = "us-west-2"
+    aws_access_key_id: str = ""
+    aws_secret_access_key: str = ""
+    s3_bucket: str = "ocr-testing-app-forms"
+    dynamodb_table_prefix: str = "ocr-testing"
 
     # Auth settings
     secret_key: str = "change-this-in-production-use-a-long-random-string"
@@ -32,10 +34,9 @@ class Settings(BaseSettings):
 
     # AWS Bedrock
     aws_bearer_token_bedrock: str = ""
-    aws_default_region: str = "us-west-2"
 
-    # CORS settings - stored as a plain string, parsed by get_cors_origins()
-    cors_origins: str = "http://localhost:3000,http://localhost:5173,https://ocr-app-frontend-206256614025.us-central1.run.app"
+    # CORS settings
+    cors_origins: str = "http://localhost:3000,http://localhost:5173,http://localhost:8080"
 
     def get_cors_origins(self) -> List[str]:
         """Parse CORS origins from comma-separated string."""
