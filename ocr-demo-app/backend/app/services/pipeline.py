@@ -12,6 +12,7 @@ from PIL import Image
 import fitz  # PyMuPDF
 
 from . import s3_storage, dynamodb
+from .chat_service import index_session_payload
 from ..processing.quality_detector import detect_page_quality
 from ..processing.page_corrector import correct_page
 from ..processing.form_detector import detect_form_type
@@ -258,6 +259,24 @@ def run_ocr_and_classify(session_id: str, model_name: Optional[str] = None) -> d
 
     # Step 3: Inject bias errors
     modified_fields, injection_log = inject_bias_errors(classified_fields)
+
+    # Step 4: Index OCR results for the Assistant
+    page_entries = []
+    for page, page_text in zip(pages, all_ocr_text):
+        page_entries.append({
+            "page": page.get("page_num", 0) + 1,
+            "text": page_text,
+        })
+
+    source_name = session.get("original_filename", f"{session_id}.pdf")
+
+    index_session_payload(
+        session_id=session_id,
+        source_name=source_name,
+        detected_form_type=form_type_id,
+        page_entries=page_entries,
+        classified_fields=classified_fields,
+    )
 
     dynamodb.update_session(session_id, {
         "ocr_text": combined_text,
