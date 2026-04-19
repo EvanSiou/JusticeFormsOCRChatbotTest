@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .config import get_settings
-from .routers import processing, setup
+from .routers import processing, setup, chat
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ app.add_middleware(
 # API routers
 app.include_router(processing.router, prefix="/api/processing", tags=["processing"])
 app.include_router(setup.router, prefix="/api/setup", tags=["setup"])
+app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
 
 
 @app.on_event("startup")
@@ -37,6 +38,12 @@ async def startup():
         seed_defaults()
     except Exception as e:
         logger.warning(f"Seed data failed (non-fatal): {e}")
+
+    try:
+        from .services.legal_docs_service import ensure_legal_docs_indexed
+        ensure_legal_docs_indexed()
+    except Exception as e:
+        logger.warning(f"Legal docs indexing failed (non-fatal): {e}")
 
 
 @app.get("/api/health")
@@ -55,11 +62,12 @@ if static_dir.exists():
     # SPA catch-all: serve index.html for any non-API route (handles page refresh)
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        # If it's a file that exists, serve it
+        if full_path.startswith("api/"):
+            return {"error": "Not found"}
+
         file_path = static_dir / full_path
         if file_path.is_file():
             return FileResponse(str(file_path))
-        # Otherwise serve index.html (SPA routing)
         return FileResponse(str(static_dir / "index.html"))
 
     logger.info(f"Serving frontend from {static_dir}")
