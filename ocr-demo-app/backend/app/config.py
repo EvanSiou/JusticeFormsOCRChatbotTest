@@ -19,6 +19,15 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = "http://localhost:5173,http://localhost:8080"
 
+    # Assistant / RAG
+    chroma_dir: str = "./app_data/chroma"
+    legal_docs_dir: str = "./app/legal_docs"
+    chat_model_name: str = "claude_bedrock"
+    legal_top_k: int = 4
+    session_top_k: int = 6
+    text_chunk_size: int = 1200
+    text_chunk_overlap: int = 150
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
