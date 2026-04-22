@@ -29,7 +29,7 @@ app.add_middleware(
 app.include_router(processing.router, prefix="/api/processing", tags=["processing"])
 app.include_router(setup.router, prefix="/api/setup", tags=["setup"])
 app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
-
+app.include_router(agent.router, prefix="/api/agent", tags=["agent"])
 
 @app.on_event("startup")
 async def startup():
