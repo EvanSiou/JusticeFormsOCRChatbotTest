@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { testsAPI, resultsAPI } from '../services/api'
 import MagnifyImage from '../components/MagnifyImage'
 import PageNavigator from '../components/PageNavigator'
+import OcrChatPanel from '../components/OcrChatPanel'
 
 function formatDuration(startedAt, completedAt) {
   if (!startedAt || !completedAt) return null
@@ -347,6 +348,12 @@ function ResultsPage() {
 
           {/* Right: Extracted Fields + Layout + OCR */}
           <div className="space-y-4">
+            <OcrChatPanel
+              testRunId={testRunId}
+              documentId={selectedDocument}
+              documentData={documentData.data}
+            />
+            
             {/* Extracted Fields — Table with toggle buttons */}
             {sortedFields.length > 0 && (
               <div className="bg-white rounded-lg shadow p-4">
@@ -707,4 +714,4 @@ function ResultsPage() {
   )
 }
 
-export default ResultsPage
+
